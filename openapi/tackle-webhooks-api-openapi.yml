@@ -1,0 +1,2537 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Webhooks API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Webhooks
+  description: Operations for Webhooks
+paths:
+  /v1/webhooks:
+    parameters: []
+    post:
+      tags:
+      - Webhooks
+      summary: Create or Update a Webhook
+      description: Create or update an existing webhook to receive order, private offer, and metering events as they happen
+      operationId: v1-create-or-update-webhook
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhooksRequest'
+            examples:
+              example-1-header_api_key_clouds:
+                value:
+                  url: http://example.com
+                  auth:
+                    auth_type: header_api_key
+                    auth_header_name: header_api_key_authorization
+                    api_key: s0m3-3x4mp1e-4p1-k3y
+                  filters:
+                    supported_clouds:
+                    - aws
+                  private_offer_events_enabled: false
+              example-2-basic_auth_product_id:
+                value:
+                  url: http://example.com
+                  auth:
+                    auth_type: basic
+                    username: exampleUsername12345
+                    password: securePassword67890
+                  filters:
+                    productid: 12345-abcdef-67890
+                  private_offer_events_enabled: false
+              example-3-oauth2-auth:
+                value:
+                  url: http://example.com
+                  auth:
+                    auth_type: oauth2
+                    oauth2:
+                      client_id: client-id-example
+                      client_secret: client-secret-example
+                      token_url: https://www.example.com/oauth-token
+                  filters:
+                    supported_clouds:
+                    - aws
+                    - azure
+                    - gcp
+                    private_offer_events_enabled: false
+      security:
+      - BearerAuth: []
+      callbacks:
+        onEvent:
+          '{$request.body#/url}':
+            post:
+              requestBody:
+                description: Webhook information; to receive order and private offer events as they happen
+                content:
+                  application/json:
+                    schema:
+                      oneOf:
+                      - $ref: '#/components/schemas/AWSPrivateOfferCallback'
+                      - $ref: '#/components/schemas/AzurePrivateOfferCallback'
+                      - $ref: '#/components/schemas/GCPPrivateOfferCallback'
+                      - $ref: '#/components/schemas/RedhatPrivateOfferCallback'
+                      - $ref: '#/components/schemas/AWSNewOrderCallback'
+                      - $ref: '#/components/schemas/AzureNewOrderCallback'
+                      - $ref: '#/components/schemas/GCPNewOrderCallback'
+                      - $ref: '#/components/schemas/RedhatNewOrderCallback'
+              security:
+              - BasicAuthCallback: []
+              - HeaderApiKeyAuthCallback: []
+              - Oauth2AuthCallback: []
+              responses:
+                '200':
+                  description: Returns a `200` code if it accepts the callback
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ResponseStatusCode'
+                        properties:
+                          id:
+                            type: string
+                '400':
+                  description: Returns a `400` code if there is an error. Provide error information
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ResponseStatusCode'
+                        properties:
+                          id:
+                            type: string
+    get:
+      tags:
+      - Webhooks
+      summary: Get All Webhooks for Vendor
+      description: Get all webhook configurations for a vendor including vendor-level and product-level webhooks
+      operationId: v1-get-all-webhooks
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-GET-All'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+      parameters: []
+      security:
+      - BearerAuth: []
+  /v1/webhooks/test:
+    post:
+      tags:
+      - Webhooks
+      summary: Test a Webhook
+      description: Verify your webhooks by sending a test payload to the configured webhook URL
+      operationId: v1-test-webhook
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-Test'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized-MTM'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhooksTestRequest'
+            examples:
+              example-test-request-with-forward-to-url:
+                value:
+                  forward_to_url: http://example.com
+                  event_type: order_modified
+                  productid: 12345-abcdef-67890
+              example-test-request:
+                value:
+                  event_type: order_modified
+                  productid: 12345-abcdef-67890
+  /v1/webhooks/vendor:
+    delete:
+      tags:
+      - Webhooks
+      summary: Delete a Vendor-Level Webhook
+      description: Delete an existing vendor-level webhook
+      operationId: v1-delete-webhook
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-Deleted-Vendor'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+        '404':
+          $ref: '#/components/responses/Webhooks_404-Not-Found-Webhooks'
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - Webhooks
+      summary: Get a Vendor-Level Webhook
+      operationId: v1-get-vendor-webhook
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-GET'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+        '404':
+          $ref: '#/components/responses/Webhooks_404-Not-Found-Webhooks'
+      description: Get your current vendor-level webhook configuration
+      security:
+      - BearerAuth: []
+  /v1/webhooks/product/{productid}:
+    parameters:
+    - $ref: '#/components/parameters/productid_path'
+    delete:
+      tags:
+      - Webhooks
+      summary: Delete a Product-Level Webhook
+      description: Delete an existing webhook for a given product
+      operationId: v1-delete-product-webhook
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-Deleted-Product'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+        '404':
+          $ref: '#/components/responses/Webhooks_404-Not-Found-Webhooks'
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - Webhooks
+      summary: Get a Product-Level Webhook
+      operationId: v1-get-product-webhook
+      responses:
+        '200':
+          $ref: '#/components/responses/Webhooks_200-OK-Webhooks-GET'
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '403':
+          $ref: '#/components/responses/403-Forbidden'
+        '404':
+          $ref: '#/components/responses/Webhooks_404-Not-Found-Webhooks'
+      description: Get your current webhook configuration for a given product
+      security:
+      - BearerAuth: []
+components:
+  schemas:
+    WebhookUrlResponse:
+      type: string
+      nullable: true
+      description: A valid URL for the endpoint you created to receive Tackle events
+      format: uri
+      example: https://www.example.com
+    RedhatPrivateOfferCallback:
+      description: Link to information on Private Offer payload variables https://developers.tackle.io/reference/private-offer-payloads
+      type: object
+      properties:
+        cloud:
+          type: string
+          example: redhat
+        metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: Sr. Test
+                  full_name:
+                    type: string
+                    example: Someone That Buys
+                  email_address:
+                    type: string
+                    example: test@test.com
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: object
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_metadata:
+              type: object
+              properties:
+                type:
+                  type: object
+                RHM Account ID:
+                  type: string
+                  example: 123456789
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Test
+            offer_expiration_at:
+              type: string
+              example: '2022-05-31T00:00:00.000Z'
+            pricing:
+              type: object
+              properties:
+                dimensions:
+                  type: array
+                  items:
+                    type: string
+        po_ref:
+          type: string
+          example: redhat#DEMOVENDOR1-redhat-1603121145#None#None#6894afad-1cc2-40fc-8d96-b7f96699d95c
+        po_id:
+          type: string
+          example: 6894afad-1cc2-40fc-8d96-b7f96699d95c
+        activities:
+          type: array
+          items:
+            type: object
+            properties:
+              created_at:
+                type: string
+                example: '2022-05-27T18:03:37.589597+00:00'
+              metadata:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: John Smith
+                      email:
+                        type: string
+                        example: john.smith@example.com
+                      buyer:
+                        type: boolean
+              user_id:
+                type: string
+                example: abc123
+              slug:
+                type: string
+                example: vendor-created-offer
+              activity_type:
+                type: string
+                example: PO
+        vendor_id:
+          type: string
+          example: DEMOVENDOR1
+        users_to_notify:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+                example: john smith
+              contact_type:
+                type: string
+                example: auth0
+        created_at:
+          type: string
+          example: '2022-05-27T18:03:37.590560+00:00'
+        product_ref:
+          type: string
+          example: example-redhat-1603100000
+        last_modified_at:
+          type: string
+          example: '2022-05-27T18:03:37.589504+00:00'
+    AwsMarketplaceData:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            CustomerAWSAccountId:
+              title: CustomerAWSAccountId
+              type: string
+              description: AWS account ID associated to the customerid for the individual customer
+              example: example-account-id
+      description: Marketplace data specific to AWS
+      title: AWS
+    GcpEntitlement:
+      type: object
+      description: A purchase entitlement from GCP Marketplace
+      properties:
+        account:
+          type: string
+          description: The resource name of the account that this entitlement is based on, if any
+        consumers:
+          type: array
+          description: The resources using this entitlement, if applicable
+          items:
+            type: string
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-10-02T15:01:23.045123456Z'
+        messageToUser:
+          type: string
+          description: Provider-supplied message that is displayed to the end user
+        name:
+          type: string
+          description: The resource name of the entitlement
+        newPendingPlan:
+          type: string
+          description: The identifier of the pending new plan, required if the product has plans and the entitlement has a pending plan change
+        offer:
+          type: string
+        offerEndTime:
+          type: string
+          format: date-time
+        plan:
+          type: string
+          description: The identifier of the plan that was procured, required if the product has plans
+        product:
+          type: string
+          description: The identifier of the product that was procured
+        provider:
+          type: string
+          description: The identifier of the service provider that this entitlement was created against
+        productExternalName:
+          type: string
+        quoteExternalName:
+          type: string
+        state:
+          type: string
+          description: The state of the entitlement
+        subscriptionEndTime:
+          type: string
+        updateTime:
+          type: string
+          format: date-time
+          example: '2019-10-25T21:38:20.865Z'
+        usageReportingId:
+          type: string
+          description: The consumerId to use when reporting usage through the Service Control API. See the consumerId field at Reporting Metrics for more details. This field is present only if the product has usage-based billing configured.
+      required:
+      - account
+      - createTime
+      - name
+      - plan
+      - product
+      title: GcpEntitlement
+    IsFreeTrial:
+      type: boolean
+      description: Designation for Free Trial
+      example: false
+      default: false
+      readOnly: true
+    GCPNewOrderCallback:
+      description: Link to New Offer payload variables https://developers.tackle.io/reference/payload-variables
+      type: object
+      properties:
+        event_type:
+          type: string
+          example: order_created
+        vendorid:
+          type: string
+          example: U9T21A
+        productid:
+          type: string
+          example: tackle-on-gcp
+        customerid:
+          type: string
+          example: E-ABC2-D530-E2FG-H2Q2
+        marketplace:
+          type: string
+          example: gcp
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              account:
+                type: string
+                example: providers/tackle-public/accounts/E-ABC2-D530-E2FG-H2Q2
+              createTime:
+                type: string
+                example: '2019-10-25T21:38:20.865Z'
+              name:
+                type: string
+                example: providers/tackle-public/entitlements/416bacaa-94b6-4701-911bf945aab9
+              plan:
+                type: string
+                example: tkl-tier-1
+              product:
+                type: string
+                example: tackle-on-gcp
+              state:
+                type: string
+                example: ENTITLEMENT_ACTIVE
+              usage_reporting_id:
+                type: string
+                example: project_number:1234567890
+        properties:
+          type: object
+          properties:
+            Company:
+              type: string
+              example: Tackle
+            Company Address:
+              type: string
+              example: 104 S. Capitol Blvd.
+            Company Website:
+              type: string
+              example: https://tackle.io
+            Email Address:
+              type: string
+              example: support@tackle.io
+            Full Name:
+              type: string
+              example: Jane Doe
+            Phone Number:
+              type: string
+              example: 1234567890
+        offerid:
+          type: string
+          example: a1b2c3e4-a1b2-a1b2-a1b2-a1b2c3d4e5f6
+        contract_metadata:
+          type: object
+          properties:
+            key:
+              type: string
+              example: value
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  full_name:
+                    type: string
+                    example: Example Person
+                  email_address:
+                    type: string
+                    example: example-email@example.com
+                  title:
+                    type: string
+                    example: CEO
+            offer_metadata:
+              type: object
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_expiration_at:
+              type: string
+              format: date-time
+              example: '2022-08-12T12:00:00+00:00'
+            pricing:
+              type: object
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Example Company
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+        tackle_subscription_id:
+          type: string
+          example: 52fZSV7JbMI
+        marketplace_data:
+          $ref: '#/components/schemas/OtherMarketplaceData'
+    GCPPrivateOfferCallback:
+      description: Link to information on Private Offer payload variables https://developers.tackle.io/reference/private-offer-payloads
+      type: object
+      properties:
+        group_id:
+          type: string
+          example: 2h58473p-c70i-1234-9d7b-7we9585e2c9w
+        created_at:
+          type: string
+          example: '2022-01-31T23:31:22.166934+00:00'
+        actor:
+          type: object
+          properties:
+            email:
+              type: string
+              example: john.smith@example.com
+            name:
+              type: string
+              example: John Smith
+            picture:
+              type: string
+              example: https://www.example.com/jpeg
+            user_id:
+              type: string
+              example: abc123
+        destination:
+          type: string
+          example: callback
+        event_type:
+          type: string
+          example: private_offer_created
+        extra_data:
+          type: object
+        marketplace:
+          type: string
+          example: gcp
+        offerid:
+          type: string
+          example: 2h58473p-c70i-1234-9d7b-7we9585e2c9w
+        po_id:
+          type: string
+          example: 2h58473p-c70i-1234-9d7b-7we9585e2c9w
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  email_address:
+                    type: string
+                    example: jsmith@example.com
+                  full_name:
+                    type: string
+                    example: John Smith
+                  title:
+                    type: string
+                    example: Example Title
+            enable_zero_dollar_prices:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: object
+            offer_metadata:
+              type: object
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Example Company
+            pricing:
+              type: object
+              properties:
+                dimensions:
+                  type: array
+                  items:
+                    type: string
+                duration:
+                  type: string
+                  example: 1 Months
+                marketplace_fee:
+                  type: string
+                  example: 0
+                show_on_email:
+                  type: boolean
+                version:
+                  type: string
+                  example: simple-pricing-v2-gcp
+            renewal:
+              type: boolean
+        productid:
+          type: string
+          example: example-product
+        source:
+          type: string
+          example: po_url
+        test:
+          type: boolean
+        vendorid:
+          type: string
+          example: 12345
+    OtherMarketplaceData:
+      description: GCP, Azure, and Red Hat do not currently have marketplace specific data
+      type: object
+      title: GCP, Azure, or Red Hat
+    AzureCustomerId:
+      type: string
+      description: Azure Subscription ID
+      example: 1b3gs3f4-2794-abcd-3fa3-063ga0s3t3re
+      minLength: 0
+    AwsPricing:
+      type: object
+      description: Pricing data for AWS
+      properties:
+        duration:
+          type: string
+        version:
+          type: string
+        schedule:
+          type: array
+          items:
+            type: object
+        show_on_email:
+          type: boolean
+        buyers:
+          type: array
+          items:
+            type: object
+        dimensions:
+          type: array
+          items:
+            type: object
+        monthly_contract_value:
+          type: string
+        net_contract_value:
+          type: string
+        total_contract_value:
+          type: string
+        marketplace_fee:
+          type: string
+    Metadata:
+      title: Metadata
+      type: object
+      description: Metadata for a given request
+      properties:
+        link:
+          type: string
+          format: uri
+          example: https://api.tackle.io
+      required:
+      - link
+    WebhookTestExecutionResponse:
+      title: WebhookTestExecutionResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            body:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                url:
+                  $ref: '#/components/schemas/WebhookUrlResponse'
+                auth_type:
+                  $ref: '#/components/schemas/AuthType'
+                info:
+                  description: Helpful information about webhook configuration and the test execution
+                  type: array
+                  items:
+                    type: string
+                request:
+                  $ref: '#/components/schemas/WebhookTestExecutionResponseRequest'
+                response:
+                  type: object
+                  nullable: true
+                  properties:
+                    status_code:
+                      $ref: '#/components/schemas/ResponseStatusCode'
+                    error:
+                      type: string
+                      nullable: true
+                  required:
+                  - status_code
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - metadata
+    ProductId:
+      description: Cloud Marketplace issued ID for a product
+      example: abcd-1234-efgh-5678
+      anyOf:
+      - $ref: '#/components/schemas/AwsProductId'
+      - $ref: '#/components/schemas/GcpProductId'
+      - $ref: '#/components/schemas/AzureProductId'
+      - $ref: '#/components/schemas/RedHatProductId'
+    GcpProductId:
+      type: string
+      description: GCP Solution ID
+      example: tackle-for-gcp
+      minLength: 0
+    WebhooksGetAllResponseObject:
+      title: WebhooksGetAllResponse
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/WebhookUrl'
+        auth_type:
+          $ref: '#/components/schemas/AuthType'
+        productid:
+          type: string
+          nullable: true
+          description: Product ID for product-level webhook, null if not product-level
+        type:
+          type: string
+          description: Either 'product' or 'vendor' type
+          enum:
+          - product
+          - vendor
+    CreatedAt:
+      type: string
+      description: Creation timestamp, UTC ISO format
+      minLength: 1
+      format: date-time
+    GcpCloud:
+      type: string
+      description: GCP Cloud
+      default: gcp
+      enum:
+      - gcp
+      example: gcp
+    WebhookTestExecutionResponseRequest:
+      oneOf:
+      - $ref: '#/components/schemas/WebhookTestExecutionResponseRequestOrder'
+      - $ref: '#/components/schemas/WebhookTestExecutionResponseRequestPO'
+    WebhooksGetResponse:
+      title: WebhooksGetResponse
+      type: object
+      properties:
+        data:
+          type: object
+          required:
+          - url
+          - auth_type
+          - filters
+          properties:
+            url:
+              $ref: '#/components/schemas/WebhookUrl'
+            auth_type:
+              $ref: '#/components/schemas/AuthType'
+            filters:
+              $ref: '#/components/schemas/WebhooksRequestFilters'
+            private_offer_events_enabled:
+              $ref: '#/components/schemas/PrivateOfferEventsEnabled'
+            metering_events_enabled:
+              $ref: '#/components/schemas/MeteringEventsEnabled'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    AwsCustomerId:
+      type: string
+      description: AWS Account Reference ID
+      example: ij3sXMkN3or
+      minLength: 0
+    AuthPayload:
+      oneOf:
+      - $ref: '#/components/schemas/BasicAuth'
+      - $ref: '#/components/schemas/HeaderApiKeyAuth'
+      - $ref: '#/components/schemas/Oauth2'
+      description: An object describing the type of authentication used by your Webhook URL
+    CustomerId:
+      anyOf:
+      - $ref: '#/components/schemas/AwsCustomerId'
+      - $ref: '#/components/schemas/GcpCustomerId'
+      - $ref: '#/components/schemas/AzureCustomerId'
+      - $ref: '#/components/schemas/RedHatCustomerId'
+    AzureGcpPricing:
+      type: object
+      description: Pricing data for Azure and GCP
+      properties:
+        duration:
+          type: integer
+        version:
+          type: string
+        show_on_email:
+          type: boolean
+        buyers:
+          type: array
+          items:
+            type: object
+        dimensions:
+          type: array
+          items:
+            type: object
+        monthly_contract_value:
+          type: string
+        net_contract_value:
+          type: string
+        total_contract_value:
+          type: string
+        marketplace_fee:
+          type: string
+    AwsCloud:
+      type: string
+      description: AWS Cloud
+      default: aws
+      enum:
+      - aws
+      example: aws
+    DeleteWebhookResponse:
+      title: DeleteWebhookResponse
+      type: object
+      properties:
+        deleted:
+          type: boolean
+      required:
+      - deleted
+    AzureEntitlement:
+      type: object
+      description: A purchase entitlement from Azure Marketplace
+      properties:
+        plan:
+          type: string
+        quantity:
+          type: integer
+        subscription_id:
+          type: string
+        subscription_name:
+          type: string
+        offer_id:
+          type: string
+      required:
+      - plan
+      - quantity
+      - subscription_id
+      - subscription_name
+      - offer_id
+    ResponseStatusCode:
+      title: ResponseStatusCode
+      description: Client's status code from executing test webhook
+      type: integer
+      example: 200
+    Error:
+      title: ErrorResponse
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          minLength: 0
+        error:
+          type: string
+          description: Error response
+          minLength: 0
+        errors:
+          description: Error details
+          type: array
+          items: {}
+        error_type:
+          type: string
+          enum:
+          - service_exception
+          - client_exception
+      required:
+      - code
+      - error
+      - errors
+    Entitlement:
+      description: A purchase entitlement for a given cloud marketplace
+      oneOf:
+      - $ref: '#/components/schemas/AwsEntitlement'
+      - $ref: '#/components/schemas/GcpEntitlement'
+      - $ref: '#/components/schemas/AzureEntitlement'
+      - $ref: '#/components/schemas/RedHatEntitlement'
+      type: object
+    OfferId:
+      type: string
+      description: The AWS issued offer ID, Seller created Azure Plan ID, or the GCP issued Quote ID
+    Entitlements:
+      type: array
+      description: A list of Entitlement objects
+      uniqueItems: true
+      minItems: 0
+      example:
+      - dimension: example_dimension_name
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        skuid: example_awsdimension_apiname_1
+        value: 1
+      - dimension: example_dimension_name2
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        value: 5
+        skuid: example_awsdimension_apiname_1
+      items:
+        $ref: '#/components/schemas/Entitlement'
+      readOnly: true
+    AzureNewOrderCallback:
+      description: Link to New Offer payload variables https://developers.tackle.io/reference/payload-variables
+      type: object
+      properties:
+        event_type:
+          type: string
+          example: order_created
+        vendorid:
+          type: string
+          example: U9T21A
+        productid:
+          type: string
+          example: tackle-azure-platform
+        customerid:
+          type: string
+          example: 1b3gs3f4-2794-abcd-3fa3-062fa0s3t3re
+        marketplace:
+          type: string
+          example: azure
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              plan:
+                type: string
+                example: tackleazureplatform_azurelisting
+              quantity:
+                type: integer
+                format: int32
+                example: 1
+              subscription_id:
+                type: string
+                example: 1b3gs3f4-2794-abcd-3fa3-062fa0s3t3re
+              subscription_name:
+                type: string
+                example: Tackle Azure Platform
+              offer_id:
+                type: string
+                example: tackle-azure-platform
+        properties:
+          type: object
+          properties:
+            Company:
+              type: string
+              example: Tackle
+            Company Address:
+              type: string
+              example: 104 S. Capitol Blvd.
+            Company Website:
+              type: string
+              example: https://tackle.io
+            Email Address:
+              type: string
+              example: support@tackle.io
+            Full Name:
+              type: string
+              example: Jane Doe
+            Phone Number:
+              type: string
+              example: 1234567890
+        offerid:
+          type: string
+          example: sample_azure_offer_id1
+        contract_metadata:
+          type: object
+          properties:
+            key:
+              type: string
+              example: value
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  full_name:
+                    type: string
+                    example: Example Person
+                  email_address:
+                    type: string
+                    example: example-email@example.com
+                  title:
+                    type: string
+                    example: CEO
+            offer_metadata:
+              type: object
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_expiration_at:
+              type: string
+              format: date-time
+              example: '2022-08-12T12:00:00+00:00'
+            pricing:
+              type: object
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Example Company
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+        tackle_subscription_id:
+          type: string
+          example: 52fZSV7JbMI
+        marketplace_data:
+          $ref: '#/components/schemas/OtherMarketplaceData'
+    RedHatEntitlement:
+      type: object
+      description: A purchase entitlement from Red Hat Marketplace
+      properties:
+        subscription_id:
+          type: string
+        edition_id:
+          type: string
+          description: Unique ID of the product's edition being subscribed to
+        edition_name:
+          type: string
+          description: Readable name for the edition
+        attributes:
+          type: object
+          description: Optional customer properties
+        term:
+          type: integer
+          description: The duration of a single subscription term
+        term_unit:
+          $ref: '#/components/schemas/RedHatTermUnit'
+        term_end_date:
+          type: string
+          description: The new term end date in format YYYY-MM-DD
+          format: date
+          example: '2021-11-02'
+        type:
+          $ref: '#/components/schemas/RedHatSubscriptionType'
+        renew_type:
+          $ref: '#/components/schemas/RedHatSubscriptionRenewType'
+      required:
+      - subscription_id
+      - edition_id
+      - edition_name
+      - attributes
+      - term
+      - term_unit
+      - term_end_date
+      - type
+      - renew_type
+    AWSNewOrderCallback:
+      description: Link to New Offer payload variables https://developers.tackle.io/reference/payload-variables
+      type: object
+      properties:
+        event_type:
+          type: string
+          example: order_created
+        vendorid:
+          type: string
+          example: U9T21A
+        productid:
+          type: string
+          example: 8q5lbvh8cjannu8h14tuqkj5t
+        customerid:
+          type: string
+          example: ij3sXMkN3or
+        marketplace:
+          type: string
+          example: aws
+        tackle_subscription_change_id:
+          type: string
+          example: 4fk_28n492h
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              dimension:
+                type: string
+                example: awsdimension_1
+              skuid:
+                type: string
+                example: awsdimension_apiname_1
+              expiration:
+                type: string
+                example: '2020-06-25T15:31:19.479000+00:00'
+              value:
+                type: integer
+                format: int32
+                example: 1
+        properties:
+          type: object
+          properties:
+            Company:
+              type: string
+              example: Tackle
+            Company Address:
+              type: string
+              example: 104 S. Capitol Blvd.
+            Company Website:
+              type: string
+              example: https://tackle.io
+            Email Address:
+              type: string
+              example: support@tackle.io
+            Full Name:
+              type: string
+              example: Jane Doe
+            Phone Number:
+              type: string
+              example: 1234567890
+        offerid:
+          type: string
+          example: offer-abcdefghijkl1
+        contract_metadata:
+          type: object
+          properties:
+            key:
+              type: string
+              example: value
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  full_name:
+                    type: string
+                    example: Example Person
+                  email_address:
+                    type: string
+                    example: example-email@example.com
+                  title:
+                    type: string
+                    example: CEO
+            offer_metadata:
+              type: object
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: object
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_expiration_at:
+              type: string
+              format: date-time
+              example: '2022-08-12T12:00:00+00:00'
+            pricing:
+              type: object
+              properties:
+                net_contract_value:
+                  type: string
+                  example: 40000
+                duration:
+                  type: string
+                  example: 1 Months
+                schedule:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      invoice_amount:
+                        type: string
+                        example: 1000
+                      invoice_date:
+                        type: string
+                        example: '2021-10-22T00:00:00.000-06:00'
+                show_on_email:
+                  type: boolean
+                marketplace_fee:
+                  type: string
+                  example: 0
+                monthly_contract_value:
+                  type: string
+                  example: 20000
+                version:
+                  type: string
+                  example: simple-pricing-v1-aws
+                dimensions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Enterprise
+                      dimension_value:
+                        type: string
+                        example: 40000
+                      quantity:
+                        type: integer
+                        format: int32
+                        example: 2
+                      price:
+                        type: string
+                        example: 20000
+                total_contract_value:
+                  type: string
+                  example: 40000
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Example Company
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+        tackle_subscription_id:
+          type: string
+          example: 52fZSV7JbMI
+        marketplace_data:
+          $ref: '#/components/schemas/AwsMarketplaceData'
+    WebhookTestExecutionResponseRequestPO:
+      title: WebhookTestExecutionResponseRequestPO
+      type: object
+      properties:
+        test:
+          type: boolean
+        destination:
+          type: string
+          enum:
+          - callback
+        private_offer_metadata:
+          $ref: '#/components/schemas/PrivateOfferMetadata'
+        extra_data:
+          type: object
+        source:
+          type: string
+        offerid:
+          $ref: '#/components/schemas/OfferId'
+        group_id:
+          $ref: '#/components/schemas/GroupId'
+        po_id:
+          $ref: '#/components/schemas/PrivateOfferId'
+        actor:
+          $ref: '#/components/schemas/Actor'
+        customerid:
+          $ref: '#/components/schemas/CustomerId'
+        event_type:
+          $ref: '#/components/schemas/EventType'
+        vendorid:
+          $ref: '#/components/schemas/VendorId'
+        productid:
+          $ref: '#/components/schemas/ProductId'
+        marketplace:
+          $ref: '#/components/schemas/Clouds'
+        created_at:
+          $ref: '#/components/schemas/CreatedAt'
+        tackle_subscription_id:
+          $ref: '#/components/schemas/SubscriptionId'
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+    WebhooksDeleteResponseProduct:
+      title: WebhooksDeleteResponseProduct
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DeleteWebhookResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    SupportedCloudsFilter:
+      title: SupportedCloudsFilter
+      type: object
+      properties:
+        supported_clouds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Clouds'
+      required:
+      - supported_clouds
+    EventType:
+      type: string
+      description: Type of event
+      enum:
+      - order_created
+      - order_modified
+      - order_cancelled
+      - private_offer_invitation_opened
+      - private_offer_created
+      - private_offer_viewed
+      - private_offer_purchase_instructions_sent
+      - private_offer_accepted
+      example: order_modified
+    WebhooksRequest:
+      title: WebhooksRequest
+      type: object
+      properties:
+        url:
+          $ref: '#/components/schemas/WebhookUrl'
+        auth:
+          $ref: '#/components/schemas/AuthPayload'
+        filters:
+          $ref: '#/components/schemas/WebhooksRequestFilters'
+        private_offer_events_enabled:
+          $ref: '#/components/schemas/PrivateOfferEventsEnabled'
+        metering_events_enabled:
+          $ref: '#/components/schemas/MeteringEventsEnabled'
+      required:
+      - url
+      - auth
+      - filters
+    SubscriptionId:
+      type: string
+      description: Subscription Id
+      example: 5fd2a7e8908e88888c7f0e71
+      minLength: 0
+      nullable: true
+    WebhooksTestRequest:
+      title: WebhooksTestRequest
+      type: object
+      properties:
+        productid:
+          $ref: '#/components/schemas/ProductId'
+        event_type:
+          $ref: '#/components/schemas/EventType'
+        forward_to_url:
+          $ref: '#/components/schemas/WebhookUrlResponse'
+      required:
+      - productid
+      - event_type
+    ProductIdFilter:
+      title: ProductIdFilter
+      type: object
+      properties:
+        productid:
+          $ref: '#/components/schemas/ProductId'
+      required:
+      - productid
+    BasicAuth:
+      title: BasicAuth
+      type: object
+      example:
+        username: authentication username
+        password: authentication password
+        auth_type: basic
+      properties:
+        username:
+          type: string
+          description: A string containing the username
+          minLength: 1
+        password:
+          type: string
+          description: A string containing the password
+          format: password
+        auth_type:
+          type: string
+          default: basic
+          description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
+          enum:
+          - basic
+      required:
+      - username
+      - password
+      - auth_type
+    PrivateOfferMetadata:
+      type: object
+      description: Contains information for a private offer associated with the subscription
+      properties:
+        renewal:
+          type: boolean
+          description: Whether the private offer has a renewal
+        offer_expiration_at:
+          type: string
+          description: When the private offer expires.
+        pricing:
+          description: Pricing information for private offer.
+          oneOf:
+          - $ref: '#/components/schemas/AwsPricing'
+          - $ref: '#/components/schemas/AzureGcpPricing'
+    AWSPrivateOfferCallback:
+      description: Link to information on Private Offer payload variables https://developers.tackle.io/reference/private-offer-payloads
+      type: object
+      properties:
+        actor:
+          type: object
+          properties:
+            email:
+              type: string
+              example: john.smith@example.com
+            name:
+              type: string
+              example: John Smith
+            picture:
+              type: string
+              example: https://www.example.com/jpeg
+            user_id:
+              type: string
+              example: abc123
+        marketplace:
+          type: string
+          example: azure
+        created_at:
+          type: string
+          example: '2021-02-16T14:48:06.460998+00:00'
+        customerid:
+          type: string
+          example: ij3sXMkN3or
+        destination:
+          type: string
+          example: callback
+        event_type:
+          type: string
+          example: private_offer_created
+        extra_data:
+          type: object
+        group_id:
+          type: string
+          example: 5e7b1ec8-2595-40c7-b6f1-3b0d1fd1ed9e
+        offerid:
+          type: string
+          example: offer-abcdefghijkl1
+        po_id:
+          type: string
+          example: 7ec896c2-6cff-4a46-b55a-039db504422d
+        productid:
+          type: string
+          example: A0BCD23E
+        source:
+          type: string
+          example: po_url
+        private_offer_metadata:
+          type: object
+          properties:
+            type:
+              type: object
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: Buyer
+                  email_address:
+                    type: string
+                    example: gilfoyle@tackle.io
+                  full_name:
+                    type: string
+                    example: Bertram Gilfoyle
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                type:
+                  type: string
+                  example: public
+                files:
+                  type: array
+                  items:
+                    type: string
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_metadata:
+              type: object
+            pre_registration_details:
+              type: object
+              properties:
+                billing_street:
+                  type: string
+                  example: 1 Pied Way
+                billing_country:
+                  type: string
+                  example: United States
+                billing_city:
+                  type: string
+                  example: Redwood City
+                Company:
+                  type: string
+                  example: Pied Piper
+                billing_state:
+                  type: string
+                  example: CA
+            pricing:
+              type: object
+              properties:
+                net_contract_value:
+                  type: string
+                  example: 40000
+                duration:
+                  type: string
+                  example: 1 Months
+                schedule:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      invoice_amount:
+                        type: string
+                        example: 1000
+                      invoice_date:
+                        type: string
+                        example: '2021-10-22T00:00:00.000-06:00'
+                show_on_email:
+                  type: boolean
+                marketplace_fee:
+                  type: string
+                  example: 0
+                monthly_contract_value:
+                  type: string
+                  example: 20000
+                version:
+                  type: string
+                  example: simple-pricing-v1-aws
+                dimensions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: Enterprise
+                      dimension_value:
+                        type: string
+                        example: 40000
+                      quantity:
+                        type: integer
+                        format: int32
+                        example: 2
+                      price:
+                        type: string
+                        example: 20000
+                total_contract_value:
+                  type: string
+                  example: 40000
+            offer_expiration_at:
+              type: string
+              example: '2021-12-31T00:00:00.000Z'
+            vendorid:
+              type: string
+              example: U9T21A
+            is_free_trial:
+              $ref: '#/components/schemas/IsFreeTrial'
+            tackle_subscription_id:
+              type: string
+              example: 52fZSV7JbMI
+    WebhooksRequestFilters:
+      description: An object with either a valid `productid` or `supported_clouds`
+      oneOf:
+      - $ref: '#/components/schemas/ProductIdFilter'
+      - $ref: '#/components/schemas/SupportedCloudsFilter'
+    WebhooksDeleteResponseVendor:
+      title: WebhooksDeleteResponseVendor
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DeleteWebhookResponse'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    HeaderApiKeyAuth:
+      title: HeaderApiKeyAuth
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: A string containing the API key
+          minLength: 1
+        auth_header_name:
+          type: string
+          description: A string containing the auth header name
+          minLength: 1
+        auth_type:
+          type: string
+          default: header_api_key
+          description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL.
+          enum:
+          - header_api_key
+      required:
+      - api_key
+      - auth_header_name
+      - auth_type
+    AzureCloud:
+      type: string
+      description: Azure Cloud
+      default: azure
+      enum:
+      - azure
+      example: azure
+    GetWebhooksResponseList:
+      title: GetWebhooksResponseList
+      type: array
+      items:
+        $ref: '#/components/schemas/WebhooksGetAllResponseObject'
+    AuthType:
+      type: string
+      title: AuthType
+      enum:
+      - basic
+      - header_api_key
+      - oauth2
+      description: The type of authentication used. Supported types are 'basic', 'header_api_key', and 'oauth2'
+    RedHatSubscriptionType:
+      type: string
+      description: Type of the subscription
+      enum:
+      - TRIAL
+      - FREE
+      - PURCHASE
+      example: TRIAL
+    AzurePrivateOfferCallback:
+      description: Link to information on Private Offer payload variables https://developers.tackle.io/reference/private-offer-payloads
+      type: object
+      properties:
+        group_id:
+          type: string
+          example: 2h58473p-c70i-1234-9d7b-7we9585e2c9w
+        created_at:
+          type: string
+          example: '2021-11-09T16:29:24.707456+00:00'
+        actor:
+          type: object
+          properties:
+            email:
+              type: string
+              example: john.smith@example.com
+            name:
+              type: string
+              example: John Smith
+            picture:
+              type: string
+              example: https://www.example.com/jpeg
+            user_id:
+              type: string
+              example: abc123
+        customer_id:
+          type: string
+          example: 1b3gs3f4-2794-abcd-3fa3-062fa0s3t3re
+        destination:
+          type: string
+          example: callback
+        event_type:
+          type: string
+          example: private_offer_created
+        extra_data:
+          type: object
+        marketplace:
+          type: string
+          example: azure
+        offerid:
+          type: string
+          example: 00-000-apitest-private
+        po_id:
+          type: string
+          example: 2h58473p-c70i-1234-9d7b-7we9585e2c9w
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  email_address:
+                    type: string
+                    example: john.smith@example.com
+                  full_name:
+                    type: string
+                    example: John Smith
+                  title:
+                    type: string
+                    example: Example Title
+            enable_zero_dollar_prices:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+            offer_metadata:
+              type: object
+            pre_registration_details:
+              type: object
+              properties:
+                Company:
+                  type: string
+                  example: Example Company
+            pricing:
+              type: object
+              properties:
+                dimensions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      dimension_value:
+                        type: string
+                        example: 0
+                      name:
+                        type: string
+                        example: 00-000-apitest-private
+                      price:
+                        type: string
+                        example: 0
+                      quantity:
+                        type: integer
+                        format: int32
+                        example: 1
+                duration:
+                  type: string
+                  example: Annual
+                marketplace_fee:
+                  type: string
+                  example: 0
+                monthly_contract_value:
+                  type: string
+                  example: 0
+                net_contract_value:
+                  type: string
+                  example: 0
+                show_on_email:
+                  type: boolean
+                total_contract_value:
+                  type: string
+                  example: 0
+                version:
+                  type: string
+                  example: simple-pricing-v1-azure
+            renewal:
+              type: boolean
+        productid:
+          type: string
+          example: example-product
+        source:
+          type: string
+          example: po_url
+        test:
+          type: boolean
+        vendorid:
+          type: string
+          example: 12345
+    RegistrationDetails:
+      type: object
+      minProperties: 3
+      example:
+        Company: Tackle
+        Email Address: support@tackle.io
+        Full Name: Jane Doe
+        Company Website: https://tackle.io
+        Phone Number: '1234567890'
+      description: "Registration details of a purchaser that map to defined registration page fields for a given listing.\nThe following fields are required at a minimum:\n  - Company\n  - Email Address\n  - Full Name\nAdditional fields may be supplied, where the key matches the name of the custom registration field defined for a given listing.\nCustom registration fields may be defined on a per listing basis on the Settings page for a given listing via Tackle Platform UI:\n  https://downstream.tackle.io/listings/productid-goes-here/settings\n"
+      properties:
+        Company:
+          type: string
+          description: Company name of purchaser
+          minLength: 0
+        Email Address:
+          type: string
+          format: email
+          description: Valid email address of purchaser
+        Full Name:
+          type: string
+          description: Full name of purchaser
+          minLength: 0
+      required:
+      - Company
+      - Email Address
+      - Full Name
+    WebhooksUpsertResponse:
+      title: WebhooksUpsertResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            url:
+              $ref: '#/components/schemas/WebhookUrl'
+            auth_type:
+              $ref: '#/components/schemas/AuthType'
+            filters:
+              $ref: '#/components/schemas/WebhooksRequestFilters'
+            private_offer_events_enabled:
+              $ref: '#/components/schemas/PrivateOfferEventsEnabled'
+            metering_events_enabled:
+              $ref: '#/components/schemas/MeteringEventsEnabled'
+          required:
+          - url
+          - auth_type
+          - filters
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - metadata
+    RedhatNewOrderCallback:
+      description: Link to New Offer payload variables https://developers.tackle.io/reference/payload-variables
+      type: object
+      properties:
+        event_type:
+          type: string
+          example: order_created
+        vendorid:
+          type: string
+          example: U9T21A
+        productid:
+          type: string
+          example: d3m012b345678cd9e1234f56gh78ij90
+        customerid:
+          type: string
+          example: d3m023c9d3a15b420c4ab123
+        marketplace:
+          type: string
+          example: redhat
+        entitlements:
+          type: array
+          items:
+            type: object
+            properties:
+              subscription_id:
+                type: string
+                example: MOCK-CUSTOMER
+              edition_id:
+                type: string
+                example: test_edition_123123-12321-5455123
+              edition_name:
+                type: string
+                example: Test Edition 1
+              attributes:
+                type: object
+                properties:
+                  part1:
+                    type: integer
+                    format: int32
+                    example: 10
+                  sku1:
+                    type: integer
+                    format: int32
+                    example: 50
+                  part2:
+                    type: string
+                    example: PREMIUM
+                  sku2:
+                    type: integer
+                    format: int32
+                    example: 50
+              term:
+                type: integer
+                format: int32
+                example: 12
+              term_unit:
+                type: string
+                example: MONTHS
+              term_end_date:
+                type: string
+                example: '2022-10-18T11:34:41.062665'
+              type:
+                type: string
+                example: PURCHASE
+              renew_type:
+                type: string
+                example: ORIGINAL_TERM
+        properties:
+          type: object
+          properties:
+            Company:
+              type: string
+              example: Tackle
+            Company Address:
+              type: string
+              example: 104 S. Capitol Blvd.
+            Company Website:
+              type: string
+              example: https://tackle.io
+            Email Address:
+              type: string
+              example: support@tackle.io
+            Full Name:
+              type: string
+              example: Jane Doe
+            Phone Number:
+              type: string
+              example: 1234567890
+        offerid:
+          type: string
+          example: offer-abcdefghijkl1
+        contract_metadata:
+          type: object
+          properties:
+            key:
+              type: string
+              example: value
+        private_offer_metadata:
+          type: object
+          properties:
+            buyers:
+              type: array
+              items:
+                type: object
+                properties:
+                  full_name:
+                    type: string
+                    example: Example Person
+                  email_address:
+                    type: string
+                    example: example-email@example.com
+                  title:
+                    type: string
+                    example: CEO
+            offer_metadata:
+              type: object
+            renewal:
+              type: boolean
+            eula:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+            enable_zero_dollar_prices:
+              type: boolean
+            offer_expiration_at:
+              type: string
+              format: date-time
+              example: '2022-08-12T12:00:00+00:00'
+            pricing:
+              type: object
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+        tackle_subscription_id:
+          type: string
+          example: 52fZSV7JbMI
+        marketplace_data:
+          $ref: '#/components/schemas/OtherMarketplaceData'
+    Clouds:
+      anyOf:
+      - $ref: '#/components/schemas/AwsCloud'
+      - $ref: '#/components/schemas/GcpCloud'
+      - $ref: '#/components/schemas/AzureCloud'
+      - $ref: '#/components/schemas/RedHatCloud'
+      description: A string identifying a cloud marketplace
+    RedHatProductId:
+      type: string
+      description: Red Hat Product Id
+      example: d7a149a199100ad8a9931f14ea95cd00
+      minLength: 0
+    VendorId:
+      type: string
+      description: Tackle issued identifier for the Vendor
+    GroupId:
+      type: string
+    Actor:
+      type: object
+      properties:
+        name:
+          type: string
+        user_id:
+          type: string
+        email:
+          type: string
+        picture:
+          type: string
+    RedHatCustomerId:
+      type: string
+      description: Red Hat Customer Id
+      example: 615334398743ac63d55cc4db
+      minLength: 0
+    GetWebhooksResponse:
+      title: GetWebhooksResponse
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/GetWebhooksResponseList'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    RedHatCloud:
+      type: string
+      description: Red Hat Cloud
+      default: redhat
+      enum:
+      - redhat
+      example: redhat
+    WebhookTestExecutionResponseRequestOrder:
+      title: WebhookTestExecutionResponseRequestOrder
+      type: object
+      properties:
+        vendorid:
+          $ref: '#/components/schemas/VendorId'
+        productid:
+          $ref: '#/components/schemas/ProductId'
+        customerid:
+          $ref: '#/components/schemas/CustomerId'
+        offerid:
+          $ref: '#/components/schemas/OfferId'
+        entitlements:
+          $ref: '#/components/schemas/Entitlements'
+        properties:
+          $ref: '#/components/schemas/RegistrationDetails'
+        marketplace:
+          $ref: '#/components/schemas/Clouds'
+        event_type:
+          $ref: '#/components/schemas/EventType'
+        tackle_subscription_id:
+          $ref: '#/components/schemas/SubscriptionId'
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+      required:
+      - vendorid
+      - productid
+      - customerid
+      - marketplace
+      - event_type
+    RedHatSubscriptionRenewType:
+      type: string
+      description: Renew Type
+      enum:
+      - ORIGINAL_TERM
+      - TERMINATE
+      example: ORIGINAL_TERM
+    RedHatTermUnit:
+      type: string
+      description: The unit for the term
+      enum:
+      - DAYS
+      - WEEKS
+      - MONTHS
+      - YEARS
+      example: MONTHS
+    MeteringEventsEnabled:
+      type: boolean
+      title: MeteringEventsEnabled
+      description: 'This setting registers webhooks for metering events. Note: This setting can only be configured on a vendor level webhook but applies to all webhooks, including the vendor level webhook and all product level webhooks'
+      default: false
+    AwsProductId:
+      type: string
+      description: AWS Product Code
+      example: 1test1a2b3c4d5e6f7g8h9ijk
+      minLength: 0
+    PrivateOfferEventsEnabled:
+      type: boolean
+      title: PrivateOfferEventsEnabled
+      description: 'This setting registers webhooks for private offer events. Note: This setting can only be configured on a vendor level webhook but applies to all webhooks, including the vendor level webhook and all product level webhooks'
+      default: false
+    AzureProductId:
+      type: string
+      description: Azure Offer ID
+      example: tackle-azure-platform
+      minLength: 0
+    PrivateOfferId:
+      type: string
+    WebhookUrl:
+      type: string
+      description: A valid URL for the endpoint you created to receive Tackle events
+      format: uri
+      example: https://www.example.com
+    Oauth2:
+      title: Oauth2Auth
+      type: object
+      properties:
+        auth_type:
+          type: string
+          default: oauth2
+          description: This auth-type is for oauth2 client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token.
+          enum:
+          - oauth2
+        oauth2:
+          type: object
+          required:
+          - client_id
+          - client_secret
+          - token_url
+          properties:
+            client_id:
+              type: string
+              minLength: 1
+            client_secret:
+              type: string
+              minLength: 1
+            token_url:
+              type: string
+              minLength: 1
+      required:
+      - auth_type
+    GcpCustomerId:
+      type: string
+      description: GCP External Account ID
+      example: E-ABC2-D330-E2FG-H2Q2
+      minLength: 0
+    AwsEntitlement:
+      properties:
+        dimension:
+          type: string
+        skuid:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+          example: '2019-04-24T12:23:03.048000+00:00'
+        value:
+          type: integer
+      required:
+      - dimension
+      - skuid
+      - expiration
+      - value
+      example:
+        dimension: example_dimension_name
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        skuid: example_awsdimension_apiname_1
+        value: 1
+      description: 'A purchase entitlement from AWS Marketplace '
+  responses:
+    Webhooks_200-OK-Webhooks:
+      description: Example success response after saving a webhook.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhooksUpsertResponse'
+          examples:
+            successful-creation-or-update:
+              value:
+                data:
+                  url: https://www.example.com
+                  auth_type: basic
+                  filters:
+                    productid: 12345-abcde-67890-fghij
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks
+    Webhooks_200-OK-Webhooks-GET:
+      description: Example success response after retrieving a webhooks configuration
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhooksGetResponse'
+          examples:
+            successful-get:
+              value:
+                data:
+                  url: https://www.example.com
+                  auth_type: basic
+                  filters:
+                    productid: abcd-1234-efgh-5678
+                  private_offer_events_enabled: false
+                  metering_events_enabled: false
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks
+    400-Bad-Request:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            invalid_fields:
+              value:
+                code: invalid_fields
+                error: Validation Error
+                errors:
+                - client_id:
+                  - Missing data for required field.
+      headers: {}
+    Webhooks_404-Not-Found-Webhooks:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            failed-get:
+              value:
+                code: not_found
+                error: Webhook not found for DEMOVENDOR1
+                error_type: service_exception
+                errors: []
+            failed-delete:
+              value:
+                code: not_found
+                error: The webhook for vendor does not exist
+                errors: []
+    401-Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                code: unauthorized
+                error: client_id and client_secret are invalid.
+                error_type: service_exception
+                errors: []
+    Webhooks_200-OK-Webhooks-Deleted-Product:
+      description: Response received upon a product delete webhook request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhooksDeleteResponseProduct'
+          examples:
+            deleted-webhook-product:
+              value:
+                data:
+                  deleted: true
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/product/12345-abcde
+      headers: {}
+    Webhooks_200-OK-Webhooks-Deleted-Vendor:
+      description: Response received upon a vendor delete webhook request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhooksDeleteResponseVendor'
+          examples:
+            deleted-webhook-vendor:
+              value:
+                data:
+                  deleted: true
+                metadata:
+                  link: https://api.tackle/io/v1/webhooks/
+    Webhooks_200-OK-Webhooks-GET-All:
+      description: Example success response when getting all configured webhooks
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetWebhooksResponse'
+          examples:
+            example-OK-get-webhooks:
+              value:
+                data:
+                - url: http://www.example.net
+                  auth_type: basic
+                  type: vendor
+                  productid: null
+                - url: http://www.example2.net
+                  auth_type: header_api_key
+                  type: product
+                  productid: PRODUCT1
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks
+    403-Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            forbidden:
+              value:
+                code: missing_entitlements
+                error: Entitlements are missing from AWS. This can be caused by attempting a purchase with a rejected payment method.
+                error_type: service_exception
+                errors: []
+    401-Unauthorized-MTM:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            AuthorizationHeaderMissing:
+              value:
+                code: authorization_header_missing
+                error: Authorization header is expected
+                error_type: service_exception
+                errors: []
+            InvalidHeader:
+              value:
+                code: invalid_header
+                error: Authorization header must start with Bearer
+                error_type: service_exception
+                errors: []
+            InvalidToken:
+              value:
+                code: invalid_token
+                error: Unable to validate authentication token. This token has no vendor associated with it.
+                error_type: service_exception
+                errors: []
+            MissingExpiration:
+              value:
+                code: missing_expiration
+                error: This token has an expired session.
+                error_type: service_exception
+                errors: []
+            MtmTokenExpired:
+              value:
+                code: mtm_token_expired
+                error: Token expired
+                errors: []
+    Webhooks_200-OK-Webhooks-Test:
+      description: Success response after completing the test.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WebhookTestExecutionResponse'
+          examples:
+            example-test-request:
+              value:
+                data:
+                  success: true
+                  url: https://example.com/v1/webhooks/test
+                  auth_type: header_api_key
+                  info:
+                  - 'Using product callback url: https://example.com/v1/webhooks/test'
+                  request:
+                    body:
+                      vendorid: DEMOVENDOR1
+                      customerid: MOCK-CUSTOMER
+                      productid: DEMOVENDOR1-aws-1603121145
+                      offerid: ''
+                      entitlements: []
+                      properties:
+                        Company: Example Company
+                        Full Name: Example Costumer
+                        Email Address: info@example.com
+                      marketplace: aws
+                      event_type: order_modified
+                      test: true
+                      is_free_trial: false
+                      tackle_subscription_id: oNEaabJrZjc
+                      marketplace_data:
+                        data:
+                          CustomerAWSAccountId: example-account-id
+                  response:
+                    status_code: 200
+                    error: null
+                    body:
+                      status: all-systems-go
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/test
+            example-no-webhook-configured:
+              value:
+                data:
+                  success: false
+                  url: null
+                  auth_type: null
+                  info:
+                  - Webhook for product PRODUCT_EXAMPLE is not configured.
+                  - Webhook for vendor VENDOR_EXAMPLE is not configured.
+                  - No valid webhook found.
+                  - Webhook call aborted.
+                  response: null
+                  request:
+                    body: null
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/test
+            example-wrong-event-type:
+              value:
+                data:
+                  success: false
+                  url: null
+                  auth_type: null
+                  info:
+                  - '''example_error_event_type'' is not a supported ''event_type''. Valid values are: order_cancelled, order_created, order_modified, private_offer_accepted, private_offer_created, private_offer_invitation_opened, private_offer_purchase_instructions_sent, private_offer_viewed'
+                  - Webhook call aborted.
+                  response: null
+                  request:
+                    body: null
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/test
+            example-wrong-productid:
+              value:
+                data:
+                  success: false
+                  url: null
+                  auth_type: null
+                  info:
+                  - 'No product found with id: DEMOVENDOR1-aws-123456789XYZ. Webhook aborted.'
+                  response: null
+                  request:
+                    body: null
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/test
+            example-OK-response-error-client:
+              value:
+                data:
+                  success: true
+                  url: https://example.com/wrong_endpoint
+                  auth_type: header_api_key
+                  info:
+                  - 'Using product callback url: https://example.com/wrong_endpoint'
+                  request:
+                    body:
+                      vendorid: VENDOR_EXAMPLE
+                      customerid: MOCK-CUSTOMER
+                      productid: PRODUCT_EXAMPLE
+                      offerid: ''
+                      entitlements: []
+                      properties:
+                        Company: Example Company
+                        Full Name: Example Costumer
+                        Email Address: info@example.com
+                      marketplace: aws
+                      event_type: order_modified
+                      is_free_trial: false
+                      tackle_subscription_id: oNEaabJrZjc
+                  response:
+                    status_code: 404
+                    error: '404 Client Error: NOT FOUND for url: https://example.com/wrong_endpoint'
+                    payload: null
+                metadata:
+                  link: https://api.tackle.io/v1/webhooks/test
+  parameters:
+    productid_path:
+      name: productid
+      description: Product ID
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ProductId'
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

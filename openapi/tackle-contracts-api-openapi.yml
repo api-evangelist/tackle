@@ -1,0 +1,324 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Contracts API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Contracts
+paths:
+  /api/contracts:
+    get:
+      operationId: listContracts
+      summary: List contracts
+      description: 'Returns a paginated list of contracts available to your account.
+
+        '
+      parameters:
+      - in: query
+        name: cursor
+        required: false
+        description: Opaque pagination cursor returned as `next` from a previous call.
+        schema:
+          type: string
+      - in: query
+        name: limit
+        required: false
+        description: Maximum number of contracts to return per page. Defaults to 25, capped at 100.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+      responses:
+        '200':
+          description: Page of contracts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractListResponse'
+        '400':
+          description: Malformed cursor or query parameter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Contracts
+  /api/contracts/{contractId}:
+    get:
+      operationId: getContract
+      summary: Describe contract
+      description: 'Returns details for the contract identified by `contractId`. Returns
+
+        `404` when no contract is found for that id.
+
+        '
+      parameters:
+      - in: path
+        name: contractId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The contract.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '401':
+          description: Missing or invalid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No contract was found for that id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+      - Contracts
+components:
+  schemas:
+    ContractListResponse:
+      type: object
+      required:
+      - contracts
+      properties:
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contract'
+        next:
+          type: string
+          description: Opaque pagination cursor. Omitted on the last page.
+    Contract:
+      type: object
+      required:
+      - id
+      - vendorId
+      - cloudMarketplace
+      - buyerId
+      - listingType
+      - contractStatus
+      - lastModified
+      properties:
+        id:
+          type: string
+          description: Unique Tackle identifier for this contract.
+        vendorId:
+          type: string
+          description: Tackle account identifier for this contract.
+        cloudMarketplace:
+          type: string
+          enum:
+          - aws
+          - azure
+          - gcp
+        channel:
+          type: string
+          enum:
+          - direct
+          - partner
+        buyerId:
+          type: string
+          description: Cloud marketplace buyer identifier (e.g. AWS customer id).
+        companyName:
+          type: string
+        productId:
+          type: string
+        listingName:
+          type: string
+        listingType:
+          type: string
+        pricingModel:
+          type: string
+          enum:
+          - Contract only
+          - Usage only
+          - Contract + usage
+          - Hourly + annual
+          - BYOL
+        offerId:
+          type: string
+        offerType:
+          type: string
+          enum:
+          - private
+          - public
+        offerName:
+          type: string
+        tackleOfferId:
+          type: string
+          description: Tackle private offer id (if the contract was created from a Tackle private offer).
+        contractStatus:
+          type: string
+          enum:
+          - Pending
+          - Active
+          - Amended
+          - Cancelled
+          - Expired
+          - Unknown
+        cloudContractStatus:
+          type: string
+          description: Original cloud marketplace status string (e.g. AWS `ACTIVE`, Microsoft `Subscribed`).
+        acceptedDate:
+          type: string
+          format: date-time
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        contractDuration:
+          type: string
+          description: ISO 8601 duration (e.g. `P12M`).
+        autoRenew:
+          type: boolean
+        totalContractValue:
+          $ref: '#/components/schemas/Money'
+        totalContractNetValue:
+          $ref: '#/components/schemas/Money'
+        grossDisbursed:
+          $ref: '#/components/schemas/Money'
+        netDisbursed:
+          $ref: '#/components/schemas/Money'
+        marketplaceFeeRate:
+          type: number
+          format: double
+          description: Marketplace fee as a decimal (e.g. `0.03` for 3%).
+        lastModified:
+          type: string
+          format: date-time
+          description: When this contract document was last updated by Tackle ingestion.
+        cloudData:
+          oneOf:
+          - $ref: '#/components/schemas/CloudDataAwsAgreement'
+          - $ref: '#/components/schemas/CloudDataAwsPartnerAgreement'
+          - $ref: '#/components/schemas/CloudDataMsftSubscription'
+          description: 'Cloud-specific source payload. Present only when source data is
+
+            available. The shape depends on `cloudMarketplace` and `channel`:
+
+
+            - `cloudMarketplace=aws`, `channel=direct` → `{ agreement }` from the AWS Agreement API.
+
+            - `cloudMarketplace=aws`, `channel=partner` → `{ agreement }` from the AWS Marketplace SDDS (Seller Delivery Data Service) feed. **May be missing for up to 24 hours after purchase**: SDDS reports are published on a daily cadence, so a partner contract can exist (with `id`, `buyerId`, financial fields, etc.) before its `cloudData.agreement` payload is available. Clients should treat `cloudData` as optional for partner contracts and re-fetch later if needed.
+
+            - `cloudMarketplace=azure` → `{ subscription }` from the Microsoft Subscription API.
+
+            - `cloudMarketplace=gcp` → omitted entirely in this version.
+
+            '
+    CloudDataAwsPartnerAgreement:
+      type: object
+      required:
+      - agreement
+      properties:
+        agreement:
+          type: object
+          description: 'Verbatim AWS Marketplace SDDS (Seller Delivery Data Service)
+
+            partner agreement record. SDDS reports arrive on a daily
+
+            cadence rather than at time of purchase, so this payload
+
+            can be missing for up to 24 hours after a partner contract
+
+            is created. The enclosing `cloudData` field will simply be
+
+            omitted from the response until the SDDS data lands.
+
+            '
+    Money:
+      type: object
+      required:
+      - amount
+      - currencyCode
+      properties:
+        amount:
+          type: number
+          format: double
+          example: 120000
+        currencyCode:
+          type: string
+          example: USD
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    CloudDataAwsAgreement:
+      type: object
+      required:
+      - agreement
+      properties:
+        agreement:
+          type: object
+          description: Verbatim AWS Agreement API payload (`describeAgreement`, `agreementSummary`, `agreementTerms`).
+    CloudDataMsftSubscription:
+      type: object
+      required:
+      - subscription
+      properties:
+        subscription:
+          type: object
+          description: Verbatim Microsoft Subscription API payload.
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

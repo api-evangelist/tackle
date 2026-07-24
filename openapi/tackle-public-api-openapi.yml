@@ -1,0 +1,1978 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication public API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: public
+paths:
+  /api/private-offers/{id}:
+    post:
+      tags:
+      - public
+      summary: Update a Microsoft offer
+      description: 'Updates an existing Microsoft private offer. If `status` is
+
+        `submit_to_cloud`, the handler merges EULA documents when present,
+
+        validates the request, and stores the Microsoft submission payload.
+
+
+        Required RBAC action: `offers:UpdateOffer`. Submitting to Microsoft also
+
+        requires `offers:CreateOfferOnMarketplace`.
+
+        '
+      operationId: updatePrivateOffer
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/OfferId'
+      - $ref: '#/components/parameters/TackleOperationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOffer'
+            examples:
+              updateDraftOffer:
+                summary: Update and keep the offer in Tackle only
+                description: 'Use `draft_status` to save the update in Tackle without preparing
+
+                  or submitting a Microsoft marketplace payload.
+
+                  '
+                value:
+                  status: draft_status
+                  name: Updated draft offer
+                  description: Updated draft description
+              updateCloudOffer:
+                summary: Update and submit the offer to Microsoft
+                description: 'Use `submit_to_cloud` to validate the offer, merge EULA documents
+
+                  when present, and prepare the Microsoft marketplace payload. This
+
+                  also requires the `offers:CreateOfferOnMarketplace` RBAC action.
+
+                  '
+                value:
+                  status: submit_to_cloud
+                  name: Updated cloud offer
+                  description: Updated cloud offer description
+                  eula:
+                    type: custom
+                    document_urns:
+                    - document-urn-1
+      responses:
+        '200':
+          description: Offer updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateOffer'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - public
+      summary: Get an offer
+      description: 'Returns one private offer by Tackle offer ID after checking that the
+
+        caller can access the offer''s vendor.
+
+
+        Required RBAC action: `offers:GetOffer`.
+
+        '
+      operationId: getPrivateOffer
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/OfferId'
+      - $ref: '#/components/parameters/TackleOperationId'
+      responses:
+        '200':
+          description: Offer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateOffer'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/private-offers:
+    post:
+      tags:
+      - public
+      summary: Create or import a Microsoft offer
+      description: 'Creates a new Microsoft private offer from a full offer payload, or
+
+        imports an existing live Microsoft private offer when the body contains
+
+        `microsoftOfferId` and `buyer_company_name`.
+
+
+        For full create payloads, if `status` is `submit_to_cloud`, the handler
+
+        validates and transforms the request for Microsoft submission before
+
+        saving the offer. For import payloads, the vendor context is derived
+
+        from the authenticated principal; sandbox vendors use their production
+
+        parent vendor''s Microsoft credentials.
+
+
+        Required RBAC action: `offers:CreateDraftOffer`. Submitting to Microsoft
+
+        also requires `offers:CreateOfferOnMarketplace`.
+
+        '
+      operationId: createPrivateOffer
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/TackleOperationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/CreateOffer'
+              - $ref: '#/components/schemas/ImportMicrosoftOfferRequest'
+            examples:
+              createDraftOffer:
+                summary: Create a Tackle-only draft
+                description: 'Use `draft_status` to save the offer in Tackle without preparing
+
+                  or submitting a Microsoft marketplace payload.
+
+                  '
+                value:
+                  offer_type: direct
+                  vendor_id: vendor-123
+                  status: draft_status
+                  vendor_name: Example Vendor
+                  product_id: product-123
+                  product_name: Example Product
+                  buyer_details:
+                    company_name: Example Buyer
+                    billing_account_id: billing-account-123
+                  eula:
+                    type: standard
+                    document_urns: []
+                  pricing:
+                    plan_name: Example Plan
+                    description: Annual plan
+                    contract_duration:
+                      type: month
+                      frequency: 12
+                    payment_model: OneTime
+                    payment_installments:
+                      price_per_payment_in_usd: 1200
+                    pricing_type: flat_rate
+              createCloudOffer:
+                summary: Create and submit to Microsoft
+                description: 'Use `submit_to_cloud` to validate the offer and prepare the
+
+                  Microsoft marketplace payload. This also requires the
+
+                  `offers:CreateOfferOnMarketplace` RBAC action.
+
+                  '
+                value:
+                  offer_type: direct
+                  vendor_id: vendor-123
+                  status: submit_to_cloud
+                  vendor_name: Example Vendor
+                  product_id: product-123
+                  product_name: Example Product
+                  name: Example Microsoft Offer
+                  preparer_email: seller@example.com
+                  start_on: acceptance
+                  end_date: '2027-04-30'
+                  accept_by_date: '2026-05-31'
+                  buyer_details:
+                    company_name: Example Buyer
+                    billing_account_id: billing-account-123
+                    buyers:
+                    - full_name: Buyer User
+                      email_address: buyer@example.com
+                      title: Procurement
+                  eula:
+                    type: custom
+                    document_urns:
+                    - document-urn-1
+                  pricing:
+                    plan_name: Example Plan
+                    description: Annual plan
+                    contract_duration:
+                      type: month
+                      frequency: 12
+                    payment_model: OneTime
+                    payment_installments:
+                      price_per_payment_in_usd: 1200
+                    pricing_type: flat_rate
+              importMicrosoftOffer:
+                summary: Import an existing Microsoft offer
+                description: 'Use `microsoftOfferId` with `buyer_company_name` to import an
+
+                  existing live Microsoft private offer into Tackle. Optionally
+
+                  include `salesforce_opportunity_id` to associate the imported
+
+                  offer with a Salesforce opportunity. The Microsoft offer must
+
+                  be supported by Tackle: live state, a single product listing
+
+                  and plan, a single buyer, and supported USD pricing.
+
+                  '
+                value:
+                  microsoftOfferId: ms-offer-123
+                  buyer_company_name: Example Buyer
+                  salesforce_opportunity_id: 6000000000001
+      responses:
+        '200':
+          description: Offer created or imported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateOffer'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - public
+      summary: List offers
+      description: 'Finds the authenticated seller''s offers, optionally filtered by Microsoft
+
+        offer reference or Microsoft plan reference. Vendor scope is derived
+
+        from the bearer token; no vendor identifier is accepted from the caller.
+
+
+        Required RBAC action: `offers:ListOffers`.
+
+        '
+      operationId: listPrivateOffers
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/OfferRef'
+      - $ref: '#/components/parameters/PlanRef'
+      - $ref: '#/components/parameters/TackleOperationId'
+      responses:
+        '200':
+          description: Offers matching the search
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateOffer'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/products:
+    get:
+      tags:
+      - public
+      summary: List Microsoft products
+      description: 'Returns the Microsoft Marketplace product listings owned by the
+
+        authenticated seller. Use this to populate a product picker before
+
+        creating a private offer. The seller is identified by the vendor in
+
+        the bearer token; no path or query parameter is required.
+
+
+        Each product object includes the Tackle product identifier
+
+        (`productid`), the listing type (`listing_type`), and human-readable
+
+        `name` and `status` fields. Pass `productid` as the `id` path
+
+        parameter to `GET /api/products/{id}` to fetch plan and pricing
+
+        details for a specific product.
+
+
+        Required RBAC action: `offers:ListProducts`.
+
+        '
+      operationId: listProducts
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/TackleOperationId'
+      responses:
+        '200':
+          description: List of Microsoft products owned by the seller.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/products/{id}:
+    get:
+      tags:
+      - public
+      summary: Get Microsoft product details
+      description: 'Preferred route for retrieving Microsoft product plan and pricing details.
+
+        The vendor context is derived from the authenticated principal; sandbox
+
+        vendors use their production parent vendor''s Microsoft credentials.
+
+        Demo vendors receive static demo product details; other vendors retrieve
+
+        product details from Microsoft Partner Center.
+
+
+        Required RBAC action: `offers:CreateDraftOffer`.
+
+        '
+      operationId: getProductDetails
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/TackleOperationId'
+      responses:
+        '200':
+          description: Product details found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetailsResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/private-offers/{id}/notifications:
+    post:
+      tags:
+      - public
+      summary: Create an offer notification
+      description: 'Creates an offer notification. Currently only buyer instruction emails
+
+        are supported. To send buyer instructions, use `type:
+
+        buyer_instructions` and `channel: email`. The handler publishes through
+
+        Tackle Notification Service and marks the offer as email sent.
+
+
+        Required RBAC action: `offers:SendOfferInstructions`.
+
+        '
+      operationId: createPrivateOfferNotification
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/OfferId'
+      - $ref: '#/components/parameters/TackleOperationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOfferNotificationRequest'
+            examples:
+              sendBuyerInstructionsEmail:
+                summary: Send buyer instruction email
+                value:
+                  type: buyer_instructions
+                  channel: email
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/currencies:
+    get:
+      tags:
+      - public
+      summary: Get Microsoft market currencies
+      description: 'Returns accepted currencies and the Microsoft marketplace countries
+
+        grouped by accepted currency.
+
+
+        Required RBAC action: `offers:CreateDraftOffer`.
+
+        '
+      operationId: getMarketCurrencies
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/TackleOperationId'
+      responses:
+        '200':
+          description: Market currencies found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketCurrenciesResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/currencies/convert:
+    post:
+      tags:
+      - public
+      summary: Convert currencies
+      description: 'Converts one or more amounts from a base currency to a target currency
+
+        using cached Microsoft foreign exchange rates. Row-level conversion
+
+        errors are returned in `results[].error` without failing the entire
+
+        request.
+
+
+        Required RBAC action: `offers:CreateDraftOffer`.
+
+        '
+      operationId: convertCurrencies
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/TackleOperationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurrencyConversionRequest'
+      responses:
+        '200':
+          description: Currency conversion results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyConversionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    UpdateOffer:
+      type: object
+      description: Partial request body for updating a Microsoft SaaS private offer.
+      properties:
+        salesforce:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateSalesforce'
+          - type: 'null'
+        marketplace_fee:
+          type:
+          - number
+          - 'null'
+          format: double
+        state:
+          oneOf:
+          - $ref: '#/components/schemas/OfferStateValue'
+          - type: 'null'
+        status:
+          description: 'Use `draft_status` to update the offer in Tackle only. Use
+
+            `submit_to_cloud` to validate the update and prepare it for Microsoft
+
+            marketplace submission.
+
+            '
+          oneOf:
+          - $ref: '#/components/schemas/OfferStatus'
+          - type: 'null'
+        product_name:
+          type:
+          - string
+          - 'null'
+        product_id:
+          type:
+          - string
+          - 'null'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        pre_registration_details:
+          oneOf:
+          - $ref: '#/components/schemas/PreRegistrationDetails'
+          - type: 'null'
+        partner:
+          oneOf:
+          - $ref: '#/components/schemas/Partner'
+          - type: 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        buyer_details:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateBuyerDetails'
+          - type: 'null'
+        renewal:
+          type:
+          - boolean
+          - 'null'
+        eula:
+          oneOf:
+          - $ref: '#/components/schemas/EULA'
+          - type: 'null'
+        product_ref:
+          type:
+          - string
+          - 'null'
+        users_to_notify:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateUserToNotify'
+        pricing:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateOfferPricing'
+          - type: 'null'
+        preparer_email:
+          type:
+          - string
+          - 'null'
+          format: email
+        start_on:
+          oneOf:
+          - $ref: '#/components/schemas/StartOn'
+          - type: 'null'
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        accept_by_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        plan_template:
+          oneOf:
+          - $ref: '#/components/schemas/PlanTemplate'
+          - type: 'null'
+    MarketCurrency:
+      type: object
+      properties:
+        country_name:
+          type: string
+        iso2:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          example: US
+        currency:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        notes:
+          type: string
+        source:
+          type: string
+        source_revision:
+          type: string
+    PrivateOfferError:
+      type: object
+      properties:
+        source:
+          type: string
+        type:
+          type: string
+        message:
+          type: string
+    RecurrentPrice:
+      type: object
+      properties:
+        price_input_option:
+          type: string
+        recurrent_price_mode:
+          type: string
+        user_limits:
+          $ref: '#/components/schemas/PlanUserLimits'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanPrice'
+    ProductType:
+      type: string
+      enum:
+      - saas
+      - ami
+      - professional_services
+    StartOn:
+      type: string
+      enum:
+      - acceptance
+      - custom
+    PlanPricing:
+      type: object
+      properties:
+        recurrent_price:
+          $ref: '#/components/schemas/RecurrentPrice'
+        custom_meters:
+          $ref: '#/components/schemas/CustomMeters'
+    ErrorResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Human-readable error message.
+          example: missing id
+    UpdateDimension:
+      type: object
+      properties:
+        enabled:
+          type:
+          - boolean
+          - 'null'
+        id:
+          type:
+          - string
+          - 'null'
+        unit_of_measure:
+          type:
+          - string
+          - 'null'
+        price_per_unit_in_usd:
+          type:
+          - number
+          - 'null'
+          format: double
+        included_quantities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionQuantity'
+    CreateOffer:
+      type: object
+      description: Request body for creating a Microsoft SaaS private offer.
+      properties:
+        offer_type:
+          $ref: '#/components/schemas/OfferType'
+        salesforce:
+          oneOf:
+          - $ref: '#/components/schemas/CreateSalesforce'
+          - type: 'null'
+        vendor_id:
+          type: string
+          description: Tackle vendor ID that owns the offer.
+        state:
+          $ref: '#/components/schemas/OfferStateValue'
+        status:
+          description: 'Use `draft_status` to create a Tackle-only draft. Use
+
+            `submit_to_cloud` to validate the offer and prepare it for Microsoft
+
+            marketplace submission.
+
+            '
+          $ref: '#/components/schemas/OfferStatus'
+        marketplace_fee:
+          type: number
+          format: double
+        vendor_name:
+          type: string
+        product_id:
+          type: string
+          description: Tackle product ID.
+        product_name:
+          type: string
+        source:
+          oneOf:
+          - $ref: '#/components/schemas/Source'
+          - type: 'null'
+        clone:
+          oneOf:
+          - $ref: '#/components/schemas/Clone'
+          - type: 'null'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        pre_registration_details:
+          oneOf:
+          - $ref: '#/components/schemas/PreRegistrationDetails'
+          - type: 'null'
+        partner:
+          oneOf:
+          - $ref: '#/components/schemas/Partner'
+          - type: 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        buyer_details:
+          $ref: '#/components/schemas/BuyerDetails'
+        renewal:
+          type: boolean
+        eula:
+          $ref: '#/components/schemas/EULA'
+        product_ref:
+          type: string
+          description: Microsoft product reference.
+        users_to_notify:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateUserToNotify'
+        pricing:
+          $ref: '#/components/schemas/OfferPricing'
+        preparer_email:
+          type: string
+          format: email
+        start_on:
+          $ref: '#/components/schemas/StartOn'
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        accept_by_date:
+          type: string
+          format: date
+        plan_template:
+          $ref: '#/components/schemas/PlanTemplate'
+      example:
+        offer_type: direct
+        vendor_id: vendor-123
+        status: draft_status
+        vendor_name: Example Vendor
+        product_id: product-123
+        product_name: Example Product
+        buyer_details:
+          company_name: Example Buyer
+          billing_account_id: billing-account-123
+          buyers:
+          - full_name: Buyer User
+            email_address: buyer@example.com
+            title: Procurement
+        eula:
+          type: standard
+          document_urns: []
+        pricing:
+          plan_name: Example Plan
+          description: Annual plan
+          contract_duration:
+            type: month
+            frequency: 12
+          payment_model: OneTime
+          payment_installments:
+            price_per_payment_in_usd: 1200
+          pricing_type: flat_rate
+        start_on: acceptance
+        start_date: '2026-05-01'
+        end_date: '2027-04-30'
+        accept_by_date: '2026-05-31'
+        plan_template:
+          ref: plan-template-123
+          display: Standard plan
+    PriceDetail:
+      type: object
+      properties:
+        markets:
+          type: array
+          items:
+            type: string
+        currency:
+          type: string
+        price:
+          type: number
+          format: double
+    Clone:
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/Source'
+        originating_offer_id:
+          type: string
+    PrivateOfferSalesforce:
+      type: object
+      properties:
+        created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        custom_object_id:
+          type:
+          - string
+          - 'null'
+        opportunity_id:
+          type:
+          - string
+          - 'null'
+    UpdateOfferPricing:
+      type: object
+      properties:
+        plan_name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        contract_duration:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateContractDuration'
+          - type: 'null'
+        payment_model:
+          oneOf:
+          - $ref: '#/components/schemas/PaymentModel'
+          - type: 'null'
+        payment_installments:
+          oneOf:
+          - $ref: '#/components/schemas/UpdatePaymentInstallment'
+          - type: 'null'
+        payment_schedule:
+          oneOf:
+          - $ref: '#/components/schemas/PaymentSchedule'
+          - type: 'null'
+        pricing_type:
+          oneOf:
+          - $ref: '#/components/schemas/PricingType'
+          - type: 'null'
+        user_limits:
+          oneOf:
+          - $ref: '#/components/schemas/UserLimits'
+          - type: 'null'
+        dimensions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/UpdateDimension'
+    PlanUserLimits:
+      type: object
+      properties:
+        min:
+          type: integer
+        max:
+          type: integer
+    Partner:
+      type: object
+      properties:
+        partner_name:
+          type:
+          - string
+          - 'null'
+        partner_seller_id:
+          type: string
+    CurrencyConversionPayload:
+      type: object
+      required:
+      - id
+      - base_currency
+      - target_currency
+      - amount
+      properties:
+        id:
+          type: string
+          description: Caller-provided row ID echoed in the response.
+        base_currency:
+          type: string
+          example: USD
+        target_currency:
+          type: string
+          example: EUR
+        amount:
+          type: number
+          format: double
+          example: 100
+    ContractDuration:
+      type: object
+      properties:
+        type:
+          type: string
+          example: month
+        frequency:
+          type: integer
+          example: 12
+    UpdateUserToNotify:
+      type: object
+      properties:
+        contact_type:
+          type: string
+        value:
+          type: string
+        email:
+          type: string
+          format: email
+    CreateUserToNotify:
+      type: object
+      properties:
+        contact_type:
+          type: string
+        value:
+          type:
+          - string
+          - 'null'
+        email:
+          type: string
+          format: email
+    DimensionQuantity:
+      type: object
+      properties:
+        dimension_term:
+          $ref: '#/components/schemas/ContractDuration'
+        unlimited_quantity:
+          type: boolean
+        quantity:
+          type: number
+          format: double
+    OfferStatus:
+      type: string
+      description: 'Controls the offer workflow. Use `draft_status` to save the offer in
+
+        Tackle only. Use `submit_to_cloud` to validate the offer and prepare it
+
+        for Microsoft marketplace submission.
+
+        '
+      enum:
+      - draft_status
+      - draft_in_marketplace_status
+      - submit_to_cloud
+      - created_in_cloud
+      - sent_to_cloud
+      - pending_cancellation
+      - partner_marked_up
+      - canceled
+      - accepted
+      - withdrawn_canceled
+      - errored
+      - subscribed
+      - expired
+      - job_status_pending
+      - detail_retrieval_pending
+      - withdraw_pending
+      - delete_pending
+      - delete_validation_pending
+      - deleted
+    CurrencyConversionResult:
+      type: object
+      properties:
+        id:
+          type: string
+        base_currency:
+          type: string
+        target_currency:
+          type: string
+        original_amount:
+          type: number
+          format: double
+        converted_amount:
+          type: number
+          format: double
+        exchange_rate:
+          type: number
+          format: double
+        rate_source_date:
+          type: string
+          format: date
+        rate_as_of_date:
+          type: string
+          format: date
+        error:
+          oneOf:
+          - $ref: '#/components/schemas/CurrencyConversionError'
+          - type: 'null'
+    PreRegistrationDetails:
+      type: object
+      properties:
+        company_website:
+          type:
+          - string
+          - 'null'
+          format: uri
+        details:
+          type: object
+          additionalProperties:
+            type: string
+    TermValue:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: integer
+    Meter:
+      type: object
+      properties:
+        included_quantities:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncludedQuantity'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceDetail'
+    CurrencyConversionRequest:
+      type: object
+      required:
+      - conversions
+      properties:
+        as_of_date:
+          type: string
+          format: date
+          description: Requested FX rate date. Defaults to the current UTC date.
+          example: '2026-04-30'
+        conversions:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CurrencyConversionPayload'
+    ProductDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        external_id:
+          type: string
+        alias:
+          type: string
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanResponse'
+    MsftResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+        offer_id:
+          type:
+          - string
+          - 'null'
+        resource_uri:
+          type:
+          - string
+          - 'null'
+        raw_response:
+          type: string
+    UserLimits:
+      type: object
+      properties:
+        min:
+          type: integer
+        max:
+          type: integer
+    PrivateOffer:
+      type: object
+      description: Stored Tackle Microsoft private offer.
+      properties:
+        po_id:
+          type: string
+        accepted_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        accepted_source:
+          type:
+          - string
+          - 'null'
+        archived_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        cancelled_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+        last_update_source:
+          type:
+          - string
+          - 'null'
+        viewed_offer_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        sent_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        submitted_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        opened_instructions_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        subscribed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        partner_marked_up_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        marketplace_acceptance_link:
+          type:
+          - string
+          - 'null'
+          format: uri
+        salesforce:
+          $ref: '#/components/schemas/PrivateOfferSalesforce'
+        vendor_id:
+          type: string
+        vendor_name:
+          type: string
+        product_contact_email:
+          type: string
+          format: email
+        state:
+          $ref: '#/components/schemas/OfferStateValue'
+        status:
+          $ref: '#/components/schemas/OfferStatus'
+        offer_type:
+          $ref: '#/components/schemas/OfferType'
+        marketplace_fee:
+          type: number
+          format: double
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivateOfferActivity'
+        archived:
+          type: boolean
+        version:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        source:
+          $ref: '#/components/schemas/Source'
+        marketplace_created_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        clone:
+          oneOf:
+          - $ref: '#/components/schemas/Clone'
+          - type: 'null'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        product_type:
+          $ref: '#/components/schemas/ProductType'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivateOfferError'
+        pre_registration_details:
+          $ref: '#/components/schemas/PreRegistrationDetails'
+        ui_state:
+          $ref: '#/components/schemas/OfferStateValue'
+        partner:
+          oneOf:
+          - $ref: '#/components/schemas/Partner'
+          - type: 'null'
+        total_contract_value_gross_amount:
+          type: number
+          format: double
+        total_contract_value_net_amount:
+          type: number
+          format: double
+        est_min_total_contract_value_gross_amount:
+          type: number
+          format: double
+        est_min_total_contract_value_net_amount:
+          type: number
+          format: double
+        est_max_total_contract_value_gross_amount:
+          type: number
+          format: double
+        est_max_total_contract_value_net_amount:
+          type: number
+          format: double
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        buyer_details:
+          $ref: '#/components/schemas/BuyerDetails'
+        renewal:
+          type: boolean
+        eula:
+          $ref: '#/components/schemas/EULA'
+        product_ref:
+          type: string
+        users_to_notify:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserToNotify'
+        pricing:
+          $ref: '#/components/schemas/OfferPricing'
+        preparer_email:
+          type: string
+          format: email
+        start_on:
+          $ref: '#/components/schemas/StartOn'
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        accept_by_date:
+          type: string
+          format: date
+        offer_ref:
+          type:
+          - string
+          - 'null'
+        plan_template:
+          $ref: '#/components/schemas/PlanTemplate'
+        plan_ref:
+          type:
+          - string
+          - 'null'
+        subscription_ref:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        offer_state:
+          $ref: '#/components/schemas/PrivateOfferState'
+        msft_response:
+          $ref: '#/components/schemas/MsftResponse'
+    ScheduleDetail:
+      type: object
+      properties:
+        charge_date:
+          type:
+          - string
+          - 'null'
+          format: date
+        price_per_payment_in_usd:
+          type:
+          - number
+          - 'null'
+          format: double
+        note:
+          type:
+          - string
+          - 'null'
+    PrivateOfferStateDetail:
+      type: object
+      properties:
+        raw_message:
+          type: string
+    BuyerDetails:
+      type: object
+      properties:
+        company_name:
+          type: string
+        billing_account_id:
+          type: string
+        buyers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Buyer'
+    PlanPrice:
+      type: object
+      properties:
+        billing_term:
+          $ref: '#/components/schemas/TermValue'
+        payment_option:
+          $ref: '#/components/schemas/TermValue'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceDetail'
+        price_per_payment_in_usd:
+          type: number
+          format: double
+    CurrencyConversionResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyConversionResult'
+        success:
+          type: boolean
+          example: true
+    PricingType:
+      type: string
+      enum:
+      - flat_rate
+      - per_user
+    UpdateSalesforce:
+      type: object
+      properties:
+        custom_object_id:
+          type:
+          - string
+          - 'null'
+        opportunity_id:
+          type:
+          - string
+          - 'null'
+    EULA:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: Offer EULA type.
+          example: standard
+        document_urns:
+          type: array
+          items:
+            type: string
+        merged_urn:
+          type:
+          - string
+          - 'null'
+        presigned_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+    PaymentSchedule:
+      type: object
+      properties:
+        initial_charge:
+          $ref: '#/components/schemas/InitialCharge'
+        payment_schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleDetail'
+    PlanResponse:
+      type: object
+      properties:
+        description:
+          type: string
+        product:
+          type: string
+        plan:
+          type: string
+        pricing:
+          $ref: '#/components/schemas/PlanPricing'
+        offer_pricing_type:
+          type: string
+        markets:
+          type: array
+          items:
+            type: string
+        audience:
+          type: string
+        alias:
+          type: string
+        external_id:
+          type: string
+    MarketCurrenciesResponse:
+      type: object
+      properties:
+        currency_options:
+          type: array
+          items:
+            $ref: '#/components/schemas/CurrencyOption'
+        currency_markets:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/MarketCurrency'
+      example:
+        currency_options:
+        - value: USD
+          display: United States Dollar | USD ($)
+        currency_markets:
+          USD:
+          - country_name: United States
+            iso2: US
+            currency: USD
+    CreateOfferNotificationRequest:
+      type: object
+      description: 'Request body for creating an offer notification. Only buyer instruction
+
+        emails are currently supported.
+
+        '
+      required:
+      - type
+      - channel
+      properties:
+        type:
+          type: string
+          enum:
+          - buyer_instructions
+          description: Notification type to create.
+          example: buyer_instructions
+        channel:
+          type: string
+          enum:
+          - email
+          description: Notification channel to use.
+          example: email
+    OfferStateValue:
+      type: string
+      enum:
+      - draft
+      - pending
+      - submitted_in_cloud
+      - created_in_cloud
+      - email_sent
+      - instructions_opened
+      - viewed
+      - partner_marked_up
+      - accepted
+      - subscribed
+      - attention_needed
+      - pending_cancellation
+      - pending_cancellation_withdrawn
+      - canceled
+      - deleted_in_cloud
+    CurrencyConversionError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    IncludedQuantity:
+      type: object
+      properties:
+        billing_term:
+          $ref: '#/components/schemas/TermValue'
+        is_infinite:
+          type: boolean
+        quantity:
+          type: number
+          format: double
+    UpdateContractDuration:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        frequency:
+          type:
+          - integer
+          - 'null'
+    CustomMeters:
+      type: object
+      properties:
+        price_input_option:
+          type: string
+        meters:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Meter'
+    InitialCharge:
+      type: object
+      properties:
+        price_per_payment_in_usd:
+          type:
+          - number
+          - 'null'
+          format: double
+        note:
+          type:
+          - string
+          - 'null'
+    PrivateOfferState:
+      type: object
+      properties:
+        draft:
+          oneOf:
+          - $ref: '#/components/schemas/PrivateOfferStateDetail'
+          - type: 'null'
+        submitted:
+          oneOf:
+          - $ref: '#/components/schemas/PrivateOfferStateDetail'
+          - type: 'null'
+        accepted:
+          oneOf:
+          - $ref: '#/components/schemas/PrivateOfferStateDetail'
+          - type: 'null'
+        current_cloud:
+          oneOf:
+          - $ref: '#/components/schemas/PrivateOfferStateDetail'
+          - type: 'null'
+        last_modified:
+          type: string
+          format: date-time
+    PaymentInstallment:
+      type: object
+      properties:
+        price_per_payment_in_usd:
+          type: number
+          format: double
+    PrivateOfferActivityUser:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        principal_type:
+          type: string
+    Buyer:
+      type: object
+      properties:
+        full_name:
+          type: string
+        email_address:
+          type: string
+          format: email
+        title:
+          type: string
+    PaymentModel:
+      type: string
+      enum:
+      - PaymentSchedule
+      - PerYear
+      - OneTime
+      - PerMonth
+    CurrencyOption:
+      type: object
+      properties:
+        value:
+          type: string
+          description: ISO 4217 currency code.
+          example: USD
+        display:
+          type: string
+          example: United States Dollar | USD ($)
+    Product:
+      type: object
+      description: 'A Microsoft Marketplace product owned by the calling seller. The
+
+        fields below are the most commonly consumed; additional
+
+        listing-type-specific fields may also be present.
+
+        '
+      properties:
+        cloud:
+          type: string
+          enum:
+          - azure
+          description: 'Always `azure` for products returned by this API. Microsoft
+
+            Marketplace products are stored upstream under the `azure`
+
+            cloud identifier.
+
+            '
+        productid:
+          type: string
+          description: The Tackle product ID.
+        productid_internal:
+          type: string
+          description: Internal Tackle product identifier.
+        vendorid:
+          type: string
+          description: Tackle vendor (ISV) ID that owns the product.
+        listing_type:
+          type: string
+          description: Listing type (e.g. `saas`).
+        listing_pricing_type:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        registration_hosting:
+          type: string
+        active_status:
+          type: string
+          enum:
+          - active
+          - inactive
+        archived:
+          type: boolean
+      additionalProperties: true
+      required:
+      - cloud
+      - productid
+      - vendorid
+      - name
+      - status
+    Dimension:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        id:
+          type: string
+        unit_of_measure:
+          type: string
+        price_per_unit_in_usd:
+          type: number
+          format: double
+        included_quantities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DimensionQuantity'
+    ImportMicrosoftOfferRequest:
+      type: object
+      required:
+      - microsoftOfferId
+      - buyer_company_name
+      properties:
+        microsoftOfferId:
+          type: string
+          description: Microsoft private offer ID to import.
+          example: ms-offer-123
+        buyer_company_name:
+          type: string
+          description: Buyer company name to store on the imported offer.
+          example: Example Buyer
+        salesforce_opportunity_id:
+          type: string
+          description: Optional Salesforce opportunity ID to associate to the imported offer.
+          example: 6000000000001
+    Source:
+      type: string
+      enum:
+      - salesforce
+      - tackle
+      - microsoft
+    PlanTemplate:
+      type: object
+      properties:
+        ref:
+          type: string
+        display:
+          type: string
+    OfferType:
+      type: string
+      enum:
+      - direct
+      - partner
+    PrivateOfferActivity:
+      type: object
+      properties:
+        slug:
+          type:
+          - string
+          - 'null'
+          example: created-draft-offer
+        user_id:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type: string
+          format: date-time
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        user:
+          oneOf:
+          - $ref: '#/components/schemas/PrivateOfferActivityUser'
+          - type: 'null'
+    UpdateBuyerDetails:
+      type: object
+      properties:
+        company_name:
+          type:
+          - string
+          - 'null'
+        billing_account_id:
+          type:
+          - string
+          - 'null'
+        buyers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Buyer'
+    OfferPricing:
+      type: object
+      properties:
+        plan_ref:
+          type: string
+          description: Microsoft plan ID.
+        plan_name:
+          type: string
+        description:
+          type: string
+        contract_duration:
+          $ref: '#/components/schemas/ContractDuration'
+        payment_model:
+          $ref: '#/components/schemas/PaymentModel'
+        payment_installments:
+          oneOf:
+          - $ref: '#/components/schemas/PaymentInstallment'
+          - type: 'null'
+        payment_schedule:
+          oneOf:
+          - $ref: '#/components/schemas/PaymentSchedule'
+          - type: 'null'
+        pricing_type:
+          oneOf:
+          - $ref: '#/components/schemas/PricingType'
+          - type: 'null'
+        user_limits:
+          oneOf:
+          - $ref: '#/components/schemas/UserLimits'
+          - type: 'null'
+        dimensions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Dimension'
+    CreateSalesforce:
+      type: object
+      properties:
+        custom_object_id:
+          type:
+          - string
+          - 'null'
+        opportunity_id:
+          type:
+          - string
+          - 'null'
+    UserToNotify:
+      type: object
+      properties:
+        contact_type:
+          type: string
+        value:
+          type:
+          - string
+          - 'null'
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+    UpdatePaymentInstallment:
+      type: object
+      properties:
+        price_per_payment_in_usd:
+          type:
+          - number
+          - 'null'
+          format: double
+  parameters:
+    ProductId:
+      name: id
+      in: path
+      required: true
+      description: Microsoft product ID.
+      schema:
+        type: string
+      example: product/123
+    TackleOperationId:
+      name: tackle-operation-id
+      in: header
+      required: false
+      description: Optional caller-provided operation ID for request tracing.
+      schema:
+        type: string
+      example: 018f01ec-3f2b-7a70-b81e-4fc3d6a69f42
+    OfferRef:
+      name: offer_ref
+      in: query
+      required: false
+      description: Filter offers by Microsoft offer reference.
+      schema:
+        type: string
+      example: ms-offer-123
+    PlanRef:
+      name: plan_ref
+      in: query
+      required: false
+      description: Filter offers by Microsoft plan reference.
+      schema:
+        type: string
+      example: plan-123
+    OfferId:
+      name: id
+      in: path
+      required: true
+      description: Tackle private offer ID.
+      schema:
+        type: string
+      example: po-1234
+  responses:
+    BadRequestError:
+      description: Invalid request or unsupported operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: missing id
+    NotFoundError:
+      description: Requested offer or resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: not found
+    NoContent:
+      description: Operation completed successfully with no response body.
+    InternalServerError:
+      description: Internal server error or upstream dependency failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ForbiddenError:
+      description: Caller is not allowed to perform this action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: forbidden
+    UnauthorizedError:
+      description: Authentication failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: unauthorized
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

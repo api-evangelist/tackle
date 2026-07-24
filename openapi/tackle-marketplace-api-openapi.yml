@@ -1,0 +1,592 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Marketplace API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Marketplace
+  description: AWS Marketplace context endpoints used to assemble offers and amendments.
+paths:
+  /agreements:
+    get:
+      summary: List AWS Marketplace Agreements
+      description: 'Returns the seller''s AWS Marketplace agreements (entitlements). Used
+
+        when assembling an amendment offer to discover an existing
+
+        buyer-seller agreement to amend.
+
+
+        Each agreement carries a `public_productid` field which is the AWS
+
+        encrypted product ID and can be passed as the `productId` path
+
+        parameter to `GET /products/{productId}/pricing`.
+
+
+        **Required RBAC permission:** `offers:CreateDraftOffer` (agreement
+
+        listing is gated on the create permission because it is part of the
+
+        offer-creation flow).
+
+        '
+      operationId: listAgreements
+      tags:
+      - Marketplace
+      security:
+      - TackleJwt: []
+      parameters:
+      - name: buyer_billing_account_ref
+        in: query
+        required: false
+        description: Filter to agreements for the given 12-digit AWS buyer account.
+        schema:
+          type: string
+          pattern: ^[0-9]{12}$
+      - name: offerid
+        in: query
+        required: false
+        description: Filter to the agreement produced by the given marketplace offer ID.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: Page size.
+        schema:
+          type: integer
+          minimum: 1
+          default: 25
+      - name: next_token
+        in: query
+        required: false
+        description: Opaque pagination cursor returned by a previous response.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of agreements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgreementList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /products:
+    get:
+      summary: List Products
+      description: "Returns the AWS Marketplace product listings owned by the authenticated\nseller. Use this to populate a product picker before creating a private\noffer.\n\nEach product object includes two distinct identifiers:\n\n- `productid` -- the **Tackle** product identifier.\n- `encrypted_productid` -- the **AWS Marketplace Catalog API** product\n  identifier. This is the value to pass as the `productId` path\n  parameter on `GET /products/{productId}/pricing`. Passing\n  `productid` instead will result in a `404` because the pricing\n  endpoint is sourced from the AWS Catalog API and only understands\n  the encrypted form.\n\n**Required RBAC permission:** `offers:ListProducts`\n"
+      operationId: listProducts
+      tags:
+      - Marketplace
+      security:
+      - TackleJwt: []
+      parameters:
+      - name: listing_type
+        in: query
+        required: false
+        description: Filter by product listing type (e.g. `saas`, `ami`).
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        description: Filter by product status.
+        schema:
+          type: string
+      - name: registration_hosting
+        in: query
+        required: false
+        description: Filter by registration hosting type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of products owned by the seller.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /products/{productId}/pricing:
+    parameters:
+    - name: productId
+      in: path
+      required: true
+      description: 'The **AWS Marketplace Catalog API encrypted product identifier**.
+
+
+        This is **not** the Tackle product ID. Pass the
+
+        `encrypted_productid` field from a product object returned by
+
+        `GET /products`, or the `public_productid` field from an agreement
+
+        returned by `GET /agreements`. Passing the Tackle `productid` (or
+
+        `id`) will return `404`.
+
+        '
+      example: prod-xxxxxxxxxxxxx
+      schema:
+        type: string
+    get:
+      summary: Get Product Pricing
+      description: 'Returns the pricing dimensions, billing terms, and payment-model
+
+        defaults for an AWS Marketplace product. Use the response to
+
+        pre-populate a private-offer creation form with values that match the
+
+        product''s public listing.
+
+
+        **Required RBAC permission:** `offers:CreateDraftOffer` (gated on the
+
+        create permission because pricing is fetched as part of the
+
+        offer-creation flow).
+
+        '
+      operationId: getProductPricing
+      tags:
+      - Marketplace
+      security:
+      - TackleJwt: []
+      responses:
+        '200':
+          description: Pricing for the product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPricing'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /allowed-currencies:
+    get:
+      summary: List Allowed Currencies
+      description: 'Returns the 3-letter ISO 4217 currency codes the calling seller may
+
+        quote in a private offer. The seller is identified by the vendor ID
+
+        in the bearer token; no path parameter is required.
+
+
+        **Required RBAC permission:** `offers:CreateDraftOffer` (currency
+
+        selection is part of the offer-creation flow).
+
+        '
+      operationId: listAllowedCurrencies
+      tags:
+      - Marketplace
+      security:
+      - TackleJwt: []
+      responses:
+        '200':
+          description: List of allowed currency codes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  pattern: ^[A-Z]{3}$
+                example:
+                - USD
+                - EUR
+                - GBP
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+components:
+  responses:
+    Forbidden:
+      description: Caller is authenticated but not authorized for this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid Tackle JWT.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Request was malformed or failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource does not exist or is not visible to the caller.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    PricingDimension:
+      type: object
+      properties:
+        dimension_value:
+          type: string
+          nullable: true
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          description: User-friendly name of the dimension. Defaults to `api_name` if omitted.
+        quantity:
+          type: string
+          nullable: true
+          description: 'Quantity of the dimension the buyer is purchasing. Only applicable
+
+            when `payment_model` is `payment_schedule`.
+
+            '
+        price:
+          type: string
+          nullable: true
+          description: 'Price per unit of the dimension. Only applicable when
+
+            `payment_model` is `per_product`.
+
+            '
+        api_name:
+          type: string
+          nullable: true
+          description: 'API identifier of the dimension in AWS Marketplace. If `name`
+
+            does not match an existing dimension, a new custom dimension is
+
+            added to the product listing (limit 100).
+
+            '
+        aws_discount_percentage:
+          type: string
+          nullable: true
+          description: Display-only discount percentage.
+    UsageDimension:
+      type: object
+      properties:
+        description:
+          type: string
+          nullable: true
+          description: Human-friendly name of the usage dimension.
+        sku:
+          type: string
+          nullable: true
+          description: API identifier of the usage dimension in AWS Marketplace.
+        price:
+          type: string
+          nullable: true
+          description: Price per unit.
+        aws_discount_percentage:
+          type: string
+          nullable: true
+          description: Display-only discount percentage.
+    ScheduledPayment:
+      type: object
+      properties:
+        invoice_date:
+          type: string
+          format: date
+          nullable: true
+          description: Date the buyer should be invoiced for this scheduled payment.
+        invoice_amount:
+          type: string
+          nullable: true
+          description: Amount the buyer should be invoiced.
+    AgreementList:
+      type: object
+      description: Paginated list of agreements.
+      properties:
+        entitlements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agreement'
+        limit:
+          type: integer
+        next_token:
+          type: string
+          nullable: true
+          description: Opaque cursor for the next page; absent on the last page.
+      required:
+      - entitlements
+    Agreement:
+      type: object
+      description: 'A marketplace agreement (entitlement) between a seller and a buyer for
+
+        a product. For AWS this maps to an AWS Marketplace Agreement.
+
+        '
+      properties:
+        id:
+          type: string
+          description: Marketplace agreement identifier (AWS `AgreementId`).
+        status:
+          type: string
+          description: For AWS, active agreements have status `ACTIVE`.
+        productid:
+          type: string
+          description: Marketplace product ID (AWS Product Code).
+        public_productid:
+          type: string
+          description: 'Public marketplace product ID (AWS encrypted product ID). Use this
+
+            value as the `productId` path parameter for
+
+            `GET /products/{productId}/pricing`.
+
+            '
+        product_type:
+          type: string
+          description: For AWS, one of `SaaSProduct`, `AmiProduct`, or `ContainerProduct`.
+        offerid:
+          type: string
+          description: Marketplace ID of the offer that produced this agreement.
+        buyer_billing_account_ref:
+          type: string
+          description: Marketplace ID of the buyer's billing account (12-digit AWS account number).
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+          description: AWS pay-as-you-go agreements do not have an end date.
+      required:
+      - id
+      - status
+      - productid
+      - public_productid
+      - product_type
+      - offerid
+      - buyer_billing_account_ref
+      - start_date
+    PricingUnit:
+      type: object
+      description: AMI-only pricing unit.
+      properties:
+        unit:
+          type: string
+          nullable: true
+        hourly_price:
+          type: string
+          nullable: true
+        duration_price:
+          type: string
+          nullable: true
+    ProductPricing:
+      type: object
+      description: 'Pricing dimensions, billing term defaults, and payment model defaults
+
+        for an AWS Marketplace product. Use the response to pre-populate a
+
+        private-offer creation form. Field semantics match the `Pricing`
+
+        schema -- see that schema for full descriptions.
+
+        '
+      properties:
+        show_on_email:
+          type: boolean
+          nullable: true
+        duration:
+          type: string
+          nullable: true
+        marketplace_fee:
+          type: string
+          nullable: true
+        net_contract_value:
+          type: string
+          nullable: true
+        monthly_contract_value:
+          type: string
+          nullable: true
+        total_contract_value:
+          type: string
+          nullable: true
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingDimension'
+        usage_dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageDimension'
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingUnit'
+        currency_code:
+          type: string
+          nullable: true
+          pattern: ^[A-Z]{3}$
+        version:
+          type: string
+          nullable: true
+          enum:
+          - simple-pricing-v1-aws
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduledPayment'
+        payment_model:
+          type: string
+          nullable: true
+          enum:
+          - payment_schedule
+          - per_product
+          - one_time
+          - per_month
+          - per_year
+          - saas_subscription
+        billing_term:
+          type: string
+          nullable: true
+          enum:
+          - future_dated
+          - custom
+          - 1-month
+          - 1-year
+          - 2-years
+          - 3-years
+        duration_value:
+          type: integer
+          nullable: true
+        duration_type:
+          type: string
+          nullable: true
+        service_start_at:
+          type: string
+          format: date
+          nullable: true
+        service_end_at:
+          type: string
+          format: date
+          nullable: true
+        allow_auto_renew:
+          type: boolean
+    Error:
+      type: object
+      description: 'Error response. Endpoints in the **Private Offers** and **Marketplace**
+
+        tags return the error in a `message` field. The **Partners** endpoint
+
+        returns the error in an `error` field. At least one of the two will
+
+        always be populated.
+
+        '
+      properties:
+        message:
+          type: string
+          description: Error message (Private Offers and Marketplace endpoints).
+          example: private offer not found
+        error:
+          type: string
+          description: Error message (Partners endpoint).
+          example: authorization failed
+    Product:
+      type: object
+      description: 'An AWS Marketplace product owned by the calling seller. The fields
+
+        below are the most commonly consumed; additional listing-type-specific
+
+        fields may also be present.
+
+        '
+      properties:
+        cloud:
+          type: string
+          enum:
+          - aws
+          description: Always `aws` for products returned by this API.
+        productid:
+          type: string
+          description: The Tackle product ID.
+        productid_internal:
+          type: string
+          description: Internal Tackle product identifier.
+        encrypted_productid:
+          type: string
+          description: 'The AWS Marketplace Catalog API encrypted product ID. Pass this
+
+            value as the `productId` path parameter on
+
+            `GET /products/{productId}/pricing`.
+
+            '
+        vendorid:
+          type: string
+          description: Tackle vendor (ISV) ID that owns the product.
+        listing_type:
+          type: string
+          description: Listing type (e.g. `saas`, `ami`).
+        listing_pricing_type:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        registration_hosting:
+          type: string
+      additionalProperties: true
+      required:
+      - cloud
+      - productid
+      - vendorid
+      - name
+      - status
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

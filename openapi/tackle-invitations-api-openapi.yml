@@ -1,0 +1,1220 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Invitations API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Invitations
+  description: 'Create (test-environment-only), read, update, and list co-sell
+
+    invitations — AWS-led requests to partner with you on a specific
+
+    opportunity. Use the update operation to accept or reject an
+
+    invitation, and the history endpoint to inspect cloud-side detail.'
+paths:
+  /api/invitations/{invitation_id}/events:
+    get:
+      operationId: listInvitationEvents
+      summary: List invitation events
+      tags:
+      - Invitations
+      parameters:
+      - $ref: '#/components/parameters/invitation_id'
+      - in: query
+        name: next
+        description: 'Cursor token used to resume a paginated history query. When supplied, the
+
+          query continues from where a previous request left off.
+
+
+          **Note**: this endpoint does not currently emit `next` cursors on responses
+
+          (see the `next` field of the response schema below), so in practice clients
+
+          have no way to obtain a cursor from the API itself today. This parameter is
+
+          therefore rarely useful unless a cursor value is already known from another
+
+          source.'
+        schema:
+          type: string
+          example: oie#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListInvitationEvents'
+                  next:
+                    type: string
+                    description: 'Reserved cursor for the next page of history events.
+
+                      **This endpoint does not currently emit this field** — no
+
+                      cursor is produced today, so the field is always omitted
+
+                      from the JSON response. Treat this field as reserved for
+
+                      a future paginated response; do not rely on its absence
+
+                      to detect end-of-data today, and do not depend on it
+
+                      appearing in responses.'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/invitations:
+    get:
+      operationId: listInvitations
+      summary: List co-sell invitations
+      tags:
+      - Invitations
+      parameters:
+      - name: q
+        in: query
+        description: A search query to filter the invitations.
+        schema:
+          type: string
+          example: Example
+      - name: cloudStatus
+        in: query
+        description: 'Filter invitations by their AWS Partner Central status. Accepts multiple
+
+          values; results match any of the supplied statuses. Common values include
+
+          `PENDING`, `ACCEPTED`, `REJECTED`, and `EXPIRED` — see the `status` field
+
+          on `InvitationResponse` for the full list of values returned by the API.'
+        schema:
+          type: string
+          example: ACCEPTED
+      - name: pageSize
+        in: query
+        description: The number of invitations to return per page (minimum 1, maximum 100, default 10).
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+          example: 10
+      - name: crmId
+        in: query
+        description: 'Filter by the Salesforce CRM identifier of the linked opportunity record.
+
+          For Salesforce, both 15- and 18-character IDs are accepted. To filter by
+
+          a HubSpot Deal ID instead, see the `hubspotCrmId` field on
+
+          `OpportunityMetadata`.'
+        schema:
+          type: string
+          example: 006QL00000BahjGYAR
+      - name: opportunityId
+        in: query
+        description: 'Filter invitations by the AWS Partner Central opportunity identifier
+
+          (for example, `O1234123`) of the opportunity an invitation is linked to.
+
+          This is the cloud-provider identifier, not the Tackle identifier — to
+
+          look up an invitation by Tackle ID, use the path-level `getInvitation`
+
+          operation instead.'
+        schema:
+          type: string
+          example: O1234123
+      - name: origin
+        in: query
+        description: 'Filter invitations by who initiated them. Use `aws` to return only AWS-led
+
+          invitations (AWS reaching out to your account about an opportunity), and
+
+          `partner` to return only partner-led invitations (your account reaching
+
+          out to AWS).'
+        schema:
+          type: string
+          example: aws
+      - name: from
+        in: query
+        description: The starting index of the invitations to return.
+        schema:
+          type: integer
+          example: 11
+      - name: startExpirationDate
+        in: query
+        description: Used to filter invitations by specifying the earliest expiration date. Invitations expiring on or after this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: endExpirationDate
+        in: query
+        description: Used to filter invitations by specifying the latest expiration date. Invitations expiring on or before this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: startCloudCreated
+        in: query
+        description: Used to filter invitations by specifying the earliest creation date. Invitations created on or after this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: endCloudCreated
+        in: query
+        description: Used to filter invitations by specifying the latest creation date. Invitations created on or before this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: sortField
+        in: query
+        description: 'The field to sort the invitations by. Only takes effect when `sortOrder`
+
+          is also supplied; both query parameters must be present together for sorting
+
+          to apply. If only `sortField` is provided, the response uses the default
+
+          ordering instead. Note that `cloudProviderID` is case-sensitive: the trailing
+
+          `ID` is uppercase, and sending `cloudProviderId` (lowercase `d`) returns
+
+          `400 Bad Request: Invalid sortField`.'
+        schema:
+          type: string
+          enum:
+          - cloudProviderID
+          - cloudStatus
+          - cloudCreated
+          - targetCompletionDate
+          - expirationDate
+          - companyName
+          - title
+          - unifiedCreatedDate
+      - name: sortOrder
+        in: query
+        description: 'Sort direction. Only takes effect when `sortField` is also supplied — both
+
+          query parameters must be present together. If only `sortOrder` is provided
+
+          (without `sortField`), the response uses the underlying default ordering
+
+          instead of any sort. There is no implicit ascending default applied when
+
+          only one of the two parameters is sent.'
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: hasCloudErrors
+        in: query
+        description: 'Filter invitations by their AWS Partner Central error state. Set to
+
+          `true` to return only invitations whose most recent AWS Partner Central
+
+          request failed; set to `false` to return only invitations with no
+
+          cloud-side errors. Omit to disable the filter. Inspect
+
+          `listInvitationEvents` for the matching invitation to see the error
+
+          detail.'
+        schema:
+          type: boolean
+          example: false
+      - name: hasCrmId
+        in: query
+        description: 'Filter invitations by whether a CRM identifier is linked. Set to `true`
+
+          to return only invitations that have a `crmId` (Salesforce) or
+
+          `hubspotCrmId` value populated; set to `false` to return only
+
+          invitations with no CRM identifier linked. Omit to disable the filter.'
+        schema:
+          type: boolean
+          example: true
+      - name: hasSalesforceErrors
+        in: query
+        description: 'Filter invitations by their Salesforce sync state. Set to `true` to
+
+          return only invitations whose most recent Salesforce sync attempt
+
+          failed; set to `false` to return only invitations with no Salesforce
+
+          sync errors. Omit to disable the filter. The error message itself is
+
+          available on the matching invitation in the `salesforceSyncError` field.'
+        schema:
+          type: boolean
+          example: true
+      - name: hasAnyError
+        in: query
+        description: "Filters invitations by their error state.\n\n- `true` returns only invitations that currently have at least one\n  cloud-side error or Salesforce-sync error.\n- `false` returns only invitations that have no cloud-side or\n  Salesforce-sync errors.\n- Omit the parameter to disable this filter entirely.\n\nSee `hasCloudErrors` and `hasSalesforceErrors` to filter on each error\nsource independently."
+        schema:
+          type: boolean
+          example: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListInvitationsResponse'
+              examples:
+                list:
+                  summary: List Invitations
+                  value:
+                    invitations:
+                    - id: tackle-cosell-2oCgmaMiJ35vQefn2O7x1zRQcqL
+                      cloudProviderId: O456789
+                      cloudStatus: Approved
+                      cloudCreated: '2024-10-30T04:33:07Z'
+                      created: '2024-10-31T12:52:11Z'
+                      crmId: 000XYZ
+                      companyName: Ally Segal
+                      title: Project Title
+                      hasCloudErrors: false
+                      unifiedCreatedDate: '2024-10-30T04:33:07Z'
+                    - id: tackle-cosell-2oCgmaMiJ35vQefn2O7x1zRQcqL
+                      cloudProviderId: O4549835
+                      cloudStatus: EXPIRED
+                      cloudCreated: '2024-05-30T04:33:07Z'
+                      created: '2024-05-20T12:52:11Z'
+                      crmId: 000XYZ
+                      companyName: Ally Segal
+                      title: Another Title
+                      opportunityID: O123412
+                      origin: aws
+                      senderCompanyName: AWS
+                      hasCloudErrors: false
+                      unifiedCreatedDate: '2024-05-30T04:33:07Z'
+                    total: 14
+                    currentPageCount: 2
+                    isNextPage: true
+                    nextIndex: 2
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      operationId: createInvitation
+      summary: Create a co-sell invitation (test-environment-only)
+      description: 'Creates a simulated invitation for exercising invitation workflows in a
+
+        test environment. This endpoint is only available to vendor accounts
+
+        provisioned for use in a test environment; production vendor accounts
+
+        receive `403 Forbidden`.'
+      tags:
+      - Invitations
+      parameters:
+      - in: header
+        name: tackle-operation-id
+        schema:
+          type: string
+          enum:
+          - createInvitation
+          description: 'Reserved for forward compatibility. This header is not currently inspected
+
+            for `createInvitation`; the value is ignored at the API gateway today and any
+
+            value is accepted. Clients are encouraged to send `createInvitation` so that
+
+            future server-side validation can be adopted without a breaking change.'
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvitationRequest'
+            examples:
+              createInvitation:
+                summary: Create a new invitation
+                description: Create a new invitation to use in test environments
+                value:
+                  engagementTitle: New Collaboration Opportunity
+                  expirationDate: '2025-12-22T17:00:00Z'
+                  invitationDate: '2025-04-08T14:30:00Z'
+                  payload:
+                    value:
+                      receiverResponsibilities:
+                      - SoftwarePartner
+                      customer:
+                        companyName: Acme Corporation
+                        countryCode: US
+                        industry: Computers and Electronics
+                        websiteUrl: www.acmecorp.com
+                      project:
+                        businessProblem: Need to modernize legacy systems
+                        targetCompletionDate: '2024-11-28T17:00:00Z'
+                        title: Cloud Migration Project
+                        expectedCustomerSpend:
+                        - amount: '25000'
+                          currencyCode: USD
+                          frequency: Monthly
+                          targetCompany: Acme Corporation
+                      senderContacts:
+                      - email: john.smith@example.com
+                        businessTitle: AWSAccountOwner
+                        firstName: John
+                        lastName: Smith
+                        phone: 123-456-7890
+                  payloadType: OpportunityInvitation
+                  senderAwsAccountID: '123456789098'
+      responses:
+        '200':
+          description: Invitation created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invitationID:
+                    type: string
+                    description: 'The Tackle ID for the created invitation. Note: this field is
+
+                      emitted as `invitationID` (capital `ID`) by `createInvitation`,
+
+                      while `getInvitation` returns the same logical value as
+
+                      `invitationId` (lowercase `d`). Consumers should handle both.'
+                  id:
+                    type: string
+                    description: The simulated AWS engagement-invitation identifier assigned in the test environment.
+                  arn:
+                    type: string
+                    description: The simulated Amazon Resource Name (ARN) for the engagement invitation in the test environment.
+              example:
+                invitationID: tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q
+                id: engi-abc123def456
+                arn: arn:aws:partnercentral:us-east-1:aws:catalog/Sandbox/engagement-invitation/engi-abc123def456
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: 'Forbidden. Production vendors that call `createInvitation` receive this
+
+            response. Unlike most error responses on this API, this 403 response is
+
+            returned as plain text (`Forbidden`) with `Content-Type: text/plain` rather
+
+            than the `Error` JSON envelope used elsewhere. Clients should not attempt
+
+            to JSON-decode this 403 body.'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Forbidden
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/invitations/{invitation_id}:
+    get:
+      operationId: getInvitation
+      summary: Get a co-sell invitation
+      tags:
+      - Invitations
+      parameters:
+      - in: path
+        name: invitation_id
+        required: true
+        description: The unique identifier for the invitation
+        schema:
+          type: string
+          example: tackle-invitation-2kvfkeGp015GC1abcUHB2xChqOG
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationResponse'
+              examples:
+                getInvitation:
+                  summary: Get Invitation
+                  description: You can retrieve the invitation information by providing the unique identifier for the invitation.
+                  value:
+                    invitationId: tackle-invitation-2kvfkeGp015GC1abcUHB2xChqOG
+                    id: oi-xABCDzzuu
+                    arn: arn:aws:partnercentral-selling:us-east-1:aws:AWS/opportunity-engagement-invitation/oi-xABCDzzuu
+                    engagementTitle: Example Company
+                    expirationDate: '2024-01-27T07:00:00Z'
+                    invitationDate: '2024-01-22T22:22:27Z'
+                    payloadType: OpportunityInvitation
+                    receiver:
+                      awsAccountId: '116371111114'
+                      alias: example.com
+                    senderAwsAccountId: aws
+                    senderCompanyName: AWS
+                    origin: aws
+                    status: PENDING
+                    opportunityInvitationPayload:
+                      receiverResponsibilities:
+                      - SoftwarePartner
+                      customer:
+                        companyName: SomeOpp D
+                        websiteUrl: www.amazon.com
+                        countryCode: CA
+                        industry: Mining
+                      project:
+                        title: Cloud Migration Project
+                        businessProblem: Customer needs to migrate three legacy datacenter workloads to AWS to reduce operational overhead and improve disaster-recovery posture.
+                        targetCompletionDate: '2024-08-09'
+                        expectedCustomerSpend:
+                        - amount: '100'
+                          currencyCode: USD
+                          frequency: Monthly
+                          targetCompany: Example.com
+                      senderContacts:
+                      - businessTitle: WWPSPDM
+                        email: acc6-85469@test.cck
+                      - businessTitle: PDM
+                        email: pdm-21@test.cck.a1x8a12345amtzpeab
+                        firstName: Kress
+                        lastName: Franzen
+                      - businessTitle: AWSAccountOwner
+                        email: accountowner@amazon.com
+                        firstName: accountOwnerName
+                        lastName: accountOwnerName
+                      - businessTitle: AWSSalesRep
+                        email: awsrep@amazon.com
+                      - businessTitle: PSM
+                        email: isv@amazon.com
+                        firstName: isv
+                        lastName: isv
+                      - businessTitle: ISVSM
+                        email: isv@amazon.com
+                        firstName: isv
+                        lastName: isv
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      operationId: updateInvitation
+      summary: Update a co-sell invitation
+      tags:
+      - Invitations
+      parameters:
+      - in: path
+        name: invitation_id
+        required: true
+        description: The unique identifier for the invitation
+        schema:
+          type: string
+          example: tackle-invitation-2kvfkeGp015GC1abcUHB2xChqOG
+      - in: header
+        name: tackle-operation-id
+        schema:
+          type: string
+          enum:
+          - acceptInvitation
+          - rejectInvitation
+          description: The unique identifier for the update operation
+        required: true
+        example: acceptInvitation
+      requestBody:
+        description: "Body shape depends on the `tackle-operation-id` header. The body is parsed\ndifferently for each operation: `acceptInvitation` reads only `crmId`, and\n`rejectInvitation` reads only `rejectionReason`. Each property is optional at\nthe schema level and only meaningful for the matching operation; properties\nfor the other operation are ignored.\n\n**Body requirement by operation**:\n\n- For `acceptInvitation`, the request body is fully optional. An empty body,\n  `{}`, or `{\"crmId\": \"...\"}` are all accepted; an empty body skips body\n  parsing entirely.\n- For `rejectInvitation`, the request body must be a present, non-empty JSON\n  object — at minimum `{}`. An empty (zero-length) body fails to parse and\n  surfaces as a `500 Internal Server Error`, not a `400 Bad Request`. Always\n  send at least `{}` (or include `rejectionReason` to propagate a reason to\n  AWS Partner Central)."
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                crmId:
+                  type: string
+                  description: 'Salesforce CRM ID for the opportunity that an accepted invitation
+
+                    should be linked to. Optional, and only meaningful when
+
+                    `tackle-operation-id` is `acceptInvitation`. If supplied as a
+
+                    15-character Salesforce ID, it is converted to the canonical
+
+                    18-character form before being persisted and forwarded to AWS
+
+                    Partner Central. Ignored on reject-path requests.'
+                  example: 006QL00001BahjGYAR
+                rejectionReason:
+                  type: string
+                  description: 'Reason supplied when rejecting an invitation. Optional, and only
+
+                    meaningful when `tackle-operation-id` is `rejectInvitation`. Ignored on
+
+                    accept-path requests.'
+                  enum:
+                  - Customer problem unclear
+                  - Next steps unclear
+                  - Unable to support
+                  - Duplicate of Partner Referral
+                  - Renewal opportunity
+                  - Other
+            examples:
+              accept:
+                summary: Accept the invitation
+                description: When you are ready to accept the invitation, you will need to include the `acceptInvitation` operation ID in the header. You can also send an optional crmId in the body
+                value:
+                  crmId: 006QL00001BahjGYAR
+              reject:
+                summary: Reject the invitation
+                description: If you are unable to accept the invitation, you can reject it. To do so, you will need to include the `rejectInvitation` operation ID in the header.
+                value:
+                  rejectionReason: Customer problem unclear
+      responses:
+        '202':
+          description: 'Accepted. The invitation update has been queued for asynchronous processing in AWS
+
+            Partner Central. The response body is empty.'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '423':
+          $ref: '#/components/responses/Locked'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    OpportunityInvitationPayload:
+      type: object
+      properties:
+        receiverResponsibilities:
+          type: array
+          items:
+            type: string
+            enum:
+            - Distributor
+            - Reseller
+            - HardwarePartner
+            - ManagedServiceProvider
+            - SoftwarePartner
+            - ServicesPartner
+            - TrainingPartner
+        customer:
+          $ref: '#/components/schemas/InvitationCustomer'
+        project:
+          $ref: '#/components/schemas/InvitationProject'
+        senderContacts:
+          type: array
+          description: 'The AWS-side contacts attached to the invitation, including the AWS
+
+            sales rep, account owner, and partner-development managers. Returned
+
+            as an array of contact records.'
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phone:
+                type: string
+              businessTitle:
+                type: string
+    InvitationResponse:
+      type: object
+      properties:
+        invitationId:
+          type: string
+          description: 'The Tackle ID for the invitation. Note: `getInvitation` returns this field
+
+            as `invitationId` (lowercase `d`); `createInvitation` returns the same
+
+            logical value as `invitationID` (capital `ID`). Consumers should handle both.'
+        id:
+          type: string
+        arn:
+          type: string
+        engagementTitle:
+          type: string
+        expirationDate:
+          type: string
+        invitationDate:
+          type: string
+        opportunityId:
+          type: string
+          description: 'The cloud-provider opportunity identifier this invitation is linked to,
+
+            when the invitation has been accepted or otherwise associated with an
+
+            opportunity. Absent on invitations that are not (yet) linked to an
+
+            opportunity.
+
+
+            Casing note: `getInvitation` returns this value as `opportunityId`
+
+            (lowercase `d`), while `listInvitations` rows return the same logical
+
+            value as `opportunityID` (capital `ID`). Clients should accept both
+
+            casings.'
+          example: O1234123
+        opportunityInvitationPayload:
+          $ref: '#/components/schemas/OpportunityInvitationPayload'
+        payloadType:
+          type: string
+          enum:
+          - OpportunityInvitation
+        receiver:
+          $ref: '#/components/schemas/InvitationReceiver'
+        rejectionReason:
+          type: string
+        senderAwsAccountId:
+          type: string
+        senderCompanyName:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACCEPTED
+          - PENDING
+          - REJECTED
+          - EXPIRED
+        metadata:
+          $ref: '#/components/schemas/InvitationMetadata'
+    ListInvitationEvents:
+      type: object
+      required:
+      - operation
+      - eventID
+      - timestamp
+      properties:
+        operation:
+          type: string
+          description: 'The operation recorded for this invitation history event. This is a free-form
+
+            string, intentionally not enumerated. Common values include
+
+            `acceptInvitation`, `rejectInvitation`, and synthetic system events such as
+
+            `internalUpdateEvent` and `cloudUpdateEvent`. History records may also include
+
+            CRM-sync and partner-system operations beyond this list; clients should treat
+
+            the value as an opaque string and surface unknown values verbatim rather than
+
+            rejecting them.'
+        eventID:
+          type: string
+          example: 2lsw6rdFuCz0d7cVNCubTYGSznY
+        timestamp:
+          type: string
+          example: '2024-09-10T15:25:19Z'
+        cloudRaw:
+          type: object
+          additionalProperties: true
+          description: 'Raw cloud-provider snapshot associated with this history event. Present
+
+            only when the recorded event captured a non-empty cloud-side snapshot;
+
+            omitted on events without one. For AWS, this corresponds to the serialized
+
+            engagement-invitation payload returned by AWS Partner Central at the time
+
+            the event was recorded; clients should treat the contents as opaque
+
+            diagnostic data, since the shape varies by cloud provider and operation.'
+        rawRequest:
+          type: object
+          properties:
+            operation:
+              type: string
+          additionalProperties: true
+        cloudResponses:
+          description: 'Per-request results from AWS Partner Central for the operations recorded
+
+            in this event. On success, each entry''s `response` object contains the
+
+            AWS payload and `success` is `true`. On failure, `response` is `null`,
+
+            `success` is `false`, and one of `errorType`, `errorResponse`, or
+
+            `errorResponses` is populated with the AWS error detail.'
+          type: array
+          items:
+            type: object
+            properties:
+              requestID:
+                type: string
+              success:
+                type: boolean
+              timestamp:
+                type: string
+              response:
+                type: object
+                additionalProperties: true
+              errorType:
+                type: string
+              errorResponse:
+                type: string
+              errorResponses:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fieldName:
+                      type: string
+                    errorMessage:
+                      type: string
+        cloudRequests:
+          type: array
+          items:
+            type: object
+            properties:
+              operation:
+                type: string
+              requestID:
+                type: string
+              timestamp:
+                type: string
+              request:
+                type: object
+                additionalProperties: true
+        activityDetails:
+          type: object
+          description: 'Details about the principal that performed the operation. The full set of
+
+            principal fields (`id`, `type`, `email`, `givenName`, `familyName`,
+
+            `pictureUrl`) appears alongside `displayText`.'
+          properties:
+            displayText:
+              type: string
+              description: A human-readable summary of the action that produced this event.
+            id:
+              type: string
+              description: "Identifier for the principal that performed the action.\n\n- For events caused by a person, this is the Tackle user ID.\n- For events caused by an M2M client, this is the machine principal ID.\n- For system-generated events, this is one of the reserved identifiers\n  `tackle-internal-update` (Tackle-initiated background updates) or\n  `aws-update` (updates that originated from AWS Partner Central).\n\nTreat any unrecognized identifier as an opaque string."
+            type:
+              type: string
+              description: 'Principal type. Common values include `user` and `otkuser` for actions taken
+
+                by a person, `machine` for actions taken by an M2M client, and
+
+                `tackle-automation` for actions taken by Tackle on the integrator''s behalf
+
+                (for example, scheduled retries or background reconciliation). Additional
+
+                system-generated principal types may appear over time as new automated
+
+                sources are introduced; clients should treat any unrecognized value as an
+
+                opaque string and surface it verbatim rather than rejecting the event.'
+            email:
+              type: string
+              description: Email of the principal, when known.
+            givenName:
+              type: string
+            familyName:
+              type: string
+            pictureUrl:
+              type: string
+    ListInvitationsResponse:
+      type: object
+      properties:
+        invitations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListInvitationsResponseItem'
+        total:
+          type: integer
+          example: 100
+        currentPageCount:
+          type: integer
+          example: 10
+        isNextPage:
+          type: boolean
+          example: true
+        nextIndex:
+          description: The starting index to use for fetching the next page of invitations. Only present when `isNextPage` is `true`.
+          type: integer
+          example: 10
+    InvitationProject:
+      type: object
+      properties:
+        businessProblem:
+          type: string
+        targetCompletionDate:
+          type: string
+        title:
+          type: string
+        expectedCustomerSpend:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: string
+              currencyCode:
+                type: string
+              frequency:
+                type: string
+                enum:
+                - Monthly
+              targetCompany:
+                type: string
+    InvitationReceiver:
+      type: object
+      properties:
+        alias:
+          type: string
+        awsAccountId:
+          type: string
+    InvitationMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          example: tackle-invitation-2jhD8b41CurTOqEsG2Soinub123
+        tackleOpportunityId:
+          type: string
+          example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+        crmId:
+          type: string
+          example: 006QL00000BahjLSKO
+        hasSalesforceErrors:
+          type: boolean
+          example: false
+        salesforceSyncError:
+          type: string
+          description: 'Most recent Salesforce sync error message, when the last sync attempt
+
+            failed. Absent on invitations where the last sync attempt succeeded.'
+          example: 'INVALID_FIELD_FOR_INSERT_UPDATE: TackleCoSell__c: bad field names on insert/update call'
+    InvitationCustomer:
+      type: object
+      properties:
+        companyName:
+          type: string
+        websiteUrl:
+          type: string
+        countryCode:
+          type: string
+        industry:
+          type: string
+          enum:
+          - Aerospace
+          - Agriculture
+          - Automotive
+          - Computers and Electronics
+          - Consumer Goods
+          - Education
+          - Energy - Oil and Gas
+          - Energy - Power and Utilities
+          - Financial Services
+          - Gaming
+          - Government
+          - Healthcare
+          - Hospitality
+          - Life Sciences
+          - Manufacturing
+          - Marketing and Advertising
+          - Media and Entertainment
+          - Mining
+          - Non-Profit Organization
+          - Professional Services
+          - Real Estate and Construction
+          - Retail
+          - Software and Internet
+          - Telecommunications
+          - Transportation and Logistics
+          - Travel
+          - Wholesale and Distribution
+          - Other
+    CreateInvitationRequest:
+      type: object
+      description: 'Request body for `createInvitation` (test-environment-only). The required fields are
+
+        the values consumed when constructing the simulated invitation; other fields are
+
+        optional.'
+      required:
+      - senderAwsAccountID
+      - payload
+      properties:
+        senderAwsAccountID:
+          type: string
+          description: The AWS account ID of the simulated sender.
+          example: '123456789098'
+        engagementTitle:
+          type: string
+          description: Title of the engagement invitation.
+          example: New Collaboration Opportunity
+        expirationDate:
+          type: string
+          format: date-time
+          description: When the invitation should expire.
+        invitationDate:
+          type: string
+          format: date-time
+          description: When the invitation was sent.
+        payloadType:
+          type: string
+          enum:
+          - OpportunityInvitation
+        payload:
+          type: object
+          required:
+          - value
+          properties:
+            value:
+              type: object
+              required:
+              - customer
+              - project
+              properties:
+                receiverResponsibilities:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - Distributor
+                    - Reseller
+                    - HardwarePartner
+                    - ManagedServiceProvider
+                    - SoftwarePartner
+                    - ServicesPartner
+                    - TrainingPartner
+                customer:
+                  type: object
+                  properties:
+                    companyName:
+                      type: string
+                    countryCode:
+                      type: string
+                    industry:
+                      type: string
+                    websiteUrl:
+                      type: string
+                project:
+                  type: object
+                  properties:
+                    businessProblem:
+                      type: string
+                    targetCompletionDate:
+                      type: string
+                      format: date-time
+                    title:
+                      type: string
+                    expectedCustomerSpend:
+                      type: array
+                      description: 'Expected customer spend amounts associated with the invitation. Use
+
+                        the documented camelCase field name `expectedCustomerSpend` — the
+
+                        capital-E form `ExpectedCustomerSpend` is currently accepted as a
+
+                        legacy compatibility, but new integrations should always send the
+
+                        camelCase form to remain forward-compatible.'
+                      items:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                          currencyCode:
+                            type: string
+                          frequency:
+                            type: string
+                            enum:
+                            - Monthly
+                          targetCompany:
+                            type: string
+                senderContacts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        format: email
+                      businessTitle:
+                        type: string
+                      firstName:
+                        type: string
+                      lastName:
+                        type: string
+                      phone:
+                        type: string
+    Error:
+      type: object
+      description: 'Error envelope returned for typed error responses. Some 4xx and 5xx responses
+
+        (such as direct `Unauthorized` and `Internal Server Error` responses) may instead
+
+        return an empty body; consumers should be tolerant of that.'
+      properties:
+        message:
+          type: string
+          description: A short, human-readable description of the error.
+          example: Opportunity not found
+    ListInvitationsResponseItem:
+      type: object
+      properties:
+        id:
+          type: string
+        cloudProviderId:
+          type: string
+        cloudStatus:
+          type: string
+        expirationDate:
+          type: string
+        cloudCreated:
+          type: string
+        created:
+          type: string
+        crmId:
+          type: string
+        crmOrgId:
+          type: string
+        companyName:
+          type: string
+        pendingRequestIds:
+          type: array
+          items:
+            type: string
+            example: 00123456789ABCDEFGHIJKL
+        targetCompletionDate:
+          type: string
+        title:
+          type: string
+        opportunityID:
+          type: string
+          description: 'The cloud-provider opportunity identifier this invitation is linked to, when known.
+
+            Note: `listInvitations` rows emit this field as `opportunityID` (capital `ID`), while
+
+            `getInvitation` returns the same logical value as `opportunityId` (lowercase `d`).
+
+            Consumers should handle both casings.'
+          example: O1234123
+        origin:
+          type: string
+          description: The origin of the invitation. `aws` for AWS-led invitations, `partner` for partner-led.
+          enum:
+          - aws
+          - partner
+        senderCompanyName:
+          type: string
+          description: The display name of the sending account. For AWS-led invitations this is `AWS`.
+          example: AWS
+        hasCloudErrors:
+          type: boolean
+        hasSalesforceErrors:
+          type: boolean
+        salesforceSyncError:
+          type: string
+        unifiedCreatedDate:
+          type: string
+  responses:
+    Unauthorized:
+      description: 'Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the
+
+        authenticated principal could not be resolved.'
+    BadRequest:
+      description: 'Bad Request. The request was malformed or failed validation (for example, an invalid
+
+        `sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that
+
+        fails to parse as JSON).'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Invalid sortField
+    Locked:
+      description: 'Locked. The request was rejected because the vendor is currently in a mid-reset state
+
+        (for example, while the vendor''s AWS Partner Central connection is being re-established).
+
+        Retry the request once the vendor''s reset has completed.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Locked
+    NotFound:
+      description: Not Found. No resource exists at the requested path for the authenticated vendor.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Opportunity not found
+    InternalServerError:
+      description: 'Internal Server Error. An unexpected error occurred while processing the request. Response
+
+        bodies for 5xx errors may be empty.'
+  parameters:
+    invitation_id:
+      name: invitation_id
+      in: path
+      required: true
+      description: 'The Tackle identifier for the invitation (for example,
+
+        `tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`
+
+        field of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement
+
+        invitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here.'
+      schema:
+        type: string
+        example: tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

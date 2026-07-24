@@ -1,0 +1,438 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Invoices API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Invoices
+paths:
+  /v1/invoices:
+    get:
+      summary: List Invoices
+      tags:
+      - Invoices
+      operationId: v1-get-invoices
+      responses:
+        '200':
+          $ref: '#/components/responses/Reports_200-OK-Invoices'
+        '400':
+          $ref: '#/components/responses/Reports_400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Unauthorized'
+        '422':
+          $ref: '#/components/responses/Reports_422-Reports'
+      parameters:
+      - $ref: '#/components/parameters/start_date'
+      - $ref: '#/components/parameters/end_date'
+      - $ref: '#/components/parameters/Marketplace'
+      description: List invoices within a date range
+      security:
+      - BearerAuth: []
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        country:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        zip_code:
+          type: string
+          nullable: true
+        email_domain:
+          type: string
+          nullable: true
+    Transaction:
+      title: Transaction
+      type: object
+      properties:
+        id:
+          type: string
+        seller_revenue:
+          $ref: '#/components/schemas/Money'
+        marketplace_fee:
+          $ref: '#/components/schemas/Money'
+        net_amount:
+          $ref: '#/components/schemas/NetAmount'
+      required:
+      - id
+      - seller_revenue
+      - marketplace_fee
+      - net_amount
+    NetAmount:
+      allOf:
+      - $ref: '#/components/schemas/Money'
+      description: Amount to be disbursed by cloud provider after any marketplace fees have been assessed
+    Customer:
+      type: object
+      properties:
+        account_number:
+          type: string
+          nullable: true
+          description: Marketplace Account Number
+        address:
+          $ref: '#/components/schemas/Address'
+    Money:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+          enum:
+          - EUR
+          - CAD
+          - USD
+          - GBP
+      required:
+      - amount
+      - currency
+    InvoiceId:
+      type: string
+      example: 12345-abcde
+    Invoice:
+      title: Invoice
+      type: object
+      properties:
+        invoice_id:
+          $ref: '#/components/schemas/InvoiceId'
+        invoice_date:
+          type: string
+          pattern: (^[0-9]{4}-[0-9]{2}-[0-9]{2})([T][0-9]{2}:[0-9]{2}:[0-9]{2})
+          readOnly: true
+        account_receivable_period:
+          type: string
+          pattern: \d{4}\-\d{2}
+        product:
+          $ref: '#/components/schemas/ReportingProduct'
+        transaction:
+          $ref: '#/components/schemas/Transaction'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        cloud_marketplace:
+          anyOf:
+          - $ref: '#/components/schemas/AwsCloud'
+          - $ref: '#/components/schemas/GcpCloud'
+      required:
+      - invoice_id
+      - invoice_date
+      - account_receivable_period
+      - product
+      - transaction
+      - customer
+      - cloud_marketplace
+    AwsCloud:
+      type: string
+      description: AWS Cloud
+      default: aws
+      enum:
+      - aws
+      example: aws
+    ReportingProduct:
+      title: Product
+      type: object
+      properties:
+        name:
+          type: string
+          default: Example Product
+        id:
+          default: example-product-code-12345
+          anyOf:
+          - $ref: '#/components/schemas/AwsProductId'
+          - $ref: '#/components/schemas/GcpProductId'
+        tackle_product_ref_id:
+          type: string
+          nullable: true
+      required:
+      - name
+      - id
+    Error:
+      title: ErrorResponse
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          minLength: 0
+        error:
+          type: string
+          description: Error response
+          minLength: 0
+        errors:
+          description: Error details
+          type: array
+          items: {}
+        error_type:
+          type: string
+          enum:
+          - service_exception
+          - client_exception
+      required:
+      - code
+      - error
+      - errors
+    Metadata:
+      title: Metadata
+      type: object
+      description: Metadata for a given request
+      properties:
+        link:
+          type: string
+          format: uri
+          example: https://api.tackle.io
+      required:
+      - link
+    AwsProductId:
+      type: string
+      description: AWS Product Code
+      example: 1test1a2b3c4d5e6f7g8h9ijk
+      minLength: 0
+    GcpProductId:
+      type: string
+      description: GCP Solution ID
+      example: tackle-for-gcp
+      minLength: 0
+    InvoicesResponse:
+      title: InvoicesResponse
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invoice'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    GcpCloud:
+      type: string
+      description: GCP Cloud
+      default: gcp
+      enum:
+      - gcp
+      example: gcp
+    422Reports:
+      title: Reports-422-Response
+      type: object
+      properties:
+        code:
+          type: string
+        error:
+          type: string
+        errors:
+          type: array
+          items: {}
+      required:
+      - code
+      - error
+      - errors
+  responses:
+    Reports_400-Bad-Request:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            example-bad-request:
+              value:
+                code: invalid_fields
+                error: Validation Error
+                errors:
+                - loc:
+                  - query
+                  - cloud
+                  msg: field required
+                  type: value_error.missing
+    401-Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                code: unauthorized
+                error: client_id and client_secret are invalid.
+                error_type: service_exception
+                errors: []
+    Reports_422-Reports:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/422Reports'
+          examples:
+            example-422-invalid-fields:
+              value:
+                code: invalid_fields
+                error: Validation Error
+                errors:
+                - ctx:
+                    enum_values:
+                    - aws
+                    - gcp
+                  loc:
+                  - query
+                  - marketplace
+                  msg: 'value is not a valid enumeration member; permitted: ''aws'', ''gcp'''
+                  type: type_error.enum
+    Reports_200-OK-Invoices:
+      description: Example success response containing a list of Invoice objects
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InvoicesResponse'
+          examples:
+            invoices-success:
+              value:
+                data:
+                - invoice_id: '457269757'
+                  invoice_date: '2021-01-30T23:58:57'
+                  account_receivable_period: 2021-01
+                  product:
+                    name: Tackle Cloud Marketplace Platform
+                    id: QfXDGCw68aSKGD6dRzmqmpXyd
+                    tackle_product_ref_id: null
+                  transaction:
+                    id: FAPenGMaWPzsq4oXbLCdwBrJpJYtwyWc8q9hoMTqu4Kdi3SmkRbnG74
+                    seller_revenue:
+                      amount: 28046
+                      currency: USD
+                    marketplace_fee:
+                      amount: -2243.68
+                      currency: USD
+                    net_amount:
+                      amount: 25802.32
+                      currency: USD
+                  customer:
+                    account_number: null
+                    address:
+                      country: null
+                      city: null
+                      zip_code: null
+                      email_domain: null
+                  cloud_marketplace: aws
+                - invoice_id: '942392272'
+                  invoice_date: '2021-01-30T00:01:28'
+                  account_receivable_period: 2021-01
+                  product:
+                    name: Tackle SaaS Platform for AWS Marketplace
+                    id: skawQm4YLaLubMZpL22TS2tYK
+                    tackle_product_ref_id: null
+                  transaction:
+                    id: XL5Uj76YzNiD5CB8eD56Qneq8baGRZ8MJ2pBzYoF9aZ9swFssHw4wxX
+                    seller_revenue:
+                      amount: 3300
+                      currency: USD
+                    marketplace_fee:
+                      amount: -264
+                      currency: USD
+                    net_amount:
+                      amount: 3036
+                      currency: USD
+                  customer:
+                    account_number: '510274708750'
+                    address:
+                      country: US
+                      city: ATLANTA
+                      zip_code: '30309'
+                      email_domain: ionicsecurity.com
+                  cloud_marketplace: aws
+                - invoice_id: '463798998'
+                  invoice_date: '2021-01-27T00:01:40'
+                  account_receivable_period: 2021-01
+                  product:
+                    name: Tackle SaaS Platform for AWS Marketplace
+                    id: skawQm4YLaLubMZpL22TS2tYK
+                    tackle_product_ref_id: null
+                  transaction:
+                    id: xfcRtmEjhaKUCnjKF54PPfKge3NGTXUbjngNPXCPfVcDpkkSxhQoVue
+                    seller_revenue:
+                      amount: 1100
+                      currency: USD
+                    marketplace_fee:
+                      amount: -88
+                      currency: USD
+                    net_amount:
+                      amount: 1012
+                      currency: USD
+                  customer:
+                    account_number: null
+                    address:
+                      country: US
+                      city: SEATTLE
+                      zip_code: '98104'
+                      email_domain: chef.io
+                  cloud_marketplace: aws
+                metadata:
+                  link: https:api.tackle.io/v1/invoices?start_date=2021-01-01&end_date=2021-02-01&cloud=aws
+  parameters:
+    end_date:
+      name: end_date
+      description: End date for a query
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2021-07-01'
+    start_date:
+      name: start_date
+      description: Start date for a query
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2021-06-01'
+    Marketplace:
+      name: cloud
+      in: query
+      schema:
+        type: string
+        enum:
+        - aws
+        - gcp
+        example: aws
+      description: Cloud Marketplace
+      required: true
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

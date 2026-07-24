@@ -1,0 +1,2198 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Opportunities API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Opportunities
+  description: 'Create, read, update, and list co-sell opportunities — the partner-
+
+    originated (Outbound / Partner Referral) and AWS-originated (Inbound
+
+    / AWS Referral) deals tracked in AWS Partner Central. Includes the
+
+    opportunity history endpoint for inspecting cloud-side request and
+
+    response detail.'
+paths:
+  /api/opportunities:
+    get:
+      operationId: listOpportunities
+      summary: List co-sell opportunities
+      tags:
+      - Opportunities
+      parameters:
+      - name: q
+        in: query
+        description: A search query to filter the opportunities.
+        schema:
+          type: string
+          example: Example
+      - name: from
+        in: query
+        description: The starting index of the opportunities to return.
+        schema:
+          type: integer
+          example: 5
+      - name: pageSize
+        in: query
+        description: The number of opportunities to return per page (minimum 1, maximum 100, default 10).
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+          example: 10
+      - name: cloudStatus
+        in: query
+        description: "Filter opportunities by their AWS Partner Central review status. Accepts\nmultiple values; results match any of the supplied statuses.\n\nStatus values:\n\n- `Pending Submission` — opportunity is drafted but has not yet been\n  submitted to AWS Partner Central for review.\n- `Submitted` — opportunity has been submitted and is awaiting AWS triage.\n- `In review` — AWS is actively reviewing the opportunity.\n- `Approved` — AWS has approved the opportunity.\n- `Rejected` — AWS has rejected the opportunity. See `cloudResponses` on\n  the matching opportunity event for the rejection reason.\n- `Action Required` — AWS requires updates before the review can proceed.\n  See `cloudResponses` on the matching opportunity event for the requested\n  changes."
+        schema:
+          type: string
+          enum:
+          - Pending Submission
+          - Submitted
+          - In review
+          - Approved
+          - Rejected
+          - Action Required
+          example: Approved
+      - name: source
+        in: query
+        description: 'Filter opportunities by their Tackle source. `Inbound` corresponds to
+
+          opportunities originated by AWS (AWS Referral); `Outbound` corresponds
+
+          to opportunities originated by the partner (Partner Referral). Accepts
+
+          multiple values; results match any of the supplied sources.'
+        schema:
+          type: string
+          enum:
+          - Inbound
+          - Outbound
+          example: Inbound
+      - name: cloudSalesStage
+        in: query
+        description: 'Filter opportunities by the AWS Partner Central sales-stage value.
+
+          Accepts multiple values; results match any of the supplied stages.
+
+          See `lifeCycle.stage` on `Opportunity` for the documented stage values
+
+          (for example, `Prospect`, `Qualified`, `Technical Validation`,
+
+          `Business Validation`, `Committed`, `Launched`, `Closed Lost`).'
+        schema:
+          type: string
+          example: Prospect
+      - name: startTargetCloseDate
+        in: query
+        description: Used to filter opportunities by their target close date. Only opportunities with a target close date on or after this specified date will be retrieved.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: endTargetCloseDate
+        in: query
+        description: Used to filter opportunities based on their target close date. Only opportunities with a target close date on or before this specified date will be retrieved.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: startCloudCreated
+        in: query
+        description: Used to filter opportunities by specifying the earliest creation date. Opportunities created on or after this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: endCloudCreated
+        in: query
+        description: Used to filter opportunities by specifying the latest creation date. Opportunities created on or before this date will be included in the results.
+        schema:
+          type: string
+          format: date
+          example: '2024-08-01'
+      - name: sortField
+        in: query
+        description: 'The field to sort the opportunities by. Only takes effect when `sortOrder`
+
+          is also supplied; both query parameters must be present together for sorting
+
+          to apply. If only `sortField` is provided, the response uses the default
+
+          ordering instead. Note that `cloudProviderID` is case-sensitive: the trailing
+
+          `ID` is uppercase, and sending `cloudProviderId` (lowercase `d`) returns
+
+          `400 Bad Request: Invalid sortField`.'
+        schema:
+          type: string
+          enum:
+          - cloudProviderID
+          - cloudStatus
+          - cloudSalesStage
+          - cloudCreated
+          - cloudLastModified
+          - companyName
+          - title
+          - targetCloseDate
+          - unifiedCreatedDate
+      - name: sortOrder
+        in: query
+        description: 'Sort direction. Only takes effect when `sortField` is also supplied — both
+
+          query parameters must be present together. If only `sortOrder` is provided
+
+          (without `sortField`), the response uses the underlying default ordering
+
+          instead of any sort. There is no implicit ascending default applied when
+
+          only one of the two parameters is sent.'
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: crmId
+        in: query
+        description: 'Filter by the Salesforce CRM identifier of the linked opportunity record.
+
+          For Salesforce, both 15- and 18-character IDs are accepted. To filter by
+
+          a HubSpot Deal ID instead, see the `hubspotCrmId` field on
+
+          `OpportunityMetadata`.'
+        schema:
+          type: string
+          example: 006QL00000BahjGYAR
+      - name: hasCloudErrors
+        in: query
+        description: 'Filter opportunities by their AWS Partner Central error state. Set to
+
+          `true` to return only opportunities whose most recent AWS Partner Central
+
+          request failed; set to `false` to return only opportunities with no
+
+          cloud-side errors. Omit to disable the filter. Inspect
+
+          `listOpportunityEvents` for the matching opportunity to see the error
+
+          detail.'
+        schema:
+          type: boolean
+          example: false
+      - name: hasCrmId
+        in: query
+        description: 'Filter opportunities by whether a CRM identifier is linked. Set to `true`
+
+          to return only opportunities that have a `crmId` (Salesforce) or
+
+          `hubspotCrmId` value populated; set to `false` to return only
+
+          opportunities with no CRM identifier linked. Omit to disable the filter.'
+        schema:
+          type: boolean
+          example: true
+      - name: hasSalesforceErrors
+        in: query
+        description: 'Filter opportunities by their Salesforce sync state. Set to `true` to
+
+          return only opportunities whose most recent Salesforce sync attempt
+
+          failed; set to `false` to return only opportunities with no Salesforce
+
+          sync errors. Omit to disable the filter. The error message itself is
+
+          available on the matching opportunity in the `salesforceSyncError` field.'
+        schema:
+          type: boolean
+          example: true
+      - name: hasAnyError
+        in: query
+        description: "Filters opportunities by their error state.\n\n- `true` returns only opportunities that currently have at least one\n  cloud-side error or Salesforce-sync error.\n- `false` returns only opportunities that have no cloud-side or\n  Salesforce-sync errors.\n- Omit the parameter to disable this filter entirely.\n\nSee `hasCloudErrors` and `hasSalesforceErrors` to filter on each error\nsource independently."
+        schema:
+          type: boolean
+          example: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOpportunitiesResponse'
+              examples:
+                listOpportunities:
+                  summary: List Opportunities
+                  value:
+                    opportunities:
+                    - id: tackle-cosell-2lFCqCaslodkeuysLfBp1ddo30
+                      cloudProviderId: O123456
+                      cloudStatus: Approved
+                      cloudSalesStage: Closed Lost
+                      companyName: Acme Corp
+                      created: '2024-08-27T13:50:25Z'
+                      pendingRequestIds: []
+                      title: An opportunity title
+                      opportunityType: Expansion
+                      source: Inbound
+                      cloudCreated: '2024-08-28T00:03:40Z'
+                      cloudLastModified: '2024-08-28T00:04:10Z'
+                      unifiedCreatedDate: '2024-08-28T00:03:40Z'
+                    - id: tackle-cosell-2lGPOvybT28ieur76jJwkkz7Of6
+                      cloudProviderId: O234567
+                      cloudStatus: Approved
+                      cloudSalesStage: Closed Lost
+                      companyName: Globex Industries
+                      created: '2024-08-28T00:03:31Z'
+                      pendingRequestIds:
+                      - example-00123456789ABCDEFGHIJKL
+                      title: Tackle - Marketplace Listing
+                      opportunityType: Net New Business
+                      crmId: 006QL00000BahjGYAR
+                      source: Inbound
+                      cloudCreated: '2024-08-28T00:03:40Z'
+                      cloudLastModified: '2024-08-28T00:04:10Z'
+                      unifiedCreatedDate: '2024-08-28T00:03:40Z'
+                    total: 2
+                    currentPageCount: 2
+                    isNextPage: false
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      operationId: createOpportunity
+      summary: Create a co-sell opportunity
+      description: 'Queues a create request against AWS Partner Central. The success response is `202 Accepted`
+
+        with the Tackle identifier; poll `getOpportunity` to observe the cloud-side outcome.
+
+
+        If a `crmId` is supplied and your vendor account enforces a one-opportunity-per-CRM-ID
+
+        constraint, the request is rejected with `409 Conflict` when an existing co-sell
+
+        opportunity already maps to the same CRM identifier. Whether this constraint is enforced
+
+        is configured per vendor; contact your Tackle account team if you need to change the
+
+        behavior.'
+      tags:
+      - Opportunities
+      parameters:
+      - in: header
+        name: tackle-operation-id
+        schema:
+          type: string
+          enum:
+          - createOpportunity
+          - createDraftOpportunity
+          description: 'Selects the create flow. `createOpportunity` (the default) creates the
+
+            opportunity and starts the AWS engagement; `createDraftOpportunity` creates
+
+            the opportunity in draft state without starting an engagement.
+
+
+            Header matching is lenient: only `createDraftOpportunity` is matched
+
+            explicitly, and any other value (including unknown values, an empty
+
+            string, or an omitted header) is routed through the default
+
+            `createOpportunity` flow rather than rejected with `400 Bad Request`.
+
+            Clients should still send one of the documented values so future
+
+            server-side validation can be adopted without a breaking change.'
+        required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOpportunityInput'
+            examples:
+              createAndStartEngagementOpportunity:
+                summary: Create and start engagement for the opportunity
+                value:
+                  customer:
+                    account:
+                      address:
+                        countryCode: US
+                        postalCode: '33351'
+                        stateOrRegion: Florida
+                      companyName: Test INC.
+                      industry: Computers and Electronics
+                      websiteUrl: https://www.tackle.com
+                  lifeCycle:
+                    targetCloseDate: '2024-09-18'
+                  marketing:
+                    source: None
+                  opportunityType: Net New Business
+                  opportunityTeam:
+                  - email: tc@tackle.io
+                    firstName: Timothy
+                    lastName: Cazu
+                    businessTitle: PartnerAccountManager
+                  primaryNeedsFromAws:
+                  - Co-Sell - Deal Support
+                  - Co-Sell - Pricing Assistance
+                  project:
+                    additionalComments: a random text
+                    competitorName: ''
+                    customerBusinessProblem: An example business problem that needs solving
+                    customerUseCase: AI Machine Learning and Analytics
+                    deliveryModels:
+                    - SaaS or PaaS
+                    expectedCustomerSpend:
+                    - amount: '25000'
+                      currencyCode: USD
+                      targetCompany: Example INC.
+                      frequency: Monthly
+                    salesActivities:
+                    - Initialized discussions with customer
+                    - Customer has shown interest in solution
+                    title: Test opportunity
+                  softwareRevenue: {}
+                  solutions:
+                  - S-0014870
+                  awsMarketplaceOffers: []
+                  awsProducts:
+                  - AmazonBedrock
+                  - AmazonS3
+                  awsSubmission:
+                    involvementType: Co-Sell
+                    visibility: Full
+                  crmId: 006QL00000BahjGYAR
+              createDraftOpportunity:
+                summary: Create a draft opportunity
+                description: To create a draft opportunity, you will need to include the `createDraftOpportunity` tackle-operation-id in the header.
+                value:
+                  customer:
+                    account:
+                      address:
+                        countryCode: US
+                        postalCode: '33351'
+                        stateOrRegion: Florida
+                      companyName: Test INC.
+                      industry: Computers and Electronics
+                      websiteUrl: https://www.tackle.com
+                  lifeCycle:
+                    targetCloseDate: '2024-09-18'
+                  marketing:
+                    source: None
+                  opportunityType: Net New Business
+                  opportunityTeam:
+                  - email: tc@tackle.io
+                    firstName: Timothy
+                    lastName: Cazu
+                    businessTitle: PartnerAccountManager
+                  primaryNeedsFromAws:
+                  - Co-Sell - Deal Support
+                  - Co-Sell - Pricing Assistance
+                  project:
+                    additionalComments: a random text
+                    competitorName: ''
+                    customerBusinessProblem: An example business problem that needs solving
+                    customerUseCase: AI Machine Learning and Analytics
+                    deliveryModels:
+                    - SaaS or PaaS
+                    expectedCustomerSpend:
+                    - amount: '25000'
+                      currencyCode: USD
+                      targetCompany: Example INC.
+                      frequency: Monthly
+                    salesActivities:
+                    - Initialized discussions with customer
+                    - Customer has shown interest in solution
+                    title: Test opportunity
+                  softwareRevenue: {}
+                  solutions:
+                  - S-0014870
+                  awsMarketplaceOffers: []
+                  awsProducts:
+                  - AmazonBedrock
+      responses:
+        '202':
+          description: 'Accepted. The create-opportunity request has been queued for asynchronous processing
+
+            in AWS Partner Central. The returned `id` is the Tackle identifier that can be used
+
+            immediately with `getOpportunity` and `updateOpportunity`; the cloud-side identifier
+
+            (`cloudProviderId`) becomes available once the request reaches AWS.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The Tackle identifier for the opportunity.
+              example:
+                id: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/opportunities/{opportunity_id}:
+    get:
+      operationId: getOpportunity
+      summary: Get a co-sell opportunity
+      tags:
+      - Opportunities
+      parameters:
+      - $ref: '#/components/parameters/opportunity_id'
+      responses:
+        '200':
+          description: 'OK. When the cloud-side payload is unavailable for the opportunity (for example,
+
+            immediately after `createOpportunity` returns 202 but before AWS Partner Central
+
+            has populated the cloud-side record), the response may contain only `metadata` and
+
+            omit `awsOpportunitySummary`, `customer`, `lifeCycle`, and the other AWS-derived
+
+            fields. Clients should treat fields outside `metadata` as optional.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpportunityResponse'
+              examples:
+                getOpportunity:
+                  summary: Get Opportunity
+                  description: You can retrieve the opportunity information by providing the unique identifier for the opportunity.
+                  value:
+                    nationalSecurity: 'No'
+                    catalog: Sandbox
+                    createdDate: '2024-08-19T15:30:20Z'
+                    id: O1234567
+                    customer:
+                      account:
+                        companyName: Test INC.
+                        websiteUrl: https://www.tackle.com
+                        industry: Computers and Electronics
+                        address:
+                          countryCode: US
+                          postalCode: '33351'
+                          stateOrRegion: Florida
+                      contacts:
+                      - email: ll@example.com
+                        firstName: Luis
+                        lastName: Lora
+                        businessTitle: CEO
+                    opportunityTeam:
+                    - email: vv@example.com
+                      firstName: Victor
+                      lastName: Vargas
+                      businessTitle: Alliance Leader
+                    lastModifiedDate: '2024-08-19T16:00:08Z'
+                    opportunityType: Net New Business
+                    source: Outbound
+                    lifeCycle:
+                      reviewStatus: Submitted
+                      stage: Prospect
+                      targetCloseDate: '2024-09-18'
+                    marketing:
+                      source: None
+                    partnerOpportunityIdentifier: tackle-cosell-2ksnzr4Dy2NuUubXB1XyVigr2ut
+                    primaryNeedsFromAws:
+                    - Co-Sell - Pricing Assistance
+                    - Co-Sell - Deal Support
+                    solutions:
+                    - S-0014870
+                    awsProducts:
+                    - AmazonBedrock
+                    - AmazonS3
+                    project:
+                      additionalComments: a random text
+                      customerBusinessProblem: An example business problem that needs solving
+                      customerUseCase: AI Machine Learning and Analytics
+                      deliveryModels:
+                      - SaaS or PaaS
+                      expectedCustomerSpend:
+                      - amount: '98765'
+                        currencyCode: USD
+                        frequency: Monthly
+                        targetCompany: Example INC.
+                      salesActivities:
+                      - Initialized discussions with customer
+                      - Customer has shown interest in solution
+                      title: Test opportunity
+                    awsOpportunitySummary:
+                      catalog: Sandbox
+                      customer:
+                        contacts:
+                        - email: xyz@example.com
+                          firstName: John
+                          lastName: Doe
+                      insights:
+                        engagementScore: High
+                      involvementType: Co-Sell
+                      involvementTypeChangeReason: Expansion Opportunity
+                      lifeCycle:
+                        stage: Prospect
+                        targetCloseDate: '2024-09-18'
+                      opportunityTeam:
+                      - email: aa@aws.com
+                        firstName: Aaron
+                        lastName: Arc
+                        businessTitle: PSM
+                      origin: Partner Referral
+                      project:
+                        expectedCustomerSpend:
+                        - amount: '98765'
+                          currencyCode: USD
+                          frequency: Monthly
+                          targetCompany: Example INC.
+                      relatedEntityIds:
+                        awsProducts:
+                        - AmazonBedrock
+                        - AmazonS3
+                        solutions:
+                        - S-0014870
+                      visibility: Full
+                    metadata:
+                      id: tackle-cosell-2ksnzr4Dy2NuUubXB1XyVigr2ut
+                      companyName: Test INC.
+                      createdDate: '2024-08-19T15:30:20Z'
+                      lastModifiedDate: '2024-08-19T15:30:20Z'
+                      crmId: 006QL00000BahjGYAR
+                      crmOrgId: 00D5g000004uvWXYZ
+                      hasCloudErrors: false
+                      hasSalesforceErrors: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      operationId: updateOpportunity
+      summary: Update a co-sell opportunity
+      description: "Queues a partial update against AWS Partner Central. The exact behavior depends on\nthe value of the `tackle-operation-id` header.\n\n- Production cloud operations: `updateOpportunity` (default), `updateDraftOpportunity`,\n  `updateStartEngagementOpportunity`, `startEngagement`, `closeLostOpportunity`,\n  `launchOpportunity`, `updateOpportunityCRMID`.\n- Test-environment-only: `acceptOpportunity`, `rejectOpportunity`. These simulate\n  AWS-side responses to an incoming engagement invitation/opportunity and are routable\n  only for vendor accounts provisioned for use in a test environment. Production vendor\n  accounts that send one of these operation IDs receive `400 Bad Request` with the\n  message `the requested operation is only supported in test or demo environments.`\n\nThe success response is `202 Accepted` with an empty body; poll `getOpportunity` or\n`listOpportunityEvents` to observe the outcome of the queued request."
+      tags:
+      - Opportunities
+      parameters:
+      - $ref: '#/components/parameters/opportunity_id'
+      - in: header
+        name: tackle-operation-id
+        schema:
+          type: string
+          enum:
+          - updateOpportunity
+          - updateDraftOpportunity
+          - updateStartEngagementOpportunity
+          - startEngagement
+          - closeLostOpportunity
+          - launchOpportunity
+          - updateOpportunityCRMID
+          - acceptOpportunity
+          - rejectOpportunity
+          description: 'Selects the operation to perform. The values `acceptOpportunity` and
+
+            `rejectOpportunity` are test-environment-only and return `400 Bad Request`
+
+            for production vendors with the message
+
+            `the requested operation is only supported in test or demo environments.`'
+        required: true
+        example: updateOpportunity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityInput'
+            examples:
+              updateOpportunity:
+                summary: Update the opportunity
+                description: You will likely want to update the opportunity information at some point during the process, to do so you will need to include the `updateOpportunity` operation ID in the header.
+                value:
+                  project:
+                    title: New Title
+                    expectedCustomerSpend:
+                    - currencyCode: USD
+                      amount: '9999.99'
+                      frequency: Monthly
+                      targetCompany: Example INC.
+              updateStartEngagementOpportunity:
+                summary: Update and start engagement for the opportunity
+                description: You will likely want to update and start engaging a draft opportunity at some point during the process, to do so you will need to include the `updateStartEngagementOpportunity` tackle-operation-id in the header.
+                value:
+                  project:
+                    title: New Title
+                    expectedCustomerSpend:
+                    - currencyCode: USD
+                      amount: '9999.99'
+                      frequency: Monthly
+                      targetCompany: Example INC.
+                    awsSubmission:
+                      involvementType: Co-Sell
+                      visibility: Full
+              startEngagement:
+                summary: Start engagement for a draft opportunity
+                description: When you are ready to start engaging with AWS, you will need to include the `startEngagement` operation ID in the header.
+                value:
+                  awsSubmission:
+                    involvementType: Co-Sell
+                    visibility: Full
+              closeLostOpportunity:
+                summary: Close a lost opportunity
+                description: If the opportunity is no longer viable, you can close it as lost. To do so, you will need to include the `closeLostOpportunity` operation ID in the header.
+                value:
+                  lifeCycle:
+                    closedLostReason: Price
+                  project:
+                    additionalComments: No too much comments
+              launchOpportunity:
+                summary: Launch the opportunity
+                description: When the opportunity is ready to be launched, you will need to include the `launchOpportunity` operation ID in the header.
+                value:
+                  lifeCycle:
+                    targetCloseDate: '2024-09-18'
+                  softwareRevenue:
+                    effectiveDate: '2024-10-01'
+                    expirationDate: '2025-01-01'
+                    deliveryModel: Pay-as-you-go
+                    value:
+                      amount: '22222'
+                      currencyCode: USD
+                  solutions:
+                  - S-0014870
+                  awsProducts:
+                  - AmazonBedrock
+                  awsMarketplaceOffers:
+                  - offer-123456
+              updateOpportunityCRMID:
+                summary: Sets the crmID for the opportunity and a linked invitation if it exists
+                description: A user can set a crmID on an opportunity after the user created the opportunity. This is useful when the user wants to link the opportunity to a CRM record (e.g. Salesforce opportunity record).
+                value:
+                  crmId: 006QL00001BahjGYAR
+              acceptOpportunity:
+                summary: Accept an incoming opportunity (test-environment-only)
+                description: 'Test-environment-only. Simulates AWS accepting an incoming opportunity
+
+                  so that downstream workflows can be exercised without sending the
+
+                  request to AWS Partner Central. The request body is ignored. Production
+
+                  vendors that send `acceptOpportunity` receive `400 Bad Request` with the
+
+                  message `the requested operation is only supported in test or demo environments.`'
+                value: {}
+              rejectOpportunity:
+                summary: Reject an incoming opportunity (test-environment-only)
+                description: 'Test-environment-only. Simulates AWS rejecting an incoming opportunity
+
+                  so that downstream workflows can be exercised without sending the
+
+                  request to AWS Partner Central. The request body is ignored. Production
+
+                  vendors that send `rejectOpportunity` receive `400 Bad Request` with the
+
+                  message `the requested operation is only supported in test or demo environments.`'
+                value: {}
+      responses:
+        '202':
+          description: 'Accepted. The update request has been queued for asynchronous processing in AWS
+
+            Partner Central. The response body is empty; poll `getOpportunity` or
+
+            `listOpportunityEvents` to observe the result of the queued request.'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '423':
+          $ref: '#/components/responses/Locked'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/opportunities/{opportunity_id}/events:
+    get:
+      operationId: listOpportunityEvents
+      summary: List opportunity events
+      tags:
+      - Opportunities
+      parameters:
+      - $ref: '#/components/parameters/opportunity_id'
+      - in: query
+        name: next
+        description: 'Cursor token used to resume a paginated history query. When supplied, the
+
+          query continues from where a previous request left off.
+
+
+          **Note**: this endpoint does not currently emit `next` cursors on responses
+
+          (see the `next` field of the response schema below), so in practice clients
+
+          have no way to obtain a cursor from the API itself today. This parameter is
+
+          therefore rarely useful unless a cursor value is already known from another
+
+          source.'
+        schema:
+          type: string
+          example: oe#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListOpportunityEvents'
+                  next:
+                    type: string
+                    description: 'Reserved cursor for the next page of history events.
+
+                      **This endpoint does not currently emit this field** — no
+
+                      cursor is produced today, so the field is always omitted
+
+                      from the JSON response. Treat this field as reserved for
+
+                      a future paginated response; do not rely on its absence
+
+                      to detect end-of-data today, and do not depend on it
+
+                      appearing in responses.'
+              examples:
+                listOpportunityEvents:
+                  summary: List Opportunity Events for createOpportunity
+                  value:
+                    events:
+                    - operation: cloudUpdateEvent
+                      eventID: 2lsw8uaIoeMT72IRnlRz19gKxXY
+                      timestamp: '2024-09-10T15:25:35Z'
+                      rawRequest:
+                        AccessControls:
+                          NationalSecurity: 'No'
+                          Owner:
+                            Email: aws-partner@tackle.io.invalid
+                            FirstName: Tackle
+                            LastName: BD Team
+                          Visibility: ''
+                        AwsOpportunityTeam:
+                        - BusinessTitle: WWPSPDM
+                          Email: jane.doe@example.com
+                          FirstName: Jane
+                          LastName: Doe
+                        - BusinessTitle: PDM
+                          Email: kress.franzen@example.com
+                          FirstName: Kress
+                          LastName: Franzen
+                        AwsSalesLifeCycle: null
+                        Catalog: Sandbox
+                        CreatedDate: '2024-09-10T15:25:23Z'
+                        Customer:
+                          Account:
+                            Address:
+                              City: null
+                              CountryCode: US
+                              PostalCode: '33351'
+                              StateOrRegion: Florida
+                              StreetAddress: null
+                            AwsAccountId: null
+                            CompanyName: Example INC.
+                            Duns: null
+                            Industry: Computers and Electronics
+                            OtherIndustry: null
+                            WebsiteUrl: https://www.tackle.com
+                          Contact: null
+                        Id: O1234567
+                        Insights: null
+                        LastModifiedDate: '2024-09-10T15:25:29Z'
+                        LifeCycle:
+                          ClosedLostReason: ''
+                          NextSteps: null
+                          NextStepsHistory: null
+                          ReviewComments: null
+                          ReviewStatus: Submitted
+                          ReviewStatusReason: null
+                          Stage: Prospect
+                          TargetCloseDate: '2024-09-18'
+                        Marketing:
+                          AwsFundingUsed: ''
+                          CampaignName: null
+                          Channels: null
+                          Source: None
+                          UseCases: null
+                        OpportunityType: Net New Business
+                        Origin: Partner Referral
+                        PartnerOpportunityIdentifier: tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J
+                        OpportunityTeam: []
+                        PrimaryNeedsFromAws:
+                        - Co-Sell - Deal Support
+                        Project:
+                          AdditionalComments: a random text
+                          ApnPrograms: null
+                          CompetitorName: ''
+                          CustomerBusinessProblem: Trying to get a better solution
+                          CustomerUseCase: AI Machine Learning and Analytics
+                          DeliveryModels:
+                          - SaaS or PaaS
+                          EngagementTypes: null
+                          ExpectedCustomerSpend:
+                          - Amount: '25000'
+                            CurrencyCode: USD
+                            frequency: Monthly
+                            targetCompany: example.com
+                          OtherCompetitorNames: null
+                          OtherSolutionDescription: null
+                          RelatedOpportunityIdentifier: null
+                          SalesActivities:
+                          - Initialized discussions with customer
+                          - Customer has shown interest in solution
+                          Title: Example Opportunity
+                        RelatedEntityIdentifiers:
+                          AwsMarketplaceOffers: null
+                          AwsProducts: []
+                          EngagementInvitations: null
+                          Solutions:
+                          - S-0014870
+                        ResultMetadata: {}
+                        SoftwareRevenue: null
+                    - operation: createOpportunity
+                      eventID: 2lsw6raV18Ymy8DBK0ExX5LBP21
+                      timestamp: '2024-09-10T15:25:29Z'
+                      cloudResponses:
+                      - requestID: example-00123456789ABCDEFGHIJKL
+                        success: true
+                        timestamp: '2024-09-10T15:25:24Z'
+                        response:
+                          Identifier: O1234567
+                          LastModifiedDate: '2024-09-10T15:25:23Z'
+                          PartnerOpportunityIdentifier: tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J
+                          ResultMetadata: {}
+                      - requestID: example-01123456789ABCDEFGHIJKL
+                        success: true
+                        timestamp: '2024-09-10T15:25:26Z'
+                        response:
+                          ResultMetadata: {}
+                      - requestID: example-02123456789ABCDEFGHIJKL
+                        success: true
+                        timestamp: '2024-09-10T15:25:29Z'
+                        response:
+                          ResultMetadata: {}
+                      cloudRequests:
+                      - requestID: example-00123456789ABCDEFGHIJKL
+                        operation: createOpportunity
+                        timestamp: '2024-09-10T15:25:20Z'
+                        request:
+                          AccessControls: null
+                          Catalog: Sandbox
+                          ClientToken: null
+                          Customer:
+                            Account:
+                              Address:
+                                City: null
+                                CountryCode: US
+                                PostalCode: '33351'
+                                StateOrRegion: Florida
+                                StreetAddress: null
+                              AwsAccountId: null
+                              CompanyName: Example INC.
+                              Duns: null
+                              Industry: Computers and Electronics
+                              OtherIndustry: null
+                              WebsiteUrl: https://www.tackle.com
+                            Contact: null
+                          LifeCycle:
+                            ClosedLostReason: ''
+                            NextSteps: null
+                            NextStepsHistory: null
+                            ReviewComments: null
+                            ReviewStatus: ''
+                            ReviewStatusReason: null
+                            Stage: ''
+                            TargetCloseDate: '2024-09-18'
+                          Marketing:
+                            AwsFundingUsed: ''
+                            CampaignName: null
+                            Channels: null
+                            Source: None
+                            UseCases: null
+                          OpportunityType: Net New Business
+                          Origin: ''
+                          PartnerOpportunityIdentifier: tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J
+                          OpportunityTeam: null
+                          PrimaryNeedsFromAws:
+                          - Co-Sell - Deal Support
+                          Project:
+                            AdditionalComments: a random text
+                            ApnPrograms: null
+                            CompetitorName: ''
+                            CustomerBusinessProblem: Trying to get a better solution
+                            CustomerUseCase: AI Machine Learning and Analytics
+                            DeliveryModels:
+                            - SaaS or PaaS
+                            EngagementTypes: null
+                            ExpectedCustomerSpend:
+                            - Amount: '25000'
+                              CurrencyCode: USD
+                              frequency: Monthly
+                              targetCompany: example.com
+                            OtherCompetitorNames: null
+                            OtherSolutionDescription: null
+                            RelatedOpportunityIdentifier: null
+                            SalesActivities:
+                            - Initialized discussions with customer
+                            - Customer has shown interest in solution
+                            Title: Example Opportunity
+                          SoftwareRevenue:
+                            DeliveryModel: ''
+                            EffectiveDate: null
+                            ExpirationDate: null
+                            Value: null
+                      - requestID: example-01123456789ABCDEFGHIJKL
+                        operation: associateSolutions
+                        timestamp: '2024-09-10T15:25:24Z'
+                        request:
+                          Catalog: Sandbox
+                          OpportunityIdentifier: O1234567
+                          RelatedEntityIdentifier: S-1234567
+                          RelatedEntityType: Solutions
+                      - requestID: example-02123456789ABCDEFGHIJKL
+                        operation: startEngagement
+                        timestamp: '2024-09-10T15:25:26Z'
+                        request:
+                          AwsEngagement: ''
+                          Catalog: Sandbox
+                          Identifier: O1234567
+                      rawRequest:
+                        accessControls: null
+                        awsMarketplaceOffers: []
+                        awsProducts: []
+                        customer:
+                          account:
+                            address:
+                              countryCode: US
+                              postalCode: '33351'
+                              stateOrRegion: Florida
+                            awsAccountId: null
+                            companyName: Example INC.
+                            industry: Computers and Electronics
+                            otherIndustry: null
+                            websiteUrl: https://www.tackle.com
+                          contact: null
+                        lifeCycle:
+                          targetCloseDate: '2024-09-18'
+                        marketing:
+                          source: None
+                        opportunityType: Net New Business
+                        opportunityTeam:
+                        - businessTitle: PartnerAccountManager
+                          email: tc@tackle.io
+                          firstName: Timothy
+                          lastName: Cazu
+                        primaryNeedsFromAws:
+                        - Co-Sell - Deal Support
+                        project:
+                          additionalComments: a random text
+                          apnPrograms: null
+                          competitorName: ''
+                          customerBusinessProblem: Trying to get a better solution
+                          customerUseCase: AI Machine Learning and Analytics
+                          deliveryModels:
+                          - SaaS or PaaS
+                          expectedCustomerSpend:
+                          - amount: '25000'
+                            currencyCode: USD
+                            frequency: Monthly
+                            targetCompany: example.com
+                          otherCompetitorNames: null
+                          otherSolutionDescription: null
+                          relatedOpportunityIdentifier: null
+                          salesActivities:
+                          - Initialized discussions with customer
+                          - Customer has shown interest in solution
+                          title: Example opportunity
+                        softwareRevenue:
+                          deliveryModel: null
+                        solutions:
+                        - S-1234567
+                      activityDetails:
+                        displayText: Opportunity created
+                        id: usr-01HXY12345
+                        type: user
+                        email: john.doe@example.com
+                        givenName: John
+                        familyName: Doe
+                        pictureUrl: https://tackle.io/
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        city:
+          type: string
+        countryCode:
+          type: string
+        postalCode:
+          type: string
+        stateOrRegion:
+          type: string
+        streetAddress:
+          type: string
+    LifeCycle:
+      type: object
+      properties:
+        closedLostReason:
+          type: string
+          description: 'Reason the opportunity was closed lost, when `stage` is
+
+            `Closed Lost`. Absent on opportunities still in active stages.'
+          enum:
+          - Customer Deficiency
+          - Delay / Cancellation of Project
+          - Legal / Tax / Regulatory
+          - Lost to Competitor - Google
+          - Lost to Competitor - Microsoft
+          - Lost to Competitor - SoftLayer
+          - Lost to Competitor - VMWare
+          - Lost to Competitor - Other
+          - No Opportunity
+          - On Premises Deployment
+          - Partner Gap
+          - Price
+          - Security / Compliance
+          - Technical Limitations
+          - Customer Experience
+          - Other
+          - People/Relationship/Governance
+          - Product/Technology
+          - Financial/Commercial
+        nextSteps:
+          type: string
+        nextStepsHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              time:
+                type: string
+              value:
+                type: string
+        reviewComments:
+          type: string
+        reviewStatus:
+          type: string
+          readOnly: true
+          enum:
+          - Pending Submission
+          - Submitted
+          - In review
+          - Approved
+          - Rejected
+          - Action Required
+        reviewStatusReason:
+          type: string
+        stage:
+          type: string
+          description: 'AWS Partner Central sales-stage value for this opportunity, restricted
+
+            to the stages used in partner-side reporting and updates. Move through
+
+            the stages in order as the deal progresses (`Prospect` → `Qualified` →
+
+            `Technical Validation` → `Business Validation` → `Committed` →
+
+            `Launched`); set to `Closed Lost` and supply `closedLostReason` if the
+
+            opportunity is lost.'
+          enum:
+          - Prospect
+          - Qualified
+          - Technical Validation
+          - Business Validation
+          - Committed
+          - Launched
+          - Closed Lost
+        targetCloseDate:
+          type: string
+          description: The target close date for the opportunity, formatted as `YYYY-MM-DD`.
+          example: '2024-09-18'
+    Contacts:
+      type: array
+      items:
+        type: object
+        properties:
+          email:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+          phone:
+            type: string
+          businessTitle:
+            type: string
+    Opportunity:
+      type: object
+      properties:
+        nationalSecurity:
+          type: string
+          description: 'Whether the opportunity is for a national-security or government
+
+            customer that AWS Partner Central treats as restricted. Submit `Yes`
+
+            for national-security workloads (which routes the opportunity through
+
+            AWS''s restricted review path) and `No` otherwise.'
+          enum:
+          - 'No'
+          - 'Yes'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        lifeCycle:
+          $ref: '#/components/schemas/LifeCycle'
+        marketing:
+          $ref: '#/components/schemas/Marketing'
+        opportunityType:
+          type: string
+          enum:
+          - Net New Business
+          - Expansion
+          - Flat Renewal
+        primaryNeedsFromAws:
+          type: array
+          items:
+            type: string
+            enum:
+            - Co-Sell - Architectural Validation
+            - Co-Sell - Business Presentation
+            - Co-Sell - Competitive Information
+            - Co-Sell - Pricing Assistance
+            - Co-Sell - Technical Consultation
+            - Co-Sell - Total Cost of Ownership Evaluation
+            - Co-Sell - Deal Support
+            - Co-Sell - Support for Public Tender / RFx
+        project:
+          $ref: '#/components/schemas/Project'
+        softwareRevenue:
+          $ref: '#/components/schemas/SoftwareRevenue'
+        solutions:
+          type: array
+          items:
+            type: string
+        awsMarketplaceOffers:
+          type: array
+          items:
+            type: string
+          description: Array of AWS Marketplace offer identifiers associated with the opportunity.
+        awsProducts:
+          type: array
+          items:
+            type: string
+          description: 'Array of AWS product identifiers associated with the opportunity. These represent AWS services
+
+            or products that are part of the customer''s solution (e.g., AmazonBedrock, AmazonS3, AmazonEC2Trn2).'
+        dataMapper:
+          $ref: '#/components/schemas/DataMapper'
+    Customer:
+      type: object
+      properties:
+        account:
+          $ref: '#/components/schemas/Account'
+        contacts:
+          $ref: '#/components/schemas/Contacts'
+    ListOpportunitiesResponse:
+      type: object
+      properties:
+        opportunities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListOpportunitiesResponseItem'
+        total:
+          description: The total number of opportunities that matches the filter criteria.
+          type: integer
+          example: 100
+        currentPageCount:
+          description: The number of opportunities returned in the current page.
+          type: integer
+          example: 10
+        isNextPage:
+          description: A boolean value indicating if there are more opportunities to be fetched.
+          type: boolean
+          example: true
+        nextIndex:
+          description: The starting index to use for fetching the next page of opportunities. Only present when `isNextPage` is `true`.
+          type: integer
+          example: 10
+    Project:
+      type: object
+      properties:
+        additionalComments:
+          type: string
+        customerBusinessProblem:
+          type: string
+        apnPrograms:
+          type: array
+          description: 'AWS Partner Network (APN) programs associated with this opportunity,
+
+            returned as an array of program names from the enumerated list below.'
+          items:
+            type: string
+            enum:
+            - APN Immersion Days
+            - APN Solution Space
+            - ATO (Authority to Operate)
+            - AWS Marketplace Campaign
+            - IS Immersion Day SFID Program
+            - ISV Workload Migration
+            - Migration Acceleration Program
+            - P3
+            - Partner Launch Initiative
+            - Partner Opportunity Acceleration Funded
+            - The Next Smart
+            - VMware Cloud on AWS
+            - Well-Architected
+            - Windows
+            - Workspaces/AppStream Accelerator Program
+            - WWPS NDPP
+        competitorName:
+          type: string
+          enum:
+          - Oracle Cloud
+          - On-Prem
+          - Co-location
+          - Akamai
+          - AliCloud
+          - Google Cloud Platform
+          - IBM Softlayer
+          - Microsoft Azure
+          - Other- Cost Optimization
+          - No Competition
+          - '*Other'
+        customerUseCase:
+          type: string
+        deliveryModels:
+          type: array
+          items:
+            type: string
+            enum:
+            - SaaS or PaaS
+            - BYOL or AMI
+            - Managed Services
+            - Professional Services
+            - Resell
+            - Other
+        expectedCustomerSpend:
+          type: array
+          items:
+            type: object
+            properties:
+              currencyCode:
+                type: string
+              amount:
+                type: string
+              frequency:
+                type: string
+                enum:
+                - Monthly
+              targetCompany:
+                type: string
+        otherCompetitorNames:
+          type: string
+        otherSolutionDescription:
+          type: string
+        relatedOpportunityIdentifier:
+          type: string
+        title:
+          type: string
+        salesActivities:
+          type: array
+          items:
+            type: string
+            enum:
+            - Initialized discussions with customer
+            - Customer has shown interest in solution
+            - Conducted POC / Demo
+            - In evaluation / planning stage
+            - Agreed on solution to Business Problem
+            - Completed Action Plan
+            - Finalized Deployment Need
+            - SOW Signed
+    AwsOpportunityTeam:
+      type: object
+      properties:
+        businessTitle:
+          type: string
+          enum:
+          - AWSSalesRep
+          - AWSAccountOwner
+          - WWPSPDM
+          - PDM
+          - PSM
+          - ISVSM
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    OpportunityInput:
+      allOf:
+      - $ref: '#/components/schemas/Opportunity'
+      type: object
+      properties:
+        awsSubmission:
+          description: This information is required to start engagement with AWS.
+          type: object
+          properties:
+            visibility:
+              type: string
+              enum:
+              - Full
+              - Limited
+            involvementType:
+              type: string
+              enum:
+              - Co-Sell
+              - For Visibility Only
+    Error:
+      type: object
+      description: 'Error envelope returned for typed error responses. Some 4xx and 5xx responses
+
+        (such as direct `Unauthorized` and `Internal Server Error` responses) may instead
+
+        return an empty body; consumers should be tolerant of that.'
+      properties:
+        message:
+          type: string
+          description: A short, human-readable description of the error.
+          example: Opportunity not found
+    DataMapper:
+      type: object
+      properties:
+        $tkl-metadata:
+          type: string
+    ListOpportunityEvents:
+      type: object
+      required:
+      - operation
+      - eventID
+      - timestamp
+      properties:
+        operation:
+          type: string
+          description: 'The operation recorded for this history event. This is a free-form string,
+
+            intentionally not enumerated. Common values include the lifecycle operations
+
+            exposed by `createOpportunity` and the `tackle-operation-id` header on
+
+            `updateOpportunity` (for example `createOpportunity`, `createDraftOpportunity`,
+
+            `updateOpportunity`, `updateDraftOpportunity`,
+
+            `updateStartEngagementOpportunity`, `startEngagement`, `closeLostOpportunity`,
+
+            `launchOpportunity`, `updateOpportunityCRMID`, `acceptOpportunity`,
+
+            `rejectOpportunity`), plus synthetic system events such as `internalUpdateEvent`
+
+            and `cloudUpdateEvent`. History records may also include CRM-sync and
+
+            partner-system operations beyond this list; clients should treat the value as
+
+            an opaque string and surface unknown values verbatim rather than rejecting
+
+            them.'
+        eventID:
+          type: string
+          example: 2lsw6rdFuCz0d7cVNCubTYGSznY
+        timestamp:
+          type: string
+          example: '2024-09-10T15:25:19Z'
+        cloudRaw:
+          type: object
+          additionalProperties: true
+          description: 'Raw cloud-provider snapshot associated with this history event. Present
+
+            only when the recorded event captured a non-empty cloud-side snapshot;
+
+            omitted on events without one. For AWS, this corresponds to the serialized
+
+            opportunity payload returned by AWS Partner Central at the time the event
+
+            was recorded; clients should treat the contents as opaque diagnostic data,
+
+            since the shape varies by cloud provider and operation.'
+        rawRequest:
+          type: object
+          properties:
+            targetCloseDate:
+              type: string
+          additionalProperties: true
+        cloudResponses:
+          description: 'Per-request results from AWS Partner Central for the operations recorded
+
+            in this event. On success, each entry''s `response` object contains the
+
+            AWS payload and `success` is `true`. On failure, `response` is `null`,
+
+            `success` is `false`, and one of `errorType`, `errorResponse`, or
+
+            `errorResponses` is populated with the AWS error detail.'
+          type: array
+          items:
+            type: object
+            properties:
+              requestID:
+                type: string
+              success:
+                type: boolean
+              timestamp:
+                type: string
+              response:
+                type: object
+                additionalProperties: true
+              errorType:
+                type: string
+              errorResponse:
+                type: string
+              errorResponses:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fieldName:
+                      type: string
+                    errorMessage:
+                      type: string
+        cloudRequests:
+          type: array
+          items:
+            type: object
+            properties:
+              operation:
+                type: string
+              requestID:
+                type: string
+              timestamp:
+                type: string
+              request:
+                type: object
+                additionalProperties: true
+        activityDetails:
+          type: object
+          description: 'Details about the principal that performed the operation. The full set of
+
+            principal fields (`id`, `type`, `email`, `givenName`, `familyName`,
+
+            `pictureUrl`) appears alongside `displayText`.'
+          properties:
+            displayText:
+              type: string
+              description: A human-readable summary of the action that produced this event.
+            id:
+              type: string
+              description: "Identifier for the principal that performed the action.\n\n- For events caused by a person, this is the Tackle user ID.\n- For events caused by an M2M client, this is the machine principal ID.\n- For system-generated events, this is one of the reserved identifiers\n  `tackle-internal-update` (Tackle-initiated background updates) or\n  `aws-update` (updates that originated from AWS Partner Central).\n\nTreat any unrecognized identifier as an opaque string."
+            type:
+              type: string
+              description: 'Principal type. Common values include `user` and `otkuser` for actions taken
+
+                by a person, `machine` for actions taken by an M2M client, and
+
+                `tackle-automation` for actions taken by Tackle on the integrator''s behalf
+
+                (for example, scheduled retries or background reconciliation). Additional
+
+                system-generated principal types may appear over time as new automated
+
+                sources are introduced; clients should treat any unrecognized value as an
+
+                opaque string and surface it verbatim rather than rejecting the event.'
+            email:
+              type: string
+              description: Email of the principal, when known.
+            givenName:
+              type: string
+            familyName:
+              type: string
+            pictureUrl:
+              type: string
+    OpportunityMetadata:
+      type: object
+      required:
+      - id
+      - companyName
+      - createdDate
+      - lastModifiedDate
+      properties:
+        id:
+          type: string
+          example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+        tackleInvitationId:
+          type: string
+          description: 'The Tackle identifier of the invitation this opportunity was created from, when the
+
+            opportunity originated from an inbound AWS-led invitation. Absent on opportunities
+
+            that were not created from an invitation.'
+          example: tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q
+        companyName:
+          type: string
+          example: Example INC.
+        createdDate:
+          type: string
+          example: '2024-08-19T15:30:20Z'
+        lastModifiedDate:
+          type: string
+          example: '2024-08-19T16:00:08Z'
+        pendingRequestIds:
+          type: array
+          items:
+            type: string
+          example:
+          - 00123456789ABCDEFGHIJKL
+        crmId:
+          type: string
+          example: 006ABCDEFGHIJK
+        hubspotCrmId:
+          type: string
+          description: HubSpot Deal ID associated with this co-sell opportunity
+          example: '12345678'
+        crmOrgId:
+          type: string
+          description: The Salesforce organization identifier (org ID or alias) for the CRM org this opportunity's `crmId` belongs to.
+          example: 00D5g000004uvWXYZ
+        hasCloudErrors:
+          type: boolean
+          example: false
+        hasSalesforceErrors:
+          type: boolean
+          example: false
+        salesforceSyncError:
+          type: string
+          description: 'Most recent Salesforce sync error message, when the last sync attempt
+
+            failed. Absent on opportunities where the last sync attempt succeeded.'
+          example: 'INVALID_FIELD_FOR_INSERT_UPDATE: TackleCoSell__c: bad field names on insert/update call'
+        archivedAt:
+          type: string
+          format: date-time
+          description: Timestamp at which the opportunity was archived. Absent on non-archived opportunities.
+        lastCRMSyncCloud:
+          type: string
+          format: date-time
+          description: Timestamp of the last CRM sync attempt to the cloud (success or failure).
+        lastCRMSyncCloudStatus:
+          type: string
+          description: 'Status of the most recent CRM-to-cloud sync attempt for this
+
+            opportunity. Common values are `success` and `failed`. Absent on
+
+            opportunities that have never been synced to the cloud.'
+          example: success
+        lastCRMSyncCloudSuccessful:
+          type: string
+          format: date-time
+          description: Timestamp of the last successful CRM sync to the cloud; present only when the last sync succeeded.
+        lastCRMSyncReceived:
+          type: string
+          format: date-time
+          description: Timestamp of the last CRM sync received from the CRM (success or failure).
+        lastCRMSyncReceivedStatus:
+          type: string
+          description: 'Status of the most recent CRM-to-Tackle inbound sync for this
+
+            opportunity. Common values are `success` and `failed`. Absent on
+
+            opportunities that have never received an inbound CRM update.'
+          example: success
+        lastCRMSyncReceivedChanges:
+          type: object
+          description: Map of field names to their changed values from the last CRM sync received.
+          additionalProperties: true
+    ListOpportunitiesResponseItem:
+      type: object
+      properties:
+        id:
+          type: string
+        cloudProviderId:
+          type: string
+        cloudStatus:
+          type: string
+        cloudSalesStage:
+          type: string
+        companyName:
+          type: string
+        created:
+          type: string
+        lastModified:
+          type: string
+        pendingRequestIds:
+          type: array
+          items:
+            type: string
+            example: 00123456789ABCDEFGHIJKL
+        hasCloudErrors:
+          type: boolean
+        hasSalesforceErrors:
+          type: boolean
+        salesforceSyncError:
+          type: string
+        title:
+          type: string
+        opportunityType:
+          type: string
+        crmId:
+          type: string
+        source:
+          type: string
+        cloudCreated:
+          type: string
+        cloudLastModified:
+          type: string
+        targetCloseDate:
+          type: string
+          description: The target close date of the opportunity, formatted as `YYYY-MM-DD`.
+          example: '2024-09-18'
+        unifiedCreatedDate:
+          type: string
+    OpportunityResponse:
+      allOf:
+      - $ref: '#/components/schemas/Opportunity'
+      type: object
+      properties:
+        nationalSecurity:
+          type: string
+          description: 'Whether the opportunity is for a national-security or government
+
+            customer that AWS Partner Central treats as restricted. Submit `Yes`
+
+            for national-security workloads (which routes the opportunity through
+
+            AWS''s restricted review path) and `No` otherwise.'
+          enum:
+          - 'No'
+          - 'Yes'
+        createdDate:
+          type: string
+        id:
+          type: string
+          description: 'The AWS Partner Central opportunity identifier (for example,
+
+            `O123456`). This is the cloud-provider identifier, not the Tackle
+
+            identifier — to look this opportunity up in Tackle, use
+
+            `metadata.id` (`tackle-cosell-...`).'
+          example: O123456
+        lastModifiedDate:
+          type: string
+        source:
+          type: string
+          enum:
+          - Inbound
+          - Outbound
+        partnerOpportunityIdentifier:
+          type: string
+          example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+        opportunityTeam:
+          description: 'Partner-side contacts assigned to this opportunity. For the AWS-side
+
+            opportunity team (AWS sales reps, partner-development managers, etc.),
+
+            see `awsOpportunitySummary.opportunityTeam`.'
+          $ref: '#/components/schemas/Contacts'
+        metadata:
+          $ref: '#/components/schemas/OpportunityMetadata'
+        awsOpportunitySummary:
+          type: object
+          description: 'The AWS Partner Central view of this opportunity, returned only after
+
+            AWS has populated cloud-side data for the record. This is the AWS-side
+
+            snapshot — including AWS-assigned engagement details, AWS opportunity
+
+            team contacts, and AWS-derived insights — and may differ from the
+
+            partner-supplied fields outside this object until AWS finishes
+
+            processing the most recent change.'
+          properties:
+            catalog:
+              type: string
+              description: 'Which AWS Partner Central catalog this opportunity belongs to. `AWS`
+
+                is the production catalog; `Sandbox` is the AWS Partner Central
+
+                sandbox catalog used for AWS-side integration testing. Sandbox
+
+                opportunities are isolated from production data.'
+              enum:
+              - Sandbox
+              - AWS
+            customer:
+              type: object
+              properties:
+                contacts:
+                  $ref: '#/components/schemas/Contacts'
+            insights:
+              $ref: '#/components/schemas/Insights'
+            involvementType:
+              type: string
+              description: 'How AWS will be involved in this opportunity. `Co-Sell` engages an AWS
+
+                seller to actively partner on the deal; `For Visibility Only` reports
+
+                the deal to AWS without engaging an AWS seller.'
+              enum:
+              - Co-Sell
+              - For Visibility Only
+            involvementTypeChangeReason:
+              type: string
+              description: 'Reason supplied when `involvementType` is changed for this opportunity
+
+                (for example, when a `For Visibility Only` opportunity is upgraded to
+
+                `Co-Sell` after qualification, or when an opportunity''s involvement
+
+                level is adjusted in response to deal changes).'
+              enum:
+              - Expansion Opportunity
+              - Change in Deal Information
+              - Customer Requested
+              - Technical Complexity
+              - Risk Mitigation
+            lifeCycle:
+              type: object
+              properties:
+                closedLostReason:
+                  type: string
+                  description: 'Reason the opportunity was closed lost, when `stage` is
+
+                    `Closed Lost`. Absent on opportunities still in active stages.
+
+                    AWS Partner Central accepts a broad set of values here; treat
+
+                    unrecognized values as opaque.'
+                  enum:
+                  - Administrative
+                  - Business Associate Agreement
+                  - Company Acquired/Dissolved
+                  - Competitive Offering
+                  - Customer Data Requirement
+                  - Customer Deficiency
+                  - Customer Experience
+                  - Delay / Cancellation of Project
+                  - Duplicate
+                  - Duplicate Opportunity
+                  - Executive Blocker
+                  - Failed Vetting
+                  - Feature Limitation
+                  - Financial/Commercial
+                  - Insufficient Amazon Value
+                  - Insufficient AWS Value
+                  - International Constraints
+                  - Legal / Tax / Regulatory
+                  - Legal Terms and Conditions
+                  - Lost to Competitor
+                  - Lost to Competitor - Google
+                  - Lost to Competitor - Microsoft
+                  - Lost to Competitor - Other
+                  - Lost to Competitor - Rackspace
+                  - Lost to Competitor - SoftLayer
+                  - Lost to Competitor - VMWare
+                  - No Customer Reference
+                  - No Integration Resources
+                  - No Opportunity
+                  - No Perceived Value of MP
+                  - No Response
+                  - Not Committed to AWS
+                  - No Update
+                  - On Premises Deployment
+                  - Other
+                  - Other (Details in Description)
+                  - Partner Gap
+                  - Past Due
+                  - People/Relationship/Governance
+                  - Platform Technology Limitation
+                  - Preference for Competitor
+                  - Price
+                  - Product/Technology
+                  - Product Not on AWS
+                  - Security / Compliance
+                  - Self-Service
+                  - Technical Limitations
+                  - Term Sheet Impasse
+                nextSteps:
+                  type: string
+                stage:
+                  type: string
+                  description: 'AWS Partner Central sales-stage value for this opportunity.
+
+                    Spans the full AWS-side lifecycle from initial discovery
+
+                    (`Not Started`, `In Progress`, `Prospect`) through
+
+                    qualification (`Qualify`, `Engaged`), evaluation (`Technical
+
+                    Validation`, `Business Validation`), to outcome (`Launched`,
+
+                    `Closed Lost`, `Closed Incomplete`). The set of stages may
+
+                    expand over time; treat unrecognized values as opaque.'
+                  enum:
+                  - Not Started
+                  - In Progress
+                  - Prospect
+                  - Engaged
+                  - Identified
+                  - Qualify
+                  - Research
+                  - Seller Engaged
+                  - Evaluating
+                  - Seller Registered
+                  - Term Sheet Negotiation
+                  - Contract Negotiation
+                  - Onboarding
+                  - Building Integration
+                  - Qualified
+                  - On-hold
+                  - Technical Validation
+                  - Business Validation
+                  - Committed
+                  - Launched
+                  - Deferred to Partner
+                  - Closed Lost
+                  - Completed
+                  - Closed Incomplete
+                targetCloseDate:
+                  type: string
+                nextStepsHistory:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      time:
+                        type: string
+                      value:
+                        type: string
+            opportunityTeam:
+              type: array
+              description: 'The AWS-side opportunity team. Returned as an array with one entry per
+
+                AWS principal involved.'
+              items:
+                $ref: '#/components/schemas/AwsOpportunityTeam'
+            origin:
+              type: string
+              enum:
+              - Partner Referral
+              - AWS Referral
+            project:
+              type: object
+              properties:
+                expectedCustomerSpend:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: string
+                        description: Stringified decimal amount; returned as a string to preserve precision.
+                      currencyCode:
+                        type: string
+                      frequency:
+                        type: string
+                        enum:
+                        - Monthly
+                      targetCompany:
+                        type: string
+            relatedEntityIds:
+              type: object
+              description: Identifiers for entities related to the opportunity, such as AWS products and solutions.
+              properties:
+                awsProducts:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of AWS product identifiers associated with the opportunity.
+                solutions:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of solution identifiers associated with the opportunity.
+            relatedOpportunityId:
+              type: string
+            visibility:
+              type: string
+              enum:
+              - Full
+              - Limited
+    Insights:
+      type: object
+      description: AWS-derived insights about the opportunity, populated by AWS Partner Central when available.
+      properties:
+        engagementScore:
+          type: string
+          description: 'AWS Partner Central engagement score for the opportunity, when
+
+            provided. Common values include `Low`, `Medium`, and `High`;
+
+            clients should treat unrecognized values as opaque.'
+          example: High
+        nextBestActions:
+          type: string
+          description: AWS-suggested next-best-action text for the opportunity, when provided.
+    SoftwareRevenue:
+      type: object
+      properties:
+        deliveryModel:
+          type: string
+          enum:
+          - Contract
+          - Pay-as-you-go
+          - Subscription
+        effectiveDate:
+          type: string
+        expirationDate:
+          type: string
+        value:
+          type: object
+          properties:
+            currencyCode:
+              type: string
+            amount:
+              type: string
+    CreateOpportunityInput:
+      allOf:
+      - $ref: '#/components/schemas/OpportunityInput'
+      type: object
+      properties:
+        crmId:
+          type: string
+          example: 006QL00000BahjGYAR
+        hubspotCrmId:
+          type: string
+          description: HubSpot Deal ID to associate with this co-sell opportunity
+          example: '12345678'
+        awsSubmission:
+          type: object
+          properties:
+            visibility:
+              type: string
+              enum:
+              - Full
+              - Limited
+            involvementType:
+              type: string
+              enum:
+              - Co-Sell
+              - For Visibility Only
+        opportunityTeam:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phone:
+                type: string
+              businessTitle:
+                type: string
+                enum:
+                - PartnerAccountManager
+                - OpportunityOwner
+    Account:
+      type: object
+      properties:
+        awsAccountId:
+          type: string
+        companyName:
+          type: string
+        duns:
+          type: string
+        industry:
+          type: string
+          enum:
+          - Aerospace
+          - Agriculture
+          - Automotive
+          - Computers and Electronics
+          - Consumer Goods
+          - Education
+          - Energy - Oil and Gas
+          - Energy - Power and Utilities
+          - Financial Services
+          - Gaming
+          - Government
+          - Healthcare
+          - Hospitality
+          - Life Sciences
+          - Manufacturing
+          - Marketing and Advertising
+          - Media and Entertainment
+          - Mining
+          - Non-Profit Organization
+          - Professional Services
+          - Real Estate and Construction
+          - Retail
+          - Software and Internet
+          - Telecommunications
+          - Transportation and Logistics
+          - Travel
+          - Wholesale and Distribution
+          - Other
+        otherIndustry:
+          type: string
+        websiteUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+    Marketing:
+      type: object
+      properties:
+        awsFundingUsed:
+          type: string
+          enum:
+          - 'No'
+          - 'Yes'
+        campaignName:
+          type: string
+        channels:
+          type: array
+          items:
+            type: string
+        source:
+          type: string
+          description: 'AWS Partner Central marketing source for the opportunity. Common values
+
+            include `None`, `Marketing Activity`, and `Other`; treat unrecognized
+
+            values as opaque.'
+          example: None
+        useCases:
+          type: array
+          items:
+            type: string
+  responses:
+    Locked:
+      description: 'Locked. The request was rejected because the vendor is currently in a mid-reset state
+
+        (for example, while the vendor''s AWS Partner Central connection is being re-established).
+
+        Retry the request once the vendor''s reset has completed.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Locked
+    NotFound:
+      description: Not Found. No resource exists at the requested path for the authenticated vendor.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Opportunity not found
+    Conflict:
+      description: 'Conflict. The request cannot be applied to the resource in its current state (for example,
+
+        attempting `updateDraftOpportunity` on an opportunity that is no longer in draft state, or
+
+        `createOpportunity` with a `crmId` that already maps to an existing co-sell opportunity).'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Draft opportunity cannot be updated as it is not in draft state.
+    Unauthorized:
+      description: 'Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the
+
+        authenticated principal could not be resolved.'
+    BadRequest:
+      description: 'Bad Request. The request was malformed or failed validation (for example, an invalid
+
+        `sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that
+
+        fails to parse as JSON).'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Invalid sortField
+    InternalServerError:
+      description: 'Internal Server Error. An unexpected error occurred while processing the request. Response
+
+        bodies for 5xx errors may be empty.'
+  parameters:
+    opportunity_id:
+      name: opportunity_id
+      in: path
+      required: true
+      description: 'The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).
+
+        This is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on
+
+        `getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response
+
+        body''s top-level `id` field) is **not** accepted here.'
+      schema:
+        type: string
+        example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

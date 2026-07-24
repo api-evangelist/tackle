@@ -1,0 +1,429 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Scores API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Scores
+  description: Score domains and search scored accounts.
+paths:
+  /api/scores:
+    post:
+      operationId: scoreDomains
+      summary: Score domains
+      description: Scores a batch of domains for buyer-signal propensity.
+      tags:
+      - Scores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScoreDomainsRequest'
+            example:
+              domains:
+              - example.com
+              - acme-corp.com
+              signalType: PropensityToBuy-aws
+      responses:
+        '200':
+          description: Scores for the requested domains.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScoreResult'
+              example:
+              - domain: example.com
+                signalType: PropensityToBuy-aws
+                displayScore: High
+                demographics:
+                  country: US
+                  state: California
+                  employeeRange: 1001-5000
+                  primaryIndustry: Software
+                  revenueRange: $100M-$500M
+                  region: AMER
+                  companyName: Example Co
+        '400':
+          description: The request body is missing required fields or contains invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+              example:
+                message: Invalid request body
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /api/scores/search:
+    post:
+      operationId: searchScoredDomains
+      summary: Search scored domains
+      description: 'Searches scored domains using filters and pagination. When no
+
+        filters are supplied, the response contains all scored domains
+
+        available to the calling account, limited by pagination.
+
+
+        Pagination uses `page_number` and `records_per_page`. For large
+
+        result sets, use `metadata.search_after` from one response as the
+
+        next request''s `search_after` value to continue forward.'
+      tags:
+      - Scores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchScoredDomainsRequest'
+            example:
+              page_number: 0
+              records_per_page: 50
+              filtering_clouds:
+              - aws
+              filtering_scores:
+              - High
+              domain_search_string: acme
+      responses:
+        '200':
+          description: Paginated scored domains and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScoredDomainsResponse'
+              example:
+                data:
+                - domain: example.com
+                  score_aws: High
+                  score_azure: Medium
+                  score_gcp: Low
+                  score_channel_partner: ''
+                  demographics:
+                    country: US
+                    state: California
+                    employeeRange: 1001-5000
+                    primaryIndustry: Software
+                    revenueRange: $100M-$500M
+                    region: AMER
+                    companyName: Example Co
+                metadata:
+                  next_page: '1'
+                  previous_page: ''
+                  current_page_number: 0
+                  current_page_record_count: 1
+                  total_record_count: 25
+                  search_after:
+                  - example.com
+        '400':
+          description: The request body is missing or contains invalid values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchError'
+              example:
+                error: Invalid request body
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '500':
+          description: The request could not be completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchError'
+              example:
+                error: Internal server error
+components:
+  schemas:
+    PaginationMetadata:
+      type: object
+      properties:
+        next_page:
+          type: string
+          description: Next page index, or an empty string when there is no next page.
+          example: '1'
+        previous_page:
+          type: string
+          description: Previous page index, or an empty string when there is no previous page.
+          example: ''
+        current_page_number:
+          type: integer
+          description: 0-based current page index.
+          example: 0
+        current_page_record_count:
+          type: integer
+          description: Number of records in the current page.
+          example: 50
+        total_record_count:
+          type: integer
+          description: Total number of records matching the filter.
+          example: 250
+        search_after:
+          type: array
+          description: Pagination anchor to pass as the next request's `search_after`.
+          items:
+            type: string
+    SearchError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    Demographics:
+      type: object
+      description: Firmographic enrichment for a domain.
+      properties:
+        country:
+          type: string
+          nullable: true
+          example: US
+        state:
+          type: string
+          nullable: true
+          example: California
+        employeeRange:
+          type: string
+          nullable: true
+          example: 1001-5000
+        primaryIndustry:
+          type: string
+          nullable: true
+          example: Software
+        revenueRange:
+          type: string
+          nullable: true
+          example: $100M-$500M
+        region:
+          type: string
+          nullable: true
+          example: AMER
+        companyName:
+          type: string
+          nullable: true
+          example: Example Co
+    ScoreResult:
+      type: object
+      required:
+      - domain
+      - signalType
+      - displayScore
+      properties:
+        domain:
+          type: string
+          example: example.com
+        signalType:
+          $ref: '#/components/schemas/BuyerSignalType'
+        displayScore:
+          $ref: '#/components/schemas/ScoreBin'
+        demographics:
+          $ref: '#/components/schemas/Demographics'
+    CloudMarketplace:
+      type: string
+      description: A cloud marketplace filter value.
+      enum:
+      - aws
+      - gcp
+      - azure
+      - ChannelPartner-aws
+    BuyerSignalType:
+      type: string
+      description: Identifies which cloud marketplace signal to score.
+      enum:
+      - PropensityToBuy-aws
+      - PropensityToBuy-azure
+      - PropensityToBuy-gcp
+      - ChannelPartner-aws
+    PaginatedScoredDomainsResponse:
+      type: object
+      required:
+      - data
+      - metadata
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoredDomain'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
+    ScoreDomainsRequest:
+      type: object
+      required:
+      - domains
+      - signalType
+      properties:
+        domains:
+          type: array
+          minItems: 1
+          description: One or more domains to score.
+          items:
+            type: string
+            example: example.com
+        signalType:
+          $ref: '#/components/schemas/BuyerSignalType'
+    ScoredDomain:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          example: example.com
+        score_aws:
+          type: string
+          description: AWS Marketplace score value, or an empty string when unavailable.
+          example: High
+        score_azure:
+          type: string
+          description: Azure Marketplace score value, or an empty string when unavailable.
+          example: Medium
+        score_gcp:
+          type: string
+          description: Google Cloud Marketplace score value, or an empty string when unavailable.
+          example: Low
+        score_channel_partner:
+          type: string
+          description: Channel partner score value, or an empty string when unavailable.
+          example: ''
+        demographics:
+          $ref: '#/components/schemas/Demographics'
+    SearchScoredDomainsRequest:
+      type: object
+      description: Filter and pagination parameters for scored-domain search.
+      properties:
+        page_number:
+          type: integer
+          minimum: 0
+          description: 0-based page index.
+          default: 0
+          example: 0
+        records_per_page:
+          type: integer
+          minimum: 1
+          description: Page size.
+          default: 50
+          example: 50
+        search_after:
+          type: array
+          description: Pagination anchor returned from a previous response.
+          items:
+            type: string
+        domain_search_string:
+          type: string
+          description: Case-insensitive substring match against the domain.
+          example: acme
+        domains:
+          type: array
+          description: Restrict results to these exact domains.
+          items:
+            type: string
+        filtering_clouds:
+          type: array
+          description: Filter by one or more cloud marketplaces.
+          items:
+            $ref: '#/components/schemas/CloudMarketplace'
+        filtering_scores:
+          type: array
+          description: Filter by one or more score values.
+          items:
+            $ref: '#/components/schemas/ScoreBin'
+        regions:
+          type: array
+          description: Filter by company region.
+          items:
+            type: string
+        revenue_band:
+          type: array
+          description: Filter by company revenue band.
+          items:
+            type: string
+        industries:
+          type: array
+          description: Filter by company industry.
+          items:
+            type: string
+        new_high_scores:
+          type: boolean
+          description: When `true`, restrict results to domains that recently reached `High`.
+    MessageError:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+    ScoreBin:
+      type: string
+      description: The display value for a propensity score.
+      enum:
+      - Low
+      - Medium
+      - High
+  responses:
+    ForbiddenError:
+      description: The access token is not authorized for this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+          example:
+            message: Forbidden
+    InternalServerError:
+      description: The request could not be completed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+          example:
+            message: Internal server error
+    UnauthorizedError:
+      description: The access token is missing, malformed, or expired.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+          example:
+            message: Unauthorized
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

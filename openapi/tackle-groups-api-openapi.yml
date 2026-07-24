@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Groups API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Groups
+  description: SCIM 2.0 Groups endpoint - returns full Group resources (RFC 7643 §4.2)
+paths:
+  /scim/v2/Groups:
+    get:
+      tags:
+      - Groups
+      summary: Get Groups
+      description: 'Retrieve available groups (roles) for the organization.
+
+        This is the standard SCIM 2.0 Groups endpoint per RFC 7644.
+
+        It fetches roles from the RBAC service and returns them as SCIM Group resources
+
+        with meta.resourceType set to "Group", as required by identity providers (Okta, Azure AD).
+
+        '
+      operationId: getGroups
+      responses:
+        '200':
+          description: Groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupListResponse'
+              example:
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                totalResults: 3
+                startIndex: 1
+                itemsPerPage: 3
+                Resources:
+                - schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Group
+                  id: role_admin_123
+                  displayName: Administrator
+                  meta:
+                    resourceType: Group
+                    location: https://scim-api.tackle.io/scim/v2/Groups/role_admin_123
+                  members: []
+                - schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Group
+                  id: role_user_456
+                  displayName: User
+                  meta:
+                    resourceType: Group
+                    location: https://scim-api.tackle.io/scim/v2/Groups/role_user_456
+                  members: []
+                - schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Group
+                  id: role_viewer_789
+                  displayName: Viewer
+                  meta:
+                    resourceType: Group
+                    location: https://scim-api.tackle.io/scim/v2/Groups/role_viewer_789
+                  members: []
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '403'
+            detail: Forbidden
+    Unauthorized:
+      description: Authentication information is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '401'
+            detail: Unauthorized
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '500'
+            detail: Internal server error
+  schemas:
+    Group:
+      type: object
+      required:
+      - schemas
+      - id
+      - displayName
+      - meta
+      - members
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:schemas:core:2.0:Group
+        id:
+          type: string
+          description: The unique identifier of the group (role ID)
+          example: role_admin_123
+        displayName:
+          type: string
+          description: The display name of the group (role name)
+          example: Administrator
+        meta:
+          type: object
+          required:
+          - resourceType
+          - location
+          properties:
+            resourceType:
+              type: string
+              description: Always "Group" for this resource type
+              example: Group
+            location:
+              type: string
+              format: uri
+              description: URL to this group resource
+              example: https://scim-api.tackle.io/scim/v2/Groups/role_admin_123
+        members:
+          type: array
+          description: Group members (always empty; membership is managed via user entitlements)
+          items:
+            type: string
+          example: []
+    ScimError:
+      type: object
+      required:
+      - schemas
+      - status
+      - detail
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:Error
+        status:
+          type: string
+          description: HTTP status code as string
+          example: '400'
+        detail:
+          type: string
+          description: Human-readable error description
+          example: Invalid request
+        scimType:
+          type: string
+          description: SCIM-specific error type
+          enum:
+          - invalidFilter
+          - tooMany
+          - uniqueness
+          - mutability
+          - invalidSyntax
+          - invalidPath
+          - noTarget
+          - invalidValue
+          - invalidVers
+          - sensitive
+          example: invalidValue
+    GroupListResponse:
+      type: object
+      required:
+      - schemas
+      - totalResults
+      - startIndex
+      - itemsPerPage
+      - Resources
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:ListResponse
+        totalResults:
+          type: integer
+          description: Total number of groups
+          example: 3
+        startIndex:
+          type: integer
+          description: 1-based index of the first result
+          example: 1
+        itemsPerPage:
+          type: integer
+          description: Number of groups in this response
+          example: 3
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true

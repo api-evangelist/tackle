@@ -1,0 +1,745 @@
+openapi: 3.0.3
+info:
+  title: Tackle Authentication Service Provider API
+  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  version: 1.0.0
+  contact:
+    name: Tackle Support
+    email: support@tackle.io
+    url: https://tackle.io
+servers:
+- url: https://api.tackle.io
+tags:
+- name: Service Provider
+  description: Service provider configuration and capabilities
+paths:
+  /scim/v2/ServiceProviderConfig:
+    get:
+      tags:
+      - Service Provider
+      summary: Get Service Provider Configuration
+      description: 'Retrieve the service provider configuration as defined by SCIM 2.0 specification.
+
+        This endpoint provides information about the SCIM implementation capabilities.
+
+        '
+      operationId: getServiceProviderConfig
+      responses:
+        '200':
+          description: Service provider configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceProviderConfig'
+              example:
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig
+                patch:
+                  supported: false
+                bulk:
+                  supported: false
+                  maxPayloadSize: 5242880
+                  maxOperations: 1
+                filter:
+                  supported: false
+                  maxResults: 100
+                changePassword:
+                  supported: false
+                sort:
+                  supported: false
+                etag:
+                  supported: false
+                authenticationSchemes:
+                - type: oauthbearertoken
+                  name: OAuth Bearer Token
+                  description: Authentication scheme using the OAuth Bearer Token Standard
+                  specUri: http://www.rfc-editor.org/info/rfc6750
+                  primary: true
+                pagination:
+                  cursor: false
+                  index: true
+                  defaultPaginationMethod: index
+                  defaultPageSize: 10
+                  maxPageSize: 100
+                meta:
+                  resourceType: ServiceProviderConfig
+                  created: '2025-06-12T00:00:00Z'
+                  lastModified: 2025-06-12:00:00Z
+                  location: https://scim-api.tackle.io/scim/v2/ServiceProviderConfig
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /scim/v2/ResourceTypes:
+    get:
+      tags:
+      - Service Provider
+      summary: Get Resource Types
+      description: 'Retrieve the resource types supported by this SCIM implementation.
+
+        Currently supports User resources with enterprise extensions.
+
+        '
+      operationId: getResourceTypes
+      responses:
+        '200':
+          description: Resource types retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceTypeListResponse'
+              example:
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                totalResults: 1
+                itemsPerPage: 1
+                startIndex: 1
+                Resources:
+                - schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:ResourceType
+                  id: User
+                  name: User
+                  endpoint: https://scim-api.tackle.io/scim/v2/Users
+                  description: User Account
+                  schema: urn:ietf:params:scim:schemas:core:2.0:User
+                  schemaExtensions:
+                  - schema: urn:ietf:params:scim:schemas:extension:enterprise:2.0:User
+                    required: true
+                  meta:
+                    location: https://scim-api.tackle.io/scim/v2/ResourceTypes/User
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /scim/v2/Schemas:
+    get:
+      tags:
+      - Service Provider
+      summary: Get Schemas
+      description: 'Retrieve the schemas supported by this SCIM implementation.
+
+        Includes both core User schema and enterprise extension schema.
+
+        '
+      operationId: getSchemas
+      responses:
+        '200':
+          description: Schemas retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchemaListResponse'
+              example:
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:ListResponse
+                totalResults: 2
+                itemsPerPage: 2
+                startIndex: 1
+                Resources:
+                - schemas:
+                  - urn:ietf:params:scim:schemas:core:2.0:Schema
+                  id: urn:ietf:params:scim:schemas:core:2.0:User
+                  name: User
+                  meta:
+                    resourceType: Schema
+                    created: '2025-06-12T17:06:30.597Z'
+                    lastModified: '2025-06-12T17:06:30.597Z'
+                    location: https://scim-api.tackle.io/scim/v2/Schemas/urn:ietf:params:scim:schemas:core:2.0:User
+                  attributes:
+                  - name: userName
+                    type: string
+                    mutability: readWrite
+                    returned: default
+                    uniqueness: server
+                    required: true
+                    multiValued: false
+                    caseExact: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /scim/v2/Schemas/{schemaId}:
+    get:
+      tags:
+      - Service Provider
+      summary: Get Schema by ID
+      description: 'Retrieve a specific schema by its unique identifier.
+
+        Supports User schema, Enterprise User extension schema, and Entitlement schema.
+
+        '
+      operationId: getSchemaById
+      parameters:
+      - name: schemaId
+        in: path
+        required: true
+        description: The schema identifier (URN)
+        schema:
+          type: string
+          example: urn:ietf:params:scim:schemas:core:2.0:User
+        examples:
+          userSchema:
+            value: urn:ietf:params:scim:schemas:core:2.0:User
+            summary: Core User Schema
+          enterpriseUserSchema:
+            value: urn:ietf:params:scim:schemas:extension:enterprise:2.0:User
+            summary: Enterprise User Extension Schema
+          entitlementSchema:
+            value: urn:ietf:params:scim:schemas:extension:entitlement:1.0
+            summary: Entitlement Schema
+      responses:
+        '200':
+          description: Schema retrieved successfully
+          content:
+            application/scim+json:
+              schema:
+                $ref: '#/components/schemas/Schema'
+              example:
+                schemas:
+                - urn:ietf:params:scim:schemas:core:2.0:Schema
+                id: urn:ietf:params:scim:schemas:core:2.0:User
+                name: User
+                meta:
+                  resourceType: Schema
+                  created: '2025-06-12T17:06:30.597Z'
+                  lastModified: '2025-06-12T17:06:30.597Z'
+                  location: https://scim-api.tackle.io/scim/v2/Schemas/urn:ietf:params:scim:schemas:core:2.0:User
+                attributes:
+                - name: userName
+                  type: string
+                  mutability: readWrite
+                  returned: default
+                  uniqueness: server
+                  required: true
+                  multiValued: false
+                  caseExact: false
+        '400':
+          description: Bad request - invalid schema ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScimError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Schema not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScimError'
+              example:
+                schemas:
+                - urn:ietf:params:scim:api:messages:2.0:Error
+                status: '404'
+                detail: Schema urn:ietf:params:scim:schemas:unknown not found
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '403'
+            detail: Forbidden
+    Unauthorized:
+      description: Authentication information is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '401'
+            detail: Unauthorized
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '500'
+            detail: Internal server error
+  schemas:
+    ResourceTypeListResponse:
+      type: object
+      required:
+      - schemas
+      - totalResults
+      - itemsPerPage
+      - startIndex
+      - Resources
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:ListResponse
+        totalResults:
+          type: integer
+          description: Total number of results
+          example: 1
+        itemsPerPage:
+          type: integer
+          description: Number of results per page
+          example: 1
+        startIndex:
+          type: integer
+          description: 1-based index of the first result
+          example: 1
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceType'
+    SchemaAttribute:
+      type: object
+      required:
+      - name
+      - type
+      - mutability
+      - returned
+      - uniqueness
+      - required
+      - multiValued
+      - caseExact
+      properties:
+        name:
+          type: string
+          description: Attribute name
+          example: userName
+        type:
+          type: string
+          description: Attribute type
+          enum:
+          - string
+          - boolean
+          - decimal
+          - integer
+          - dateTime
+          - reference
+          - complex
+          example: string
+        mutability:
+          type: string
+          description: Attribute mutability
+          enum:
+          - readOnly
+          - readWrite
+          - immutable
+          - writeOnly
+          example: readWrite
+        returned:
+          type: string
+          description: When the attribute is returned
+          enum:
+          - always
+          - never
+          - default
+          - request
+          example: default
+        uniqueness:
+          type: string
+          description: Attribute uniqueness constraint
+          enum:
+          - none
+          - server
+          - global
+          example: server
+        required:
+          type: boolean
+          description: Whether the attribute is required
+          example: true
+        multiValued:
+          type: boolean
+          description: Whether the attribute can have multiple values
+          example: false
+        caseExact:
+          type: boolean
+          description: Whether the attribute is case exact
+          example: false
+        subAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaAttribute'
+          description: Sub-attributes for complex types
+    ScimError:
+      type: object
+      required:
+      - schemas
+      - status
+      - detail
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:Error
+        status:
+          type: string
+          description: HTTP status code as string
+          example: '400'
+        detail:
+          type: string
+          description: Human-readable error description
+          example: Invalid request
+        scimType:
+          type: string
+          description: SCIM-specific error type
+          enum:
+          - invalidFilter
+          - tooMany
+          - uniqueness
+          - mutability
+          - invalidSyntax
+          - invalidPath
+          - noTarget
+          - invalidValue
+          - invalidVers
+          - sensitive
+          example: invalidValue
+    SchemaExtension:
+      type: object
+      required:
+      - schema
+      - required
+      properties:
+        schema:
+          type: string
+          description: Schema extension URI
+          example: urn:ietf:params:scim:schemas:extension:enterprise:2.0:User
+        required:
+          type: boolean
+          description: Whether this extension is required
+          example: true
+    SchemaListResponse:
+      type: object
+      required:
+      - schemas
+      - totalResults
+      - itemsPerPage
+      - startIndex
+      - Resources
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:ListResponse
+        totalResults:
+          type: integer
+          description: Total number of results
+          example: 2
+        itemsPerPage:
+          type: integer
+          description: Number of results per page
+          example: 2
+        startIndex:
+          type: integer
+          description: 1-based index of the first result
+          example: 1
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schema'
+    ResourceType:
+      type: object
+      required:
+      - schemas
+      - id
+      - name
+      - endpoint
+      - schema
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:schemas:core:2.0:ResourceType
+        id:
+          type: string
+          description: Resource type identifier
+          example: User
+        name:
+          type: string
+          description: Resource type name
+          example: User
+        description:
+          type: string
+          description: Resource type description
+          example: User Account
+        endpoint:
+          type: string
+          format: uri
+          description: Endpoint for this resource type
+          example: https://scim-api.tackle.io/scim/v2/Users
+        schema:
+          type: string
+          description: Primary schema for this resource type
+          example: urn:ietf:params:scim:schemas:core:2.0:User
+        schemaExtensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaExtension'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    ServiceProviderConfig:
+      type: object
+      required:
+      - schemas
+      - patch
+      - bulk
+      - filter
+      - changePassword
+      - sort
+      - etag
+      - authenticationSchemes
+      - pagination
+      - meta
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig
+        patch:
+          type: object
+          required:
+          - supported
+          properties:
+            supported:
+              type: boolean
+              description: Whether PATCH operations are supported
+              example: false
+        bulk:
+          type: object
+          required:
+          - supported
+          - maxPayloadSize
+          - maxOperations
+          properties:
+            supported:
+              type: boolean
+              description: Whether bulk operations are supported
+              example: false
+            maxPayloadSize:
+              type: integer
+              description: Maximum payload size for bulk operations
+              example: 5242880
+            maxOperations:
+              type: integer
+              description: Maximum number of operations in a bulk request
+              example: 1
+        filter:
+          type: object
+          required:
+          - supported
+          - maxResults
+          properties:
+            supported:
+              type: boolean
+              description: Whether filtering is supported
+              example: false
+            maxResults:
+              type: integer
+              description: Maximum number of results when filtering
+              example: 100
+        changePassword:
+          type: object
+          required:
+          - supported
+          properties:
+            supported:
+              type: boolean
+              description: Whether password changes are supported
+              example: false
+        sort:
+          type: object
+          required:
+          - supported
+          properties:
+            supported:
+              type: boolean
+              description: Whether sorting is supported
+              example: false
+        etag:
+          type: object
+          required:
+          - supported
+          properties:
+            supported:
+              type: boolean
+              description: Whether ETags are supported
+              example: false
+        authenticationSchemes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticationScheme'
+        pagination:
+          type: object
+          required:
+          - cursor
+          - index
+          - defaultPaginationMethod
+          - defaultPageSize
+          - maxPageSize
+          properties:
+            cursor:
+              type: boolean
+              description: Whether cursor-based pagination is supported
+              example: false
+            index:
+              type: boolean
+              description: Whether index-based pagination is supported
+              example: true
+            defaultPaginationMethod:
+              type: string
+              description: Default pagination method
+              example: index
+            defaultPageSize:
+              type: integer
+              description: Default page size
+              example: 10
+            maxPageSize:
+              type: integer
+              description: Maximum page size
+              example: 100
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Meta:
+      type: object
+      readOnly: true
+      properties:
+        resourceType:
+          type: string
+          description: The resource type
+          example: User
+        created:
+          type: string
+          format: date-time
+          description: When the resource was created
+          example: '2024-01-15T10:30:00Z'
+        lastModified:
+          type: string
+          format: date-time
+          description: When the resource was last modified
+          example: '2024-01-15T10:30:00Z'
+        location:
+          type: string
+          format: uri
+          description: URL to the resource
+          example: https://scim-api.tackle.io/scim/v2/Users/user123
+    Schema:
+      type: object
+      required:
+      - schemas
+      - id
+      - name
+      - attributes
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:schemas:core:2.0:Schema
+        id:
+          type: string
+          description: Schema identifier
+          example: urn:ietf:params:scim:schemas:core:2.0:User
+        name:
+          type: string
+          description: Schema name
+          example: User
+        description:
+          type: string
+          description: Schema description
+          example: User Account
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchemaAttribute'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    AuthenticationScheme:
+      type: object
+      required:
+      - type
+      - name
+      - description
+      - primary
+      properties:
+        type:
+          type: string
+          description: Authentication scheme type
+          example: oauthbearertoken
+        name:
+          type: string
+          description: Authentication scheme name
+          example: OAuth Bearer Token
+        description:
+          type: string
+          description: Authentication scheme description
+          example: Authentication scheme using the OAuth Bearer Token Standard
+        specUri:
+          type: string
+          format: uri
+          description: URI to the specification
+          example: http://www.rfc-editor.org/info/rfc6750
+        documentationUri:
+          type: string
+          format: uri
+          description: URI to documentation
+        primary:
+          type: boolean
+          description: Whether this is the primary authentication scheme
+          example: true
+  securitySchemes:
+    BearerAuth:
+      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BasicAuthCallback:
+      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
+      type: http
+      scheme: basic
+    HeaderApiKeyAuthCallback:
+      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+      type: apiKey
+      name: subscription-key
+      in: header
+    Oauth2AuthCallback:
+      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: /oauth/token
+externalDocs:
+  description: Tackle Developer Hub and API Documentation
+  url: https://developers.tackle.io
+x-readme:
+  explorer-enabled: false
+  proxy-enabled: true
+  samples-enabled: true
