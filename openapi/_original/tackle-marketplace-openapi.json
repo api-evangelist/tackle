@@ -1,0 +1,1906 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Offers AWS API",
+    "description": "Customer-facing API for managing AWS Marketplace private offers on\n`aws.offers.tackle.io`. The API supports the full private-offer lifecycle\n(create, read, update, cancel, push to marketplace) plus the AWS Marketplace\ncontext endpoints needed to assemble an offer (agreements, products,\npricing, allowed currencies, partners).\n\n## Authentication\n\nEvery endpoint is authenticated with a **Tackle JWT** bearer token passed\nin the `Authorization: Bearer <jwt>` request header. The token must include\na vendor ID claim and the principal must hold the per-endpoint RBAC\npermission listed in each operation's description. A request that lacks\na valid token returns `401`; a request with a valid token but missing\nthe required permission returns `403` with the missing permission name in\nthe response body.\n\n## Conventions\n\n- Request and response payloads use `snake_case` field names, matching the\n  Tackle developer documentation and AWS Marketplace data model.\n- All timestamps are ISO 8601 UTC strings unless noted otherwise.\n- Date-only fields are `YYYY-MM-DD`.\n- Currency codes are 3-letter ISO 4217.\n- Monetary amounts are returned as strings to preserve precision.\n",
+    "version": "3.2.0"
+  },
+  "servers": [
+    {
+      "url": "https://aws.offers.tackle.io/api",
+      "description": "AWS Offers Service"
+    }
+  ],
+  "paths": {
+    "/private-offers": {
+      "get": {
+        "summary": "List Private Offers",
+        "description": "Returns a paginated list of private offers visible to the authenticated\nprincipal. Results may be filtered by status, marketplace, offer type,\nproduct reference, salesforce opportunity ID, and creation date.\n\n**Required RBAC permission:** `offers:ListOffers`\n",
+        "operationId": "listPrivateOffers",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by offer status (e.g. `draft`, `created`, `accepted`, `cancelled`).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offer_ref",
+            "in": "query",
+            "required": false,
+            "description": "Filter by marketplace offer reference (e.g. AWS `offer-*` ID).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by offer type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "direct",
+                "partner_resale"
+              ]
+            }
+          },
+          {
+            "name": "product_ref",
+            "in": "query",
+            "required": false,
+            "description": "Filter by Tackle product ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "required": false,
+            "description": "Filter to offers created on the given `YYYY-MM-DD` date.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "created_at_gt",
+            "in": "query",
+            "required": false,
+            "description": "Filter to offers created strictly after the given date.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "created_at_lt",
+            "in": "query",
+            "required": false,
+            "description": "Filter to offers created strictly before the given date.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "salesforce_opportunity_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter by associated Salesforce Opportunity ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Sort expression. Prefix a field name with `-` for descending order\n(e.g. `-created_at`).\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Zero-based offset for pagination.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size (1\u2013100).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of private offers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOfferList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Private Offer",
+        "description": "Creates a draft private offer. Set `create_in_marketplace: true` in the\nrequest body to also push the offer to AWS Marketplace in the same\ncall; otherwise the offer is saved as a Tackle draft that can be\npushed later via `POST /private-offers/{id}/marketplace-create`.\n\nSet `dry_run: true` to validate the payload without persisting the\noffer; a successful dry run returns `200 OK` instead of `201 Created`.\n\n**Required RBAC permission:** `offers:CreateDraftOffer`\n",
+        "operationId": "createPrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrivateOfferRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dry-run validation succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePrivateOfferResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Private offer created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePrivateOfferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/private-offers/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PrivateOfferId"
+        }
+      ],
+      "get": {
+        "summary": "Get Private Offer",
+        "description": "Returns a single private offer by its Tackle ID.\n\n**Required RBAC permission:** `offers:GetOffer`\n",
+        "operationId": "getPrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Private offer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Private Offer",
+        "description": "Updates an existing draft private offer. The body has the same shape as\n`POST /private-offers` (`CreatePrivateOfferRequest`).\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (the create\npermission also gates updates -- updating a draft is treated as the\nsame authorization concept as creating one).\n",
+        "operationId": "updatePrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrivateOfferRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated private offer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePrivateOfferResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Private Offer",
+        "description": "Deletes a draft private offer.\n\n**Required RBAC permission:** `offers:UpdateOffer` (the update\npermission also gates deletes -- \"removing a draft\" is treated as a\nkind of update).\n",
+        "operationId": "deletePrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Private offer deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/private-offers/{id}/cancel": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PrivateOfferId"
+        }
+      ],
+      "post": {
+        "summary": "Cancel Private Offer",
+        "description": "Cancels a private offer that has been pushed to AWS Marketplace but\nnot yet accepted by the buyer. The cancellation is performed\nasynchronously; the response indicates that the request has been\naccepted, not that the cancellation is complete. Track completion via\nthe offer's `status` and `activities` fields, or via webhooks.\n\n**Required RBAC permission:** `offers:CancelOffer`\n",
+        "operationId": "cancelPrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancellation request accepted."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Offer is not in a state that can be cancelled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/private-offers/{id}/marketplace-create": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/PrivateOfferId"
+        }
+      ],
+      "post": {
+        "summary": "Push Private Offer to AWS Marketplace",
+        "description": "Promotes a Tackle draft private offer (one created with\n`create_in_marketplace: false`) into AWS Marketplace. The push is\nasynchronous; this endpoint returns immediately once the request has\nbeen queued.\n\n**Required RBAC permission:** `offers:CreateOfferOnMarketplace`\n",
+        "operationId": "marketplaceCreatePrivateOffer",
+        "tags": [
+          "Private Offers"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarketplaceCreatePrivateOfferRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Dry-run validation succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketplaceCreatePrivateOfferRequest"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Marketplace creation request accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketplaceCreatePrivateOfferRequest"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "Offer is not eligible for marketplace creation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agreements": {
+      "get": {
+        "summary": "List AWS Marketplace Agreements",
+        "description": "Returns the seller's AWS Marketplace agreements (entitlements). Used\nwhen assembling an amendment offer to discover an existing\nbuyer-seller agreement to amend.\n\nEach agreement carries a `public_productid` field which is the AWS\nencrypted product ID and can be passed as the `productId` path\nparameter to `GET /products/{productId}/pricing`.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (agreement\nlisting is gated on the create permission because it is part of the\noffer-creation flow).\n",
+        "operationId": "listAgreements",
+        "tags": [
+          "Marketplace"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "buyer_billing_account_ref",
+            "in": "query",
+            "required": false,
+            "description": "Filter to agreements for the given 12-digit AWS buyer account.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{12}$"
+            }
+          },
+          {
+            "name": "offerid",
+            "in": "query",
+            "required": false,
+            "description": "Filter to the agreement produced by the given marketplace offer ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 25
+            }
+          },
+          {
+            "name": "next_token",
+            "in": "query",
+            "required": false,
+            "description": "Opaque pagination cursor returned by a previous response.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of agreements.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgreementList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "List Products",
+        "description": "Returns the AWS Marketplace product listings owned by the authenticated\nseller. Use this to populate a product picker before creating a private\noffer.\n\nEach product object includes two distinct identifiers:\n\n- `productid` -- the **Tackle** product identifier.\n- `encrypted_productid` -- the **AWS Marketplace Catalog API** product\n  identifier. This is the value to pass as the `productId` path\n  parameter on `GET /products/{productId}/pricing`. Passing\n  `productid` instead will result in a `404` because the pricing\n  endpoint is sourced from the AWS Catalog API and only understands\n  the encrypted form.\n\n**Required RBAC permission:** `offers:ListProducts`\n",
+        "operationId": "listProducts",
+        "tags": [
+          "Marketplace"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "listing_type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by product listing type (e.g. `saas`, `ami`).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Filter by product status.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registration_hosting",
+            "in": "query",
+            "required": false,
+            "description": "Filter by registration hosting type.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of products owned by the seller.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/products/{productId}/pricing": {
+      "parameters": [
+        {
+          "name": "productId",
+          "in": "path",
+          "required": true,
+          "description": "The **AWS Marketplace Catalog API encrypted product identifier**.\n\nThis is **not** the Tackle product ID. Pass the\n`encrypted_productid` field from a product object returned by\n`GET /products`, or the `public_productid` field from an agreement\nreturned by `GET /agreements`. Passing the Tackle `productid` (or\n`id`) will return `404`.\n",
+          "example": "prod-xxxxxxxxxxxxx",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Product Pricing",
+        "description": "Returns the pricing dimensions, billing terms, and payment-model\ndefaults for an AWS Marketplace product. Use the response to\npre-populate a private-offer creation form with values that match the\nproduct's public listing.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (gated on the\ncreate permission because pricing is fetched as part of the\noffer-creation flow).\n",
+        "operationId": "getProductPricing",
+        "tags": [
+          "Marketplace"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pricing for the product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductPricing"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/allowed-currencies": {
+      "get": {
+        "summary": "List Allowed Currencies",
+        "description": "Returns the 3-letter ISO 4217 currency codes the calling seller may\nquote in a private offer. The seller is identified by the vendor ID\nin the bearer token; no path parameter is required.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (currency\nselection is part of the offer-creation flow).\n",
+        "operationId": "listAllowedCurrencies",
+        "tags": [
+          "Marketplace"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of allowed currency codes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "example": [
+                    "USD",
+                    "EUR",
+                    "GBP"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/partners": {
+      "get": {
+        "summary": "List AWS Marketplace Partners",
+        "description": "Returns a curated list of AWS Marketplace resale partners with their\ncompany names and AWS account IDs. Use this list to populate a\npartner picker when creating a partner (resale) private offer.\n\n**Required RBAC permission:** `offers:CreateDraftOffer`\n",
+        "operationId": "listPartners",
+        "tags": [
+          "Partners"
+        ],
+        "security": [
+          {
+            "TackleJwt": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of AWS Marketplace partners.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Partner"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PrivateOffer": {
+        "type": "object",
+        "description": "Represents a private offer for any cloud marketplace and product type.\nField shapes are backward-compatible with the `private_offer_metadata`\nobject documented in the\n[Tackle webhook reference](https://developers.tackle.io/reference/sample-private-offer-payloads).\n",
+        "properties": {
+          "po_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Tackle-issued unique offer ID.",
+            "example": "po_01HXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          "offerid": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Marketplace-issued unique offer ID. For AWS partner offers this is\ninitially the Resale Authorization ID (`resaleauthz-*`); once the\nCPPO is extended it is replaced with the CPPO offer ID\n(`offer-*`).\n"
+          },
+          "vendorid": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Tackle-issued vendor (ISV) ID that owns the offer."
+          },
+          "offer_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "The name of the offer as it will appear in the marketplace."
+          },
+          "offer_description": {
+            "type": "string",
+            "nullable": true,
+            "description": "A human-friendly description of the offer."
+          },
+          "offer_type": {
+            "type": "string",
+            "enum": [
+              "direct",
+              "partner_resale"
+            ],
+            "description": "`direct` is an ISV-to-buyer offer. `partner_resale` is a Resale\nAuthorization + CPPO offer.\n"
+          },
+          "marketplace": {
+            "type": "string",
+            "enum": [
+              "aws"
+            ],
+            "description": "Always `aws` for offers returned by this API."
+          },
+          "productid": {
+            "type": "string",
+            "nullable": true,
+            "description": "The marketplace product code (AWS Product Code)."
+          },
+          "offer_product_type": {
+            "type": "string",
+            "enum": [
+              "saas",
+              "ami"
+            ],
+            "default": "saas",
+            "nullable": true,
+            "description": "Determines pricing and contract terms for the offer."
+          },
+          "buyer_billing_account_ref": {
+            "type": "string",
+            "description": "The buyer's 12-digit AWS account number.",
+            "example": "123456789012"
+          },
+          "positive_targeting": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PositiveTargeting"
+              }
+            ],
+            "description": "Positive targeting (e.g. country allow-list). May be null."
+          },
+          "buyer_company_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "source_offer_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "For amendment offers, the marketplace ID of the offer in the existing agreement."
+          },
+          "salesforce_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "ID of the corresponding Salesforce Opportunity."
+          },
+          "offer_expiration_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "YYYY-MM-DD date until which the offer is purchasable in the marketplace."
+          },
+          "renewal": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indicates that this offer is a renewal of an existing agreement\nwith the same buyer for the same product.\n"
+          },
+          "aws_renewal_moving_to_marketplace": {
+            "type": "boolean",
+            "default": false,
+            "description": "For renewal offers where the existing agreement was originally\noutside AWS Marketplace, indicates that the renewal is moving the\nagreement into AWS Marketplace.\n"
+          },
+          "buyers": {
+            "type": "array",
+            "description": "Recipients of purchase-instructions notifications and activity logs.",
+            "items": {
+              "$ref": "#/components/schemas/Buyer"
+            }
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/Pricing"
+          },
+          "eula": {
+            "$ref": "#/components/schemas/EULA"
+          },
+          "offer_metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Custom internal metadata associated with the offer."
+          },
+          "pre_registration_details": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Custom public metadata pre-filled for the buyer when registering\ntheir order after offer acceptance.\n"
+          },
+          "extra_data": {
+            "$ref": "#/components/schemas/ExtraData"
+          },
+          "enable_zero_dollar_prices": {
+            "type": "boolean",
+            "description": "Whether the offer allows zero-dollar prices on its dimensions."
+          },
+          "stage": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Lifecycle stage of the offer."
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Most recent activity status of the offer."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "accepted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "archived_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "cancelled_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "opened_instructions_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "viewed_offer_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "created_in_marketplace_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "activities": {
+            "type": "array",
+            "readOnly": true,
+            "description": "History of lifecycle events for the offer.",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            }
+          },
+          "partner_offer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PartnerOffer"
+              }
+            ],
+            "description": "Only set when `offer_type` is `partner_resale`. May be null otherwise."
+          },
+          "salesforce": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Salesforce"
+              }
+            ],
+            "description": "Salesforce association for the offer. May be null."
+          },
+          "cloud_contract_id": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The marketplace ID of the cloud contract associated with the offer."
+          },
+          "principal_type": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The type of principal (user, M2M token, etc.) that created the offer."
+          }
+        },
+        "required": [
+          "po_id",
+          "vendorid",
+          "marketplace",
+          "offer_type",
+          "buyer_billing_account_ref",
+          "created_at",
+          "last_modified_at"
+        ]
+      },
+      "PrivateOfferList": {
+        "type": "object",
+        "description": "Paginated list of private offers.",
+        "properties": {
+          "private_offers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrivateOffer"
+            }
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Zero-based offset of the first item in this page."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of items returned per page."
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total number of offers matching the query."
+          }
+        },
+        "required": [
+          "private_offers",
+          "offset",
+          "limit",
+          "total"
+        ]
+      },
+      "Pricing": {
+        "type": "object",
+        "description": "Pricing configuration for an offer. Used for all cloud marketplaces,\noffer types, and product types. Many fields are conditional on\n`payment_model` and `billing_term`; consult the field descriptions\nfor applicability.\n",
+        "properties": {
+          "show_on_email": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Whether to show pricing on the buyer's order-notification email."
+          },
+          "marketplace_fee": {
+            "type": "string",
+            "nullable": true,
+            "description": "The marketplace's fee for the offer as a percentage. Used to compute contract values."
+          },
+          "net_contract_value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Expected contract value after the marketplace fee is deducted."
+          },
+          "monthly_contract_value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "total_contract_value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "dimensions": {
+            "type": "array",
+            "nullable": true,
+            "description": "Base pricing categories with custom pricing.",
+            "items": {
+              "$ref": "#/components/schemas/PricingDimension"
+            }
+          },
+          "usage_dimensions": {
+            "type": "array",
+            "nullable": true,
+            "description": "Metered dimensions with custom pricing.",
+            "items": {
+              "$ref": "#/components/schemas/UsageDimension"
+            }
+          },
+          "units": {
+            "type": "array",
+            "nullable": true,
+            "description": "AMI-only pricing units.",
+            "items": {
+              "$ref": "#/components/schemas/PricingUnit"
+            }
+          },
+          "currency_code": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^[A-Z]{3}$",
+            "description": "3-letter ISO 4217 currency code.",
+            "example": "USD"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "simple-pricing-v1-aws"
+            ]
+          },
+          "schedule": {
+            "type": "array",
+            "nullable": true,
+            "description": "Schedule of payments. Only applicable when `payment_model` is `payment_schedule`.",
+            "items": {
+              "$ref": "#/components/schemas/ScheduledPayment"
+            }
+          },
+          "payment_model": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "payment_schedule",
+              "per_product",
+              "one_time",
+              "per_month",
+              "per_year",
+              "saas_subscription"
+            ],
+            "description": "`per_product` -- one-time fee up front when the offer is accepted.\n`payment_schedule` -- flexible payment schedule across the contract.\n`saas_subscription` -- pay-as-you-go usage-based pricing.\n"
+          },
+          "billing_term": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "future_dated",
+              "custom",
+              "1-month",
+              "1-year",
+              "2-years",
+              "3-years"
+            ],
+            "description": "Length of the contract. `custom` requires `duration_value`;\n`future_dated` requires `service_start_at` and `service_end_at`.\n"
+          },
+          "duration_value": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Duration in months when `billing_term` is `custom`."
+          },
+          "duration_type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Currently only `months` is supported."
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "Human-friendly representation of duration value and type."
+          },
+          "service_start_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Start date when `billing_term` is `future_dated`."
+          },
+          "service_end_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "End date when `billing_term` is `future_dated`."
+          },
+          "allow_auto_renew": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "PricingDimension": {
+        "type": "object",
+        "properties": {
+          "dimension_value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "User-friendly name of the dimension. Defaults to `api_name` if omitted."
+          },
+          "quantity": {
+            "type": "string",
+            "nullable": true,
+            "description": "Quantity of the dimension the buyer is purchasing. Only applicable\nwhen `payment_model` is `payment_schedule`.\n"
+          },
+          "price": {
+            "type": "string",
+            "nullable": true,
+            "description": "Price per unit of the dimension. Only applicable when\n`payment_model` is `per_product`.\n"
+          },
+          "api_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "API identifier of the dimension in AWS Marketplace. If `name`\ndoes not match an existing dimension, a new custom dimension is\nadded to the product listing (limit 100).\n"
+          },
+          "aws_discount_percentage": {
+            "type": "string",
+            "nullable": true,
+            "description": "Display-only discount percentage."
+          }
+        }
+      },
+      "UsageDimension": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-friendly name of the usage dimension."
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true,
+            "description": "API identifier of the usage dimension in AWS Marketplace."
+          },
+          "price": {
+            "type": "string",
+            "nullable": true,
+            "description": "Price per unit."
+          },
+          "aws_discount_percentage": {
+            "type": "string",
+            "nullable": true,
+            "description": "Display-only discount percentage."
+          }
+        }
+      },
+      "ScheduledPayment": {
+        "type": "object",
+        "properties": {
+          "invoice_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Date the buyer should be invoiced for this scheduled payment."
+          },
+          "invoice_amount": {
+            "type": "string",
+            "nullable": true,
+            "description": "Amount the buyer should be invoiced."
+          }
+        }
+      },
+      "PricingUnit": {
+        "type": "object",
+        "description": "AMI-only pricing unit.",
+        "properties": {
+          "unit": {
+            "type": "string",
+            "nullable": true
+          },
+          "hourly_price": {
+            "type": "string",
+            "nullable": true
+          },
+          "duration_price": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Buyer": {
+        "type": "object",
+        "properties": {
+          "email_address": {
+            "type": "string",
+            "format": "email",
+            "description": "The buyer's email used to send purchase instructions."
+          },
+          "full_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shown in Tackle notifications sent to the seller's team."
+          }
+        },
+        "required": [
+          "email_address"
+        ]
+      },
+      "EULA": {
+        "type": "object",
+        "description": "EULA configuration for the offer.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "public",
+              "aws-standard",
+              "custom",
+              "use-existing",
+              "standard"
+            ],
+            "nullable": true,
+            "description": "`public` uses the EULA from the product's public offer.\n`aws-standard` defaults to the Standard Contract for AWS\nMarketplace (SCMP). `custom` requires `document_urns` to point\nat uploaded documents. `use-existing` reuses the EULA from an\nexisting agreement (replacement offers only).\n"
+          },
+          "document_urns": {
+            "type": "array",
+            "maxItems": 5,
+            "description": "IDs supplied by the Tackle Documents Service after EULA documents\nare uploaded.\n",
+            "items": {
+              "type": "string"
+            }
+          },
+          "files": {
+            "type": "array",
+            "readOnly": true,
+            "deprecated": true,
+            "description": "Deprecated: use `document_urns` instead. Retained for backward\ncompatibility until data migration is complete.\n",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PartnerOffer": {
+        "type": "object",
+        "description": "Details about a partner (resale) offer. Only set when `offer_type` is `partner_resale`.",
+        "properties": {
+          "partner_offer_ref": {
+            "type": "string",
+            "nullable": true,
+            "description": "Marketplace identifier for the partner offer (e.g. AWS Resale Authorization ID)."
+          },
+          "partner_ref": {
+            "type": "string",
+            "nullable": true,
+            "description": "Marketplace identifier of the partner (e.g. AWS Account Number)."
+          },
+          "partner_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "reseller_agreement": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResellerAgreement"
+              }
+            ],
+            "description": "Reseller-agreement configuration for the partner offer. May be null."
+          },
+          "scheduled_start_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "scheduled_end_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "reseller_flat_fee_discount": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ResellerAgreement": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "none-selected",
+              "custom",
+              "rcmp-2021-12-01"
+            ],
+            "description": "`none-selected` omits a Reseller Agreement. `custom` requires\nuploaded documents in `document_urns`. `rcmp-2021-12-01` uses the\nReseller Contract for AWS Marketplace (RCMP).\n"
+          },
+          "document_urns": {
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "files": {
+            "type": "array",
+            "readOnly": true,
+            "deprecated": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "Salesforce": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "custom_object_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "opportunity_id": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Activity": {
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "activity_type": {
+            "type": "string",
+            "enum": [
+              "PO"
+            ],
+            "description": "Always `PO` for private offers."
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "vendor-created-marketplace-offer-success",
+              "vendor-created-marketplace-offer-pending",
+              "vendor-created-marketplace-offer-failed",
+              "marketplace-offer-change-expiration-pending",
+              "marketplace-offer-change-expiration-success",
+              "marketplace-offer-change-expiration-failed",
+              "marketplace-offer-cancel-offer-pending",
+              "marketplace-offer-cancel-offer-success",
+              "marketplace-offer-cancel-offer-failed",
+              "vendor-created-offer",
+              "vendor-created-offer-in-salesforce",
+              "vendor-cloned-offer"
+            ]
+          },
+          "user_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ExtraData": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "description": "Users to notify of lifecycle events of the offer.",
+            "items": {
+              "$ref": "#/components/schemas/ExtraDataUser"
+            }
+          }
+        }
+      },
+      "ExtraDataUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "PositiveTargeting": {
+        "type": "object",
+        "description": "Positive targeting constraints (currently country allow-lists).",
+        "properties": {
+          "country_codes": {
+            "type": "array",
+            "description": "ISO 3166-1 alpha-2 country codes the offer is restricted to.",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        }
+      },
+      "Agreement": {
+        "type": "object",
+        "description": "A marketplace agreement (entitlement) between a seller and a buyer for\na product. For AWS this maps to an AWS Marketplace Agreement.\n",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Marketplace agreement identifier (AWS `AgreementId`)."
+          },
+          "status": {
+            "type": "string",
+            "description": "For AWS, active agreements have status `ACTIVE`."
+          },
+          "productid": {
+            "type": "string",
+            "description": "Marketplace product ID (AWS Product Code)."
+          },
+          "public_productid": {
+            "type": "string",
+            "description": "Public marketplace product ID (AWS encrypted product ID). Use this\nvalue as the `productId` path parameter for\n`GET /products/{productId}/pricing`.\n"
+          },
+          "product_type": {
+            "type": "string",
+            "description": "For AWS, one of `SaaSProduct`, `AmiProduct`, or `ContainerProduct`."
+          },
+          "offerid": {
+            "type": "string",
+            "description": "Marketplace ID of the offer that produced this agreement."
+          },
+          "buyer_billing_account_ref": {
+            "type": "string",
+            "description": "Marketplace ID of the buyer's billing account (12-digit AWS account number)."
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "AWS pay-as-you-go agreements do not have an end date."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "productid",
+          "public_productid",
+          "product_type",
+          "offerid",
+          "buyer_billing_account_ref",
+          "start_date"
+        ]
+      },
+      "AgreementList": {
+        "type": "object",
+        "description": "Paginated list of agreements.",
+        "properties": {
+          "entitlements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Agreement"
+            }
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "next_token": {
+            "type": "string",
+            "nullable": true,
+            "description": "Opaque cursor for the next page; absent on the last page."
+          }
+        },
+        "required": [
+          "entitlements"
+        ]
+      },
+      "Product": {
+        "type": "object",
+        "description": "An AWS Marketplace product owned by the calling seller. The fields\nbelow are the most commonly consumed; additional listing-type-specific\nfields may also be present.\n",
+        "properties": {
+          "cloud": {
+            "type": "string",
+            "enum": [
+              "aws"
+            ],
+            "description": "Always `aws` for products returned by this API."
+          },
+          "productid": {
+            "type": "string",
+            "description": "The Tackle product ID."
+          },
+          "productid_internal": {
+            "type": "string",
+            "description": "Internal Tackle product identifier."
+          },
+          "encrypted_productid": {
+            "type": "string",
+            "description": "The AWS Marketplace Catalog API encrypted product ID. Pass this\nvalue as the `productId` path parameter on\n`GET /products/{productId}/pricing`.\n"
+          },
+          "vendorid": {
+            "type": "string",
+            "description": "Tackle vendor (ISV) ID that owns the product."
+          },
+          "listing_type": {
+            "type": "string",
+            "description": "Listing type (e.g. `saas`, `ami`)."
+          },
+          "listing_pricing_type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "registration_hosting": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "cloud",
+          "productid",
+          "vendorid",
+          "name",
+          "status"
+        ]
+      },
+      "ProductPricing": {
+        "type": "object",
+        "description": "Pricing dimensions, billing term defaults, and payment model defaults\nfor an AWS Marketplace product. Use the response to pre-populate a\nprivate-offer creation form. Field semantics match the `Pricing`\nschema -- see that schema for full descriptions.\n",
+        "properties": {
+          "show_on_email": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true
+          },
+          "marketplace_fee": {
+            "type": "string",
+            "nullable": true
+          },
+          "net_contract_value": {
+            "type": "string",
+            "nullable": true
+          },
+          "monthly_contract_value": {
+            "type": "string",
+            "nullable": true
+          },
+          "total_contract_value": {
+            "type": "string",
+            "nullable": true
+          },
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingDimension"
+            }
+          },
+          "usage_dimensions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UsageDimension"
+            }
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PricingUnit"
+            }
+          },
+          "currency_code": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^[A-Z]{3}$"
+          },
+          "version": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "simple-pricing-v1-aws"
+            ]
+          },
+          "schedule": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduledPayment"
+            }
+          },
+          "payment_model": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "payment_schedule",
+              "per_product",
+              "one_time",
+              "per_month",
+              "per_year",
+              "saas_subscription"
+            ]
+          },
+          "billing_term": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "future_dated",
+              "custom",
+              "1-month",
+              "1-year",
+              "2-years",
+              "3-years"
+            ]
+          },
+          "duration_value": {
+            "type": "integer",
+            "nullable": true
+          },
+          "duration_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "service_start_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "service_end_at": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "allow_auto_renew": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreatePrivateOfferRequest": {
+        "type": "object",
+        "description": "Request body for creating or updating a private offer. The wrapper\ncontrols how the request is processed; the `private_offer` field\ncarries the offer payload.\n\nFor AWS, the `private_offer.offer_type` field discriminates the body\nshape:\n\n- `direct` -- ISV-to-buyer offer.\n- `partner_resale` -- AWS resale (Resale Authorization + CPPO) offer.\n\nSee the `PrivateOffer` schema for the full set of fields supported by\nthe `private_offer` body. Conditional validation rules (e.g.\n`service_start_at` is required when `billing_term` is `future_dated`)\nare enforced server-side.\n",
+        "properties": {
+          "create_in_marketplace": {
+            "type": "boolean",
+            "description": "When `false`, creates a draft offer in Tackle only. When `true`,\nadditional marketplace-specific validation is applied and the\noffer is sent to the marketplace after being saved in Tackle.\n"
+          },
+          "send_buyer_instructions": {
+            "type": "boolean",
+            "description": "Whether the buyer should receive purchase-instructions email\nimmediately after the offer is created. Must be `true` for AWS\noffers that are pushed to marketplace.\n"
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "When `true`, validates the payload without saving it or sending\nit to the marketplace. A successful dry run returns `200`; a\nsuccessful real run returns `201`.\n"
+          },
+          "vendorid": {
+            "type": "string",
+            "nullable": true,
+            "description": "Vendor ID to use for the offer. Inferred from the bearer token\nwhen omitted.\n"
+          },
+          "private_offer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOffer"
+              }
+            ],
+            "description": "The offer payload. See `PrivateOffer` for full field documentation."
+          }
+        },
+        "required": [
+          "create_in_marketplace",
+          "send_buyer_instructions",
+          "dry_run",
+          "private_offer"
+        ]
+      },
+      "CreatePrivateOfferResponse": {
+        "type": "object",
+        "properties": {
+          "dry_run": {
+            "type": "boolean",
+            "description": "Echoes the `dry_run` flag from the request."
+          },
+          "private_offer": {
+            "$ref": "#/components/schemas/PrivateOffer"
+          }
+        },
+        "required": [
+          "dry_run",
+          "private_offer"
+        ]
+      },
+      "MarketplaceCreatePrivateOfferRequest": {
+        "type": "object",
+        "description": "Request body for promoting an existing Tackle draft offer into AWS\nMarketplace. Only the wrapper options are accepted; the offer payload\nis taken from the existing draft.\n",
+        "properties": {
+          "send_buyer_instructions": {
+            "type": "boolean",
+            "description": "Whether to send the buyer purchase-instructions email immediately."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "description": "When `true`, validates that the offer can be pushed without\nactually pushing it. A successful dry run returns `200`; a\nsuccessful push returns `201`.\n"
+          }
+        },
+        "required": [
+          "send_buyer_instructions",
+          "dry_run"
+        ]
+      },
+      "Partner": {
+        "type": "object",
+        "description": "AWS Marketplace partner (reseller).",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Partner company name.",
+            "example": "RiskQ, Inc,"
+          },
+          "awsAccountId": {
+            "type": "string",
+            "description": "AWS account ID (12-digit string).",
+            "pattern": "^\\d{12}$",
+            "example": "977757234053"
+          }
+        },
+        "required": [
+          "awsAccountId"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "description": "Error response. Endpoints in the **Private Offers** and **Marketplace**\ntags return the error in a `message` field. The **Partners** endpoint\nreturns the error in an `error` field. At least one of the two will\nalways be populated.\n",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Error message (Private Offers and Marketplace endpoints).",
+            "example": "private offer not found"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message (Partners endpoint).",
+            "example": "authorization failed"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "PrivateOfferId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "The Tackle private-offer identifier (`po_*`).",
+        "example": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Request was malformed or failed validation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid Tackle JWT.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Caller is authenticated but not authorized for this resource.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource does not exist or is not visible to the caller.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "An unexpected server error occurred.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "TackleJwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Tackle-issued JWT bearer token. Pass as\n`Authorization: Bearer <jwt>`. The token must include a vendor ID\nclaim and the principal must hold the per-endpoint RBAC permission\nlisted in each operation's description.\n"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Private Offers",
+      "description": "AWS private-offer lifecycle (create, read, update, cancel, push to marketplace)."
+    },
+    {
+      "name": "Marketplace",
+      "description": "AWS Marketplace context endpoints used to assemble offers and amendments."
+    },
+    {
+      "name": "Partners",
+      "description": "AWS Marketplace partner (reseller) reference data."
+    }
+  ],
+  "externalDocs": {
+    "description": "Tackle Developer Documentation",
+    "url": "https://developers.tackle.io/"
+  }
+}

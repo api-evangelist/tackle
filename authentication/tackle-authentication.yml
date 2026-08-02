@@ -1,0 +1,65 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tackle-api-openapi.json, openapi/tackle-contracts-openapi.json, openapi/tackle-cosell-openapi.json,
+  openapi/tackle-marketplace-openapi.json, openapi/tackle-offers-openapi.json, openapi/tackle-prospect-openapi.json,
+  openapi/tackle-scim-openapi.json
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: The Tackle API requires a JWT for authentication. You can get this by [getting
+    your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret)
+    from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token)
+    using our Authentication endpoint.
+  sources:
+  - openapi/tackle-api-openapi.json
+  - openapi/tackle-contracts-openapi.json
+  - openapi/tackle-cosell-openapi.json
+  - openapi/tackle-marketplace-openapi.json
+  - openapi/tackle-offers-openapi.json
+  - openapi/tackle-prospect-openapi.json
+- name: BasicAuthCallback
+  type: http
+  scheme: basic
+  description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication);
+    this is only used for `callbacks`
+  sources:
+  - openapi/tackle-api-openapi.json
+- name: HeaderApiKeyAuthCallback
+  type: apiKey
+  in: header
+  parameter: subscription-key
+  description: Use `header_api_key` to specify a custom HTTP request header for authentication.
+    Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook
+    URL; this is only used for `callbacks`'
+  sources:
+  - openapi/tackle-api-openapi.json
+- name: Oauth2AuthCallback
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oauth/token
+    scopes: 0
+  description: This auth-type is for `oauth2` client credentials flow. We will use the client_id
+    and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+  sources:
+  - openapi/tackle-api-openapi.json
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: |-
+    API key authentication.
+    Include the API key in the Authorization header.
+  sources:
+  - openapi/tackle-scim-openapi.json

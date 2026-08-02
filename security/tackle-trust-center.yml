@@ -1,0 +1,11 @@
+generated: '2026-07-21'
+method: searched
+probe: true
+url: https://trust.tackle.io/
+platform: SafeBase (continuous monitoring via Drata)
+certifications:
+  - SOC 2 Type II
+  - GDPR
+subprocessors_published: true
+evidence:
+  - {source: https://trust.tackle.io/, keywords: [soc 2 type ii, gdpr, drata, safebase, subprocessor]}

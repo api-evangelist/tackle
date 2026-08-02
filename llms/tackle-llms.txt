@@ -1,0 +1,24 @@
+# Tackle
+
+> Tackle is a Cloud Go-To-Market (Cloud GTM) platform that helps software companies sell through the AWS, Microsoft Azure, and Google Cloud marketplaces. The Tackle developer APIs (developers.tackle.io) automate marketplace workflows: private offers, co-sell opportunities, contracts, metering/usage, disbursements, buyer prospecting, and SCIM user provisioning.
+
+## APIs
+- [Tackle API](https://developers.tackle.io/reference): Core marketplace API — registrations, webhooks, metering/usage records, products, disbursements, invoices, subscriptions (https://api.tackle.io/v1).
+- [Co-Sell for AWS Partner Central](https://developers.tackle.io/reference/Co-Sell): Opportunities and invitations (https://aws.cosell.tackle.io).
+- [Offers (AWS)](https://developers.tackle.io/reference/marketplace): Private offers, agreements, product pricing (https://aws.offers.tackle.io/api).
+- [Offers (Microsoft)](https://developers.tackle.io/reference/Offers): Private offers for the Microsoft marketplace (https://msft.offers.tackle.io).
+- [Public Contracts API](https://developers.tackle.io/reference/contracts): List and retrieve contracts (https://contracts.tackle.io).
+- [Prospect API](https://developers.tackle.io/reference/Prospect): Score domains for cloud-marketplace propensity-to-buy (https://prospect.tackle.io).
+- [SCIM API](https://developers.tackle.io/reference/SCIM): SCIM 2.0 user/group provisioning (https://scim.tackle.io).
+
+## Authentication
+- M2M JWT Bearer: obtain an access token from POST https://api.tackle.io/v1/authenticate with a client_id/client_secret, send as `Authorization: Bearer <JWT>`.
+- Docs: https://developers.tackle.io/docs/getting-an-access-token
+- SCIM uses an apiKey header.
+
+## Docs
+- [Developer Portal / API Reference](https://developers.tackle.io/reference)
+- [Help Center](https://help.tackle.io/en)
+- [Trust Center (SOC 2 Type II, GDPR)](https://trust.tackle.io/)
+- [Status](https://status.tackle.io)
+- [Pricing](https://tackle.io/pricing/)

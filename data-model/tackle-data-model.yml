@@ -1,0 +1,37 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/ (component schemas + id-reference fields across all Tackle specs)
+entities:
+  - name: Product
+    relationships:
+      - {type: has_many, target: PrivateOffer, via: productId}
+      - {type: has_many, target: UsageRecord, via: productid}
+      - {type: has_many, target: Webhook, via: productid}
+      - {type: has_many, target: Subscription, via: productId}
+  - name: PrivateOffer
+    relationships:
+      - {type: belongs_to, target: Product, via: productId}
+      - {type: has_one, target: Buyer, via: buyer}
+      - {type: has_many, target: Agreement, via: agreementId}
+  - name: Opportunity
+    relationships:
+      - {type: has_many, target: Invitation, via: invitationId}
+      - {type: has_one, target: Customer, via: customer}
+  - name: UsageRecord
+    relationships:
+      - {type: belongs_to, target: Product, via: productid}
+  - name: Subscription
+    relationships:
+      - {type: belongs_to, target: Product, via: productId}
+      - {type: has_many, target: Disbursement, via: subscriptionId}
+      - {type: has_many, target: Invoice, via: subscriptionId}
+  - name: Contract
+    relationships:
+      - {type: has_many, target: Agreement, via: agreementId}
+  - name: ScoredDomain
+    relationships:
+      - {type: has_one, target: ScoreResult, via: score}
+  - name: User
+    note: SCIM 2.0 User resource (scim.tackle.io)
+    relationships:
+      - {type: has_one, target: EnterpriseUser, via: enterprise-extension}

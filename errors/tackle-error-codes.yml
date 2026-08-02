@@ -1,0 +1,88 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/ (4xx/5xx responses across all Tackle API specs)
+format: proprietary   # plain JSON Error/ErrorResponse/MessageError objects; NOT RFC 9457 application/problem+json
+envelope:
+  note: Error shapes vary by service. contracts/offers use an Error/ErrorResponse object; prospect uses MessageError/SearchError. Fields commonly include a message plus (per service) code/detail.
+problems:
+  - status: 400
+    title: "Bad Request / malformed parameters"
+    example_description: "Bad request - invalid patch operation"
+    remediation: "Check request parameters/cursor and body schema."
+    occurrences: 45
+    sources:
+      - openapi/tackle-api-openapi.json#v1-create-metering-usage-records
+      - openapi/tackle-api-openapi.json#v1-create-or-update-webhook
+      - openapi/tackle-api-openapi.json#v1-create-registration
+      - openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
+  - status: 401
+    title: "Missing or invalid authentication"
+    example_description: "Missing or invalid authentication."
+    remediation: "Obtain a fresh JWT access token via POST /v1/authenticate (M2M client_id/client_secret) or a valid SCIM API key."
+    occurrences: 76
+    sources:
+      - openapi/tackle-api-openapi.json#v1-create-metering-usage-records
+      - openapi/tackle-api-openapi.json#v1-create-or-update-webhook
+      - openapi/tackle-api-openapi.json#v1-create-registration
+      - openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
+  - status: 403
+    title: "Forbidden \u2014 insufficient permissions"
+    example_description: "Forbidden. Production vendors that call `createInvitation` receive this\nresponse"
+    remediation: "Ensure the authenticated principal is entitled to the product/marketplace resource."
+    occurrences: 49
+    sources:
+      - openapi/tackle-api-openapi.json#v1-create-or-update-webhook
+      - openapi/tackle-api-openapi.json#v1-create-registration
+      - openapi/tackle-api-openapi.json#v1-delete-product-webhook
+      - openapi/tackle-api-openapi.json#v1-delete-webhook
+  - status: 404
+    title: "Resource not found"
+    example_description: "No contract was found for that id."
+    remediation: "Verify the resource id; it may not exist or belong to another vendor."
+    occurrences: 40
+    sources:
+      - openapi/tackle-api-openapi.json#v1-create-metering-usage-records
+      - openapi/tackle-api-openapi.json#v1-create-registration
+      - openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
+      - openapi/tackle-api-openapi.json#v1-delete-metering-usage-record
+  - status: 409
+    title: "Conflict"
+    example_description: "Conflict - user already exists"
+    remediation: "Resolve the conflicting state (e.g. offer already exists / already in requested state) and retry."
+    occurrences: 6
+    sources:
+      - openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
+      - openapi/tackle-cosell-openapi.json#createOpportunity
+      - openapi/tackle-cosell-openapi.json#updateOpportunity
+      - openapi/tackle-marketplace-openapi.json#cancelPrivateOffer
+  - status: 415
+    title: "Unsupported Media Type"
+    example_description: "Unsupported Media Type"
+    remediation: "Send a supported Content-Type (application/json or application/scim+json)."
+    occurrences: 1
+    sources:
+      - openapi/tackle-scim-openapi.json#createUser
+  - status: 422
+    title: "Unprocessable entity \u2014 validation error"
+    remediation: "Fix the field-level validation errors returned in the response body."
+    occurrences: 2
+    sources:
+      - openapi/tackle-api-openapi.json#v1-get-disbursements
+      - openapi/tackle-api-openapi.json#v1-get-invoices
+  - status: 423
+    title: "Locked"
+    remediation: "The resource is locked by another operation; retry later."
+    occurrences: 2
+    sources:
+      - openapi/tackle-cosell-openapi.json#updateInvitation
+      - openapi/tackle-cosell-openapi.json#updateOpportunity
+  - status: 500
+    title: "Internal server error"
+    example_description: "Internal server error."
+    remediation: "Transient server error \u2014 retry with backoff; contact Tackle support if it persists."
+    occurrences: 42
+    sources:
+      - openapi/tackle-contracts-openapi.json#getContract
+      - openapi/tackle-contracts-openapi.json#listContracts
+      - openapi/tackle-cosell-openapi.json#createInvitation
+      - openapi/tackle-cosell-openapi.json#createOpportunity

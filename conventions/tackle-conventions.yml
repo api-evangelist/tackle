@@ -1,0 +1,37 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/ + https://developers.tackle.io/reference
+summary: Cross-cutting request/response semantics for the Tackle Cloud GTM APIs (a family of per-cloud services behind developers.tackle.io).
+authentication:
+  style: JWT Bearer (machine-to-machine)
+  detail: >-
+    Obtain an access token from POST https://api.tackle.io/v1/authenticate using an M2M
+    client_id/client_secret, then send it as 'Authorization: Bearer <JWT>'. The SCIM service
+    (scim.tackle.io) uses an apiKey header instead. See authentication/tackle-authentication.yml.
+  token_url: https://api.tackle.io/v1/authenticate
+  docs: https://developers.tackle.io/docs/getting-an-access-token
+idempotency:
+  supported: false
+  note: No Idempotency-Key header or idempotent-retry contract is documented in the OpenAPI or docs.
+pagination:
+  style: varies-by-service
+  services:
+    - {service: Contracts, host: contracts.tackle.io, params: [cursor, limit]}
+    - {service: Co-Sell, host: aws.cosell.tackle.io, params: [pageSize]}
+    - {service: Offers AWS, host: aws.offers.tackle.io, params: [limit, offset, next_token]}
+    - {service: SCIM, host: scim.tackle.io, params: [cursor, maxResults]}
+versioning:
+  scheme: uri-path
+  current: v1
+  note: Core Tackle API is under /v1/*. Offers AWS API is separately versioned (3.2.0); SCIM implements protocol 2.0.
+error_envelope:
+  format: proprietary JSON (not RFC 9457)
+  ref: errors/tackle-error-codes.yml
+rate_limiting:
+  signaled: false
+  note: No RateLimit-* / Retry-After headers are declared in the OpenAPI.
+cross_links:
+  authentication: authentication/tackle-authentication.yml
+  errors: errors/tackle-error-codes.yml
+  lifecycle: lifecycle/tackle-lifecycle.yml
+  webhooks: asyncapi/tackle-webhooks.yml

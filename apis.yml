@@ -1,22 +1,782 @@
 aid: tackle
 name: Tackle
-description: Tackle is a company surfaced as a portfolio company of a16z and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Tackle is a Cloud Go-To-Market (Cloud GTM) platform that helps software companies sell
+  through the AWS, Microsoft Azure, and Google Cloud marketplaces. Its developer APIs
+  (developers.tackle.io) automate the full marketplace workflow: creating and managing private
+  offers on AWS and Microsoft, AWS Partner Central co-sell opportunities and invitations,
+  public contracts, metered usage reporting, disbursements and invoices, buyer prospecting
+  (propensity-to-buy domain scoring), and SCIM 2.0 user provisioning. Authentication is
+  machine-to-machine JWT (client_id/client_secret exchanged for a Bearer token), and vendors
+  receive marketplace lifecycle events via registered, authenticated webhooks. Tackle is backed
+  by a16z and publishes a SafeBase trust center (SOC 2 Type II, GDPR).
 url: https://raw.githubusercontent.com/api-evangelist/tackle/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://tackle.io/wp-content/uploads/2024/02/cropped-cropped-favicon-192x192.png
+humanURL: https://tackle.io
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
-apis: []
+- Cloud Marketplace
+- Cloud GTM
+- Go-To-Market
+- Private Offers
+- Co-Sell
+- Metering
+- SCIM
+- AWS Marketplace
+- Azure Marketplace
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: tackle:tackle-authentication-api
+  name: Tackle Authentication API
+  description: Operations for API Authentication
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-authentication-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-contracts-api
+  name: Tackle Contracts API
+  description: The Contracts API from Tackle — 2 operation(s) for contracts.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-contracts-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-currencies-api
+  name: Tackle Currencies API
+  description: Microsoft marketplace currency and conversion helpers.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Currencies
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-currencies-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-disbursements-api
+  name: Tackle Disbursements API
+  description: The Disbursements API from Tackle — 1 operation(s) for disbursements.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Disbursements
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-disbursements-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-entitlements-api
+  name: Tackle Entitlements API
+  description: Legacy entitlements endpoint - returns flat role objects
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Entitlements
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-entitlements-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-groups-api
+  name: Tackle Groups API
+  description: SCIM 2.0 Groups endpoint - returns full Group resources (RFC 7643 §4.2)
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Groups
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-groups-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-invitations-api
+  name: Tackle Invitations API
+  description: >-
+    Create (test-environment-only), read, update, and list co-sell
+
+    invitations — AWS-led requests to partner with you on a specific
+
+    opportunity. Use the update operation to accept or reject an
+
+    invitation, and the history endpoint to inspect cloud-side detail.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Invitations
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-invitations-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-invoices-api
+  name: Tackle Invoices API
+  description: The Invoices API from Tackle — 1 operation(s) for invoices.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-invoices-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-marketplace-api
+  name: Tackle Marketplace API
+  description: AWS Marketplace context endpoints used to assemble offers and amendments.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Marketplace
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-marketplace-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-metering-api
+  name: Tackle Metering API
+  description: The Metering API from Tackle — 2 operation(s) for metering.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Metering
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-metering-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-notifications-api
+  name: Tackle Notifications API
+  description: Buyer instruction notification operations.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Notifications
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-notifications-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-opportunities-api
+  name: Tackle Opportunities API
+  description: >-
+    Create, read, update, and list co-sell opportunities — the partner-
+
+    originated (Outbound / Partner Referral) and AWS-originated (Inbound
+
+    / AWS Referral) deals tracked in AWS Partner Central. Includes the
+
+    opportunity history endpoint for inspecting cloud-side request and
+
+    response detail.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Opportunities
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-opportunities-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-partners-api
+  name: Tackle Partners API
+  description: AWS Marketplace partner (reseller) reference data.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Partners
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-partners-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-private-offer-actions-api
+  name: Tackle Private Offer Actions API
+  description: Private offer lifecycle actions such as archive, cancel, and sync.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Private Offer Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-private-offer-actions-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-private-offers-api
+  name: Tackle Private Offers API
+  description: AWS private-offer lifecycle (create, read, update, cancel, push to marketplace).
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Private Offers
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-private-offers-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-products-api
+  name: Tackle Products API
+  description: Operations for Products
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-products-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-public-api
+  name: Tackle public API
+  description: The public API from Tackle — 7 operation(s) for public.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - public
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-public-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-registrations-api
+  name: Tackle Registrations API
+  description: Operations for Order Registrations
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Registrations
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-registrations-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-scores-api
+  name: Tackle Scores API
+  description: Score domains and search scored accounts.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Scores
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-scores-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-service-provider-api
+  name: Tackle Service Provider API
+  description: Service provider configuration and capabilities
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Service Provider
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-service-provider-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-solutions-api
+  name: Tackle Solutions API
+  description: >-
+    List the co-sell solutions registered with AWS Partner Central for
+
+    your account. Solution identifiers are referenced by `solutions` on
+
+    opportunities.
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Solutions
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-solutions-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-subscriptions-api
+  name: Tackle Subscriptions API
+  description: Operations for Subscriptions
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-subscriptions-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-users-api
+  name: Tackle Users API
+  description: User management operations
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-users-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-version-api
+  name: Tackle Version API
+  description: Operations for API Versions
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Version
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-version-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+- aid: tackle:tackle-webhooks-api
+  name: Tackle Webhooks API
+  description: Operations for Webhooks
+  humanURL: https://developers.tackle.io/reference
+  baseURL: https://api.tackle.io
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/tackle-webhooks-api-openapi.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference
+  - type: Webhooks
+    url: asyncapi/tackle-webhooks.yml
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Co-Sell
+  - type: APIReference
+    url: https://developers.tackle.io/reference/marketplace
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Offers
+  - type: APIReference
+    url: https://developers.tackle.io/reference/contracts
+  - type: APIReference
+    url: https://developers.tackle.io/reference/Prospect
+  - type: APIReference
+    url: https://developers.tackle.io/reference/SCIM
+common:
+- type: DeveloperPortal
+  url: https://developers.tackle.io
+- type: Documentation
+  url: https://developers.tackle.io/docs
+- type: APIReference
+  url: https://developers.tackle.io/reference
+- type: GettingStarted
+  url: https://developers.tackle.io/docs/getting-an-access-token
+- type: Support
+  url: https://help.tackle.io/en
+- type: Blog
+  url: https://tackle.io/resources/blogs/
+- type: Pricing
+  url: https://tackle.io/pricing/
+- type: SignUp
+  url: https://downstream.tackle.io/login
+- type: PrivacyPolicy
+  url: https://tackle.io/privacy-policy-tackle-platform/
+- type: StatusPage
+  url: https://status.tackle.io
+- type: Compliance
+  url: https://trust.tackle.io/
+- type: TrustCenter
+  url: security/tackle-trust-center.yml
+- type: Authentication
+  url: authentication/tackle-authentication.yml
+- type: OAuthScopes
+  url: scopes/tackle-scopes.yml
+- type: DomainSecurity
+  url: security/tackle-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/tackle-agentic-access.yml
+- type: Conventions
+  url: conventions/tackle-conventions.yml
+- type: ErrorCatalog
+  url: errors/tackle-error-codes.yml
+- type: DataModel
+  url: data-model/tackle-data-model.yml
+- type: MCPServer
+  url: mcp/tackle-mcp.yml
+- type: WellKnown
+  url: well-known/tackle-well-known.yml
+- type: Lifecycle
+  url: lifecycle/tackle-lifecycle.yml
+- type: Conformance
+  url: conformance/tackle-conformance.yml
+- type: Webhooks
+  url: asyncapi/tackle-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: ChangeLog
+  url: changelog/tackle-changelog.yml
+- type: LLMsTxt
+  url: llms/tackle-llms.txt
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 36
+  pass: local-v1

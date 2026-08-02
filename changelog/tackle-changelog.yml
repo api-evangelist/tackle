@@ -1,0 +1,8 @@
+generated: '2026-07-21'
+method: searched
+source: https://tackle.io/resources/blogs/ (Cloud GTM Product Updates series)
+scheme: monthly product-update posts (no dedicated developer API changelog; developers.tackle.io/changelog returns 404)
+current_version: v1
+entries:
+  - {date: '2026-03', title: 'Cloud GTM Product Updates — March 2026', url: 'https://tackle.io/blog/cloud-gtm-product-updates-march-2026-tackle/'}
+  - {date: '2026-02', title: 'Cloud GTM Product Updates — February 2026', url: 'https://tackle.io/blog/cloud-gtm-product-updates-february-2026-tackle/'}

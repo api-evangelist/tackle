@@ -1,0 +1,12 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tackle-api-openapi.json
+schemes:
+- name: Oauth2AuthCallback
+  source: openapi/tackle-api-openapi.json
+  flows:
+  - flow: clientCredentials
+    tokenUrl: /oauth/token
+  description: This auth-type is for `oauth2` client credentials flow. We will use the client_id
+    and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
+scopes: []

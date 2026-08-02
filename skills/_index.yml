@@ -1,0 +1,24 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/ operationIds (grounded, verified against the specs)
+skills:
+  - file: tackle-register-marketplace-webhooks.md
+    name: Register and test marketplace webhooks
+    api: openapi/tackle-api-openapi.json
+    operations: [v1-get-token, v1-create-or-update-webhook, v1-test-webhook, v1-get-all-webhooks]
+  - file: tackle-create-aws-private-offer.md
+    name: Create an AWS Marketplace private offer
+    api: openapi/tackle-marketplace-openapi.json
+    operations: [listProducts, createPrivateOffer, getPrivateOffer]
+  - file: tackle-score-prospect-domains.md
+    name: Score domains for cloud-marketplace propensity to buy
+    api: openapi/tackle-prospect-openapi.json
+    operations: [scoreDomains, searchScoredDomains]
+  - file: tackle-provision-users-scim.md
+    name: Provision users via SCIM 2.0
+    api: openapi/tackle-scim-openapi.json
+    operations: [getServiceProviderConfig, createUser, getUsers, patchUser, deleteUser]
+  - file: tackle-report-metered-usage.md
+    name: Report metered marketplace usage
+    api: openapi/tackle-api-openapi.json
+    operations: [v1-get-token, v1-create-metering-usage-records, v1-list-metering-usage-records, v1-get-metering-usage-record]

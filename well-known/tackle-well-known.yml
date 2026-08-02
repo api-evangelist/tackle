@@ -1,0 +1,18 @@
+generated: '2026-07-21'
+method: searched
+note: Probed /.well-known/* across tackle.io, developers.tackle.io and api.tackle.io. api.tackle.io returns 401 (auth-gated) for all paths; no host serves a public discovery document.
+hosts:
+  - host: https://tackle.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+  - host: https://developers.tackle.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+  - host: https://api.tackle.io
+    documents:
+      - {path: /.well-known/security.txt, status: 401}
+      - {path: /.well-known/openid-configuration, status: 401}
+      - {path: /.well-known/oauth-authorization-server, status: 401}
+      - {path: /.well-known/api-catalog, status: 401}
+      - {path: /.well-known/ai-plugin.json, status: 401}
+documents: []

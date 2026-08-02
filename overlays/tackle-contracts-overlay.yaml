@@ -1,0 +1,11 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Tackle Public Contracts API
+  version: 1.0.0
+extends: openapi/tackle-contracts-openapi.json
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: tackle
+      x-apievangelist-category: cloud-gtm-marketplace
+      x-apievangelist-source: https://developers.tackle.io/reference

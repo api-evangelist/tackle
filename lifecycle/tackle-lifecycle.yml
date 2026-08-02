@@ -1,0 +1,16 @@
+generated: '2026-07-21'
+method: searched
+source: https://developers.tackle.io + https://status.tackle.io
+versioning:
+  scheme: uri-path
+  current: v1
+  note: Core Tackle API paths are under /v1/*. Offers AWS API is independently versioned (3.2.0); SCIM implements protocol 2.0.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: No public deprecation/sunset policy or RFC 8594 header support documented.
+sla:
+  url: null
+status_page: https://status.tackle.io
+status_page_name: Tackle.io Status (Atlassian Statuspage)
+deprecated_operations: []

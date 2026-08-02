@@ -1,0 +1,3024 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Offers MSFT API",
+    "description": "The Offers MSFT API manages Microsoft private offers in Tackle. It includes externally consumable endpoints authenticated by Tackle user or machine-to-machine bearer tokens and authorized through Tackle RBAC.\n\nClients may include the optional `tackle-operation-id` header for request tracing. API Gateway rate limiting and throttling are configured per environment.\n",
+    "version": "1.0.0",
+    "license": {
+      "name": "Proprietary",
+      "url": "https://www.tackle.io/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://msft.offers.tackle.io",
+      "description": "MSFT Offers Service"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Private Offers",
+      "description": "Create, read, update, and list Microsoft private offers."
+    },
+    {
+      "name": "Private Offer Actions",
+      "description": "Private offer lifecycle actions such as archive, cancel, and sync."
+    },
+    {
+      "name": "Products",
+      "description": "Microsoft product and plan detail lookup."
+    },
+    {
+      "name": "Currencies",
+      "description": "Microsoft marketplace currency and conversion helpers."
+    },
+    {
+      "name": "Notifications",
+      "description": "Buyer instruction notification operations."
+    }
+  ],
+  "paths": {
+    "/api/private-offers/{id}/archive": {
+      "post": {
+        "tags": [
+          "Private Offer Actions"
+        ],
+        "summary": "Archive an offer",
+        "description": "Marks an offer as archived and records an archive activity without\nchanging the offer state or status.\n\nRequired RBAC action: `offers:UpdateOffer`.\n",
+        "operationId": "archivePrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offer archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers/{id}/unarchive": {
+      "post": {
+        "tags": [
+          "Private Offer Actions"
+        ],
+        "summary": "Unarchive an offer",
+        "description": "Clears an offer's archived flag and records an unarchive activity without\nchanging the offer state or status.\n\nRequired RBAC action: `offers:UpdateOffer`.\n",
+        "operationId": "unarchivePrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offer unarchived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers/{id}/cancel": {
+      "post": {
+        "tags": [
+          "Private Offer Actions"
+        ],
+        "summary": "Cancel an offer",
+        "description": "Cancels an offer. Accepted offers cannot be canceled. Offers that have\nalready been created in Microsoft are moved to pending cancellation,\nwhile offers that have not reached Microsoft are marked canceled.\n\nRequired RBAC action: `offers:UpdateOffer`.\n",
+        "operationId": "cancelPrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offer canceled or cancellation requested",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers/{id}/sync": {
+      "post": {
+        "tags": [
+          "Private Offer Actions"
+        ],
+        "summary": "Sync an offer from Microsoft",
+        "description": "Synchronizes the stored Tackle offer from Microsoft. The offer must\nalready be associated to a Microsoft offer reference.\n\nRequired RBAC action: `offers:GetOffer`.\n",
+        "operationId": "syncPrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/UpdateDocs"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offer synchronized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers/{id}": {
+      "post": {
+        "tags": [
+          "Private Offers",
+          "public"
+        ],
+        "summary": "Update a Microsoft offer",
+        "description": "Updates an existing Microsoft private offer. If `status` is\n`submit_to_cloud`, the handler merges EULA documents when present,\nvalidates the request, and stores the Microsoft submission payload.\n\nRequired RBAC action: `offers:UpdateOffer`. Submitting to Microsoft also\nrequires `offers:CreateOfferOnMarketplace`.\n",
+        "operationId": "updatePrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOffer"
+              },
+              "examples": {
+                "updateDraftOffer": {
+                  "summary": "Update and keep the offer in Tackle only",
+                  "description": "Use `draft_status` to save the update in Tackle without preparing\nor submitting a Microsoft marketplace payload.\n",
+                  "value": {
+                    "status": "draft_status",
+                    "name": "Updated draft offer",
+                    "description": "Updated draft description"
+                  }
+                },
+                "updateCloudOffer": {
+                  "summary": "Update and submit the offer to Microsoft",
+                  "description": "Use `submit_to_cloud` to validate the offer, merge EULA documents\nwhen present, and prepare the Microsoft marketplace payload. This\nalso requires the `offers:CreateOfferOnMarketplace` RBAC action.\n",
+                  "value": {
+                    "status": "submit_to_cloud",
+                    "name": "Updated cloud offer",
+                    "description": "Updated cloud offer description",
+                    "eula": {
+                      "type": "custom",
+                      "document_urns": [
+                        "document-urn-1"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Offer updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Private Offers",
+          "public"
+        ],
+        "summary": "Get an offer",
+        "description": "Returns one private offer by Tackle offer ID after checking that the\ncaller can access the offer's vendor.\n\nRequired RBAC action: `offers:GetOffer`.\n",
+        "operationId": "getPrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offer found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers": {
+      "post": {
+        "tags": [
+          "Private Offers",
+          "public"
+        ],
+        "summary": "Create or import a Microsoft offer",
+        "description": "Creates a new Microsoft private offer from a full offer payload, or\nimports an existing live Microsoft private offer when the body contains\n`microsoftOfferId` and `buyer_company_name`.\n\nFor full create payloads, if `status` is `submit_to_cloud`, the handler\nvalidates and transforms the request for Microsoft submission before\nsaving the offer. For import payloads, the vendor context is derived\nfrom the authenticated principal; sandbox vendors use their production\nparent vendor's Microsoft credentials.\n\nRequired RBAC action: `offers:CreateDraftOffer`. Submitting to Microsoft\nalso requires `offers:CreateOfferOnMarketplace`.\n",
+        "operationId": "createPrivateOffer",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateOffer"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ImportMicrosoftOfferRequest"
+                  }
+                ]
+              },
+              "examples": {
+                "createDraftOffer": {
+                  "summary": "Create a Tackle-only draft",
+                  "description": "Use `draft_status` to save the offer in Tackle without preparing\nor submitting a Microsoft marketplace payload.\n",
+                  "value": {
+                    "offer_type": "direct",
+                    "vendor_id": "vendor-123",
+                    "status": "draft_status",
+                    "vendor_name": "Example Vendor",
+                    "product_id": "product-123",
+                    "product_name": "Example Product",
+                    "buyer_details": {
+                      "company_name": "Example Buyer",
+                      "billing_account_id": "billing-account-123"
+                    },
+                    "eula": {
+                      "type": "standard",
+                      "document_urns": []
+                    },
+                    "pricing": {
+                      "plan_name": "Example Plan",
+                      "description": "Annual plan",
+                      "contract_duration": {
+                        "type": "month",
+                        "frequency": 12
+                      },
+                      "payment_model": "OneTime",
+                      "payment_installments": {
+                        "price_per_payment_in_usd": 1200
+                      },
+                      "pricing_type": "flat_rate"
+                    }
+                  }
+                },
+                "createCloudOffer": {
+                  "summary": "Create and submit to Microsoft",
+                  "description": "Use `submit_to_cloud` to validate the offer and prepare the\nMicrosoft marketplace payload. This also requires the\n`offers:CreateOfferOnMarketplace` RBAC action.\n",
+                  "value": {
+                    "offer_type": "direct",
+                    "vendor_id": "vendor-123",
+                    "status": "submit_to_cloud",
+                    "vendor_name": "Example Vendor",
+                    "product_id": "product-123",
+                    "product_name": "Example Product",
+                    "name": "Example Microsoft Offer",
+                    "preparer_email": "seller@example.com",
+                    "start_on": "acceptance",
+                    "end_date": "2027-04-30",
+                    "accept_by_date": "2026-05-31",
+                    "buyer_details": {
+                      "company_name": "Example Buyer",
+                      "billing_account_id": "billing-account-123",
+                      "buyers": [
+                        {
+                          "full_name": "Buyer User",
+                          "email_address": "buyer@example.com",
+                          "title": "Procurement"
+                        }
+                      ]
+                    },
+                    "eula": {
+                      "type": "custom",
+                      "document_urns": [
+                        "document-urn-1"
+                      ]
+                    },
+                    "pricing": {
+                      "plan_name": "Example Plan",
+                      "description": "Annual plan",
+                      "contract_duration": {
+                        "type": "month",
+                        "frequency": 12
+                      },
+                      "payment_model": "OneTime",
+                      "payment_installments": {
+                        "price_per_payment_in_usd": 1200
+                      },
+                      "pricing_type": "flat_rate"
+                    }
+                  }
+                },
+                "importMicrosoftOffer": {
+                  "summary": "Import an existing Microsoft offer",
+                  "description": "Use `microsoftOfferId` with `buyer_company_name` to import an\nexisting live Microsoft private offer into Tackle. Optionally\ninclude `salesforce_opportunity_id` to associate the imported\noffer with a Salesforce opportunity. The Microsoft offer must\nbe supported by Tackle: live state, a single product listing\nand plan, a single buyer, and supported USD pricing.\n",
+                  "value": {
+                    "microsoftOfferId": "ms-offer-123",
+                    "buyer_company_name": "Example Buyer",
+                    "salesforce_opportunity_id": 6000000000001
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Offer created or imported",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivateOffer"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Private Offers",
+          "public"
+        ],
+        "summary": "List offers",
+        "description": "Finds the authenticated seller's offers, optionally filtered by Microsoft\noffer reference or Microsoft plan reference. Vendor scope is derived\nfrom the bearer token; no vendor identifier is accepted from the caller.\n\nRequired RBAC action: `offers:ListOffers`.\n",
+        "operationId": "listPrivateOffers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferRef"
+          },
+          {
+            "$ref": "#/components/parameters/PlanRef"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Offers matching the search",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrivateOffer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": [
+          "Products",
+          "public"
+        ],
+        "summary": "List Microsoft products",
+        "description": "Returns the Microsoft Marketplace product listings owned by the\nauthenticated seller. Use this to populate a product picker before\ncreating a private offer. The seller is identified by the vendor in\nthe bearer token; no path or query parameter is required.\n\nEach product object includes the Tackle product identifier\n(`productid`), the listing type (`listing_type`), and human-readable\n`name` and `status` fields. Pass `productid` as the `id` path\nparameter to `GET /api/products/{id}` to fetch plan and pricing\ndetails for a specific product.\n\nRequired RBAC action: `offers:ListProducts`.\n",
+        "operationId": "listProducts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Microsoft products owned by the seller.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": [
+          "Products",
+          "public"
+        ],
+        "summary": "Get Microsoft product details",
+        "description": "Preferred route for retrieving Microsoft product plan and pricing details.\nThe vendor context is derived from the authenticated principal; sandbox\nvendors use their production parent vendor's Microsoft credentials.\nDemo vendors receive static demo product details; other vendors retrieve\nproduct details from Microsoft Partner Center.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+        "operationId": "getProductDetails",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProductId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetailsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/private-offers/{id}/notifications": {
+      "post": {
+        "tags": [
+          "Notifications",
+          "public"
+        ],
+        "summary": "Create an offer notification",
+        "description": "Creates an offer notification. Currently only buyer instruction emails\nare supported. To send buyer instructions, use `type:\nbuyer_instructions` and `channel: email`. The handler publishes through\nTackle Notification Service and marks the offer as email sent.\n\nRequired RBAC action: `offers:SendOfferInstructions`.\n",
+        "operationId": "createPrivateOfferNotification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OfferId"
+          },
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOfferNotificationRequest"
+              },
+              "examples": {
+                "sendBuyerInstructionsEmail": {
+                  "summary": "Send buyer instruction email",
+                  "value": {
+                    "type": "buyer_instructions",
+                    "channel": "email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/currencies": {
+      "get": {
+        "tags": [
+          "Currencies",
+          "public"
+        ],
+        "summary": "Get Microsoft market currencies",
+        "description": "Returns accepted currencies and the Microsoft marketplace countries\ngrouped by accepted currency.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+        "operationId": "getMarketCurrencies",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Market currencies found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarketCurrenciesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/currencies/convert": {
+      "post": {
+        "tags": [
+          "Currencies",
+          "public"
+        ],
+        "summary": "Convert currencies",
+        "description": "Converts one or more amounts from a base currency to a target currency\nusing cached Microsoft foreign exchange rates. Row-level conversion\nerrors are returned in `results[].error` without failing the entire\nrequest.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+        "operationId": "convertCurrencies",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TackleOperationId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrencyConversionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Currency conversion results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencyConversionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Tackle bearer token checked by RBAC for the operation action."
+      }
+    },
+    "parameters": {
+      "OfferId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Tackle private offer ID.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "po-1234"
+      },
+      "ProductId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Microsoft product ID.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "product/123"
+      },
+      "TackleOperationId": {
+        "name": "tackle-operation-id",
+        "in": "header",
+        "required": false,
+        "description": "Optional caller-provided operation ID for request tracing.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+      },
+      "OfferRef": {
+        "name": "offer_ref",
+        "in": "query",
+        "required": false,
+        "description": "Filter offers by Microsoft offer reference.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "ms-offer-123"
+      },
+      "PlanRef": {
+        "name": "plan_ref",
+        "in": "query",
+        "required": false,
+        "description": "Filter offers by Microsoft plan reference.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "plan-123"
+      },
+      "UpdateDocs": {
+        "name": "update_docs",
+        "in": "query",
+        "required": false,
+        "description": "Whether the manual sync should refresh associated documents.",
+        "schema": {
+          "type": "boolean",
+          "default": false
+        },
+        "example": true
+      }
+    },
+    "responses": {
+      "NoContent": {
+        "description": "Operation completed successfully with no response body."
+      },
+      "BadRequestError": {
+        "description": "Invalid request or unsupported operation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "missing id"
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Authentication failed.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "unauthorized"
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Caller is not allowed to perform this action.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "forbidden"
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Requested offer or resource was not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "message": "not found"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error or upstream dependency failure.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message.",
+            "example": "missing id"
+          }
+        }
+      },
+      "OfferType": {
+        "type": "string",
+        "enum": [
+          "direct",
+          "partner"
+        ]
+      },
+      "OfferStateValue": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "pending",
+          "submitted_in_cloud",
+          "created_in_cloud",
+          "email_sent",
+          "instructions_opened",
+          "viewed",
+          "partner_marked_up",
+          "accepted",
+          "subscribed",
+          "attention_needed",
+          "pending_cancellation",
+          "pending_cancellation_withdrawn",
+          "canceled",
+          "deleted_in_cloud"
+        ]
+      },
+      "OfferStatus": {
+        "type": "string",
+        "description": "Controls the offer workflow. Use `draft_status` to save the offer in\nTackle only. Use `submit_to_cloud` to validate the offer and prepare it\nfor Microsoft marketplace submission.\n",
+        "enum": [
+          "draft_status",
+          "draft_in_marketplace_status",
+          "submit_to_cloud",
+          "created_in_cloud",
+          "sent_to_cloud",
+          "pending_cancellation",
+          "partner_marked_up",
+          "canceled",
+          "accepted",
+          "withdrawn_canceled",
+          "errored",
+          "subscribed",
+          "expired",
+          "job_status_pending",
+          "detail_retrieval_pending",
+          "withdraw_pending",
+          "delete_pending",
+          "delete_validation_pending",
+          "deleted"
+        ]
+      },
+      "Source": {
+        "type": "string",
+        "enum": [
+          "salesforce",
+          "tackle",
+          "microsoft"
+        ]
+      },
+      "ProductType": {
+        "type": "string",
+        "enum": [
+          "saas",
+          "ami",
+          "professional_services"
+        ]
+      },
+      "PaymentModel": {
+        "type": "string",
+        "enum": [
+          "PaymentSchedule",
+          "PerYear",
+          "OneTime",
+          "PerMonth"
+        ]
+      },
+      "PricingType": {
+        "type": "string",
+        "enum": [
+          "flat_rate",
+          "per_user"
+        ]
+      },
+      "StartOn": {
+        "type": "string",
+        "enum": [
+          "acceptance",
+          "custom"
+        ]
+      },
+      "CreateOffer": {
+        "type": "object",
+        "description": "Request body for creating a Microsoft SaaS private offer.",
+        "properties": {
+          "offer_type": {
+            "$ref": "#/components/schemas/OfferType"
+          },
+          "salesforce": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CreateSalesforce"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "vendor_id": {
+            "type": "string",
+            "description": "Tackle vendor ID that owns the offer."
+          },
+          "state": {
+            "$ref": "#/components/schemas/OfferStateValue"
+          },
+          "status": {
+            "description": "Use `draft_status` to create a Tackle-only draft. Use\n`submit_to_cloud` to validate the offer and prepare it for Microsoft\nmarketplace submission.\n",
+            "$ref": "#/components/schemas/OfferStatus"
+          },
+          "marketplace_fee": {
+            "type": "number",
+            "format": "double"
+          },
+          "vendor_name": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Tackle product ID."
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "source": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Source"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "clone": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Clone"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "pre_registration_details": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PreRegistrationDetails"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "partner": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Partner"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "buyer_details": {
+            "$ref": "#/components/schemas/BuyerDetails"
+          },
+          "renewal": {
+            "type": "boolean"
+          },
+          "eula": {
+            "$ref": "#/components/schemas/EULA"
+          },
+          "product_ref": {
+            "type": "string",
+            "description": "Microsoft product reference."
+          },
+          "users_to_notify": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateUserToNotify"
+            }
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/OfferPricing"
+          },
+          "preparer_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "start_on": {
+            "$ref": "#/components/schemas/StartOn"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "accept_by_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "plan_template": {
+            "$ref": "#/components/schemas/PlanTemplate"
+          }
+        },
+        "example": {
+          "offer_type": "direct",
+          "vendor_id": "vendor-123",
+          "status": "draft_status",
+          "vendor_name": "Example Vendor",
+          "product_id": "product-123",
+          "product_name": "Example Product",
+          "buyer_details": {
+            "company_name": "Example Buyer",
+            "billing_account_id": "billing-account-123",
+            "buyers": [
+              {
+                "full_name": "Buyer User",
+                "email_address": "buyer@example.com",
+                "title": "Procurement"
+              }
+            ]
+          },
+          "eula": {
+            "type": "standard",
+            "document_urns": []
+          },
+          "pricing": {
+            "plan_name": "Example Plan",
+            "description": "Annual plan",
+            "contract_duration": {
+              "type": "month",
+              "frequency": 12
+            },
+            "payment_model": "OneTime",
+            "payment_installments": {
+              "price_per_payment_in_usd": 1200
+            },
+            "pricing_type": "flat_rate"
+          },
+          "start_on": "acceptance",
+          "start_date": "2026-05-01",
+          "end_date": "2027-04-30",
+          "accept_by_date": "2026-05-31",
+          "plan_template": {
+            "ref": "plan-template-123",
+            "display": "Standard plan"
+          }
+        }
+      },
+      "UpdateOffer": {
+        "type": "object",
+        "description": "Partial request body for updating a Microsoft SaaS private offer.",
+        "properties": {
+          "salesforce": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateSalesforce"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "marketplace_fee": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "state": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/OfferStateValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "description": "Use `draft_status` to update the offer in Tackle only. Use\n`submit_to_cloud` to validate the update and prepare it for Microsoft\nmarketplace submission.\n",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/OfferStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "product_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "pre_registration_details": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PreRegistrationDetails"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "partner": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Partner"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "buyer_details": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateBuyerDetails"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "renewal": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "eula": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/EULA"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "product_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "users_to_notify": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateUserToNotify"
+            }
+          },
+          "pricing": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateOfferPricing"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "preparer_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "start_on": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/StartOn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "start_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "end_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "accept_by_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "plan_template": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlanTemplate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ImportMicrosoftOfferRequest": {
+        "type": "object",
+        "required": [
+          "microsoftOfferId",
+          "buyer_company_name"
+        ],
+        "properties": {
+          "microsoftOfferId": {
+            "type": "string",
+            "description": "Microsoft private offer ID to import.",
+            "example": "ms-offer-123"
+          },
+          "buyer_company_name": {
+            "type": "string",
+            "description": "Buyer company name to store on the imported offer.",
+            "example": "Example Buyer"
+          },
+          "salesforce_opportunity_id": {
+            "type": "string",
+            "description": "Optional Salesforce opportunity ID to associate to the imported offer.",
+            "example": 6000000000001
+          }
+        }
+      },
+      "CreateOfferNotificationRequest": {
+        "type": "object",
+        "description": "Request body for creating an offer notification. Only buyer instruction\nemails are currently supported.\n",
+        "required": [
+          "type",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "buyer_instructions"
+            ],
+            "description": "Notification type to create.",
+            "example": "buyer_instructions"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "email"
+            ],
+            "description": "Notification channel to use.",
+            "example": "email"
+          }
+        }
+      },
+      "CreateSalesforce": {
+        "type": "object",
+        "properties": {
+          "custom_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunity_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "UpdateSalesforce": {
+        "type": "object",
+        "properties": {
+          "custom_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunity_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Clone": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "originating_offer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "PreRegistrationDetails": {
+        "type": "object",
+        "properties": {
+          "company_website": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Partner": {
+        "type": "object",
+        "properties": {
+          "partner_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "partner_seller_id": {
+            "type": "string"
+          }
+        }
+      },
+      "BuyerDetails": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": "string"
+          },
+          "billing_account_id": {
+            "type": "string"
+          },
+          "buyers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Buyer"
+            }
+          }
+        }
+      },
+      "UpdateBuyerDetails": {
+        "type": "object",
+        "properties": {
+          "company_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "billing_account_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "buyers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Buyer"
+            }
+          }
+        }
+      },
+      "Buyer": {
+        "type": "object",
+        "properties": {
+          "full_name": {
+            "type": "string"
+          },
+          "email_address": {
+            "type": "string",
+            "format": "email"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "EULA": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Offer EULA type.",
+            "example": "standard"
+          },
+          "document_urns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "merged_urn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "presigned_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          }
+        }
+      },
+      "CreateUserToNotify": {
+        "type": "object",
+        "properties": {
+          "contact_type": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "UpdateUserToNotify": {
+        "type": "object",
+        "properties": {
+          "contact_type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "UserToNotify": {
+        "type": "object",
+        "properties": {
+          "contact_type": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "OfferPricing": {
+        "type": "object",
+        "properties": {
+          "plan_ref": {
+            "type": "string",
+            "description": "Microsoft plan ID."
+          },
+          "plan_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "contract_duration": {
+            "$ref": "#/components/schemas/ContractDuration"
+          },
+          "payment_model": {
+            "$ref": "#/components/schemas/PaymentModel"
+          },
+          "payment_installments": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaymentInstallment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "payment_schedule": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaymentSchedule"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pricing_type": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PricingType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_limits": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserLimits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dimensions": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Dimension"
+            }
+          }
+        }
+      },
+      "UpdateOfferPricing": {
+        "type": "object",
+        "properties": {
+          "plan_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "contract_duration": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdateContractDuration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "payment_model": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaymentModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "payment_installments": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UpdatePaymentInstallment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "payment_schedule": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaymentSchedule"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pricing_type": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PricingType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "user_limits": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserLimits"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dimensions": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/UpdateDimension"
+            }
+          }
+        }
+      },
+      "ContractDuration": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "month"
+          },
+          "frequency": {
+            "type": "integer",
+            "example": 12
+          }
+        }
+      },
+      "UpdateContractDuration": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "frequency": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "PaymentInstallment": {
+        "type": "object",
+        "properties": {
+          "price_per_payment_in_usd": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "UpdatePaymentInstallment": {
+        "type": "object",
+        "properties": {
+          "price_per_payment_in_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "Dimension": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "unit_of_measure": {
+            "type": "string"
+          },
+          "price_per_unit_in_usd": {
+            "type": "number",
+            "format": "double"
+          },
+          "included_quantities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DimensionQuantity"
+            }
+          }
+        }
+      },
+      "UpdateDimension": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unit_of_measure": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price_per_unit_in_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "included_quantities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DimensionQuantity"
+            }
+          }
+        }
+      },
+      "DimensionQuantity": {
+        "type": "object",
+        "properties": {
+          "dimension_term": {
+            "$ref": "#/components/schemas/ContractDuration"
+          },
+          "unlimited_quantity": {
+            "type": "boolean"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "PaymentSchedule": {
+        "type": "object",
+        "properties": {
+          "initial_charge": {
+            "$ref": "#/components/schemas/InitialCharge"
+          },
+          "payment_schedule": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScheduleDetail"
+            }
+          }
+        }
+      },
+      "InitialCharge": {
+        "type": "object",
+        "properties": {
+          "price_per_payment_in_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ScheduleDetail": {
+        "type": "object",
+        "properties": {
+          "charge_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "price_per_payment_in_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserLimits": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "integer"
+          },
+          "max": {
+            "type": "integer"
+          }
+        }
+      },
+      "PlanTemplate": {
+        "type": "object",
+        "properties": {
+          "ref": {
+            "type": "string"
+          },
+          "display": {
+            "type": "string"
+          }
+        }
+      },
+      "PrivateOffer": {
+        "type": "object",
+        "description": "Stored Tackle Microsoft private offer.",
+        "properties": {
+          "po_id": {
+            "type": "string"
+          },
+          "accepted_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "accepted_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "archived_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cancelled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_update_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "viewed_offer_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "sent_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "submitted_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "opened_instructions_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "subscribed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "partner_marked_up_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "marketplace_acceptance_link": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "salesforce": {
+            "$ref": "#/components/schemas/PrivateOfferSalesforce"
+          },
+          "vendor_id": {
+            "type": "string"
+          },
+          "vendor_name": {
+            "type": "string"
+          },
+          "product_contact_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "state": {
+            "$ref": "#/components/schemas/OfferStateValue"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OfferStatus"
+          },
+          "offer_type": {
+            "$ref": "#/components/schemas/OfferType"
+          },
+          "marketplace_fee": {
+            "type": "number",
+            "format": "double"
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrivateOfferActivity"
+            }
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "version": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "marketplace_created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "clone": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Clone"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "product_type": {
+            "$ref": "#/components/schemas/ProductType"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrivateOfferError"
+            }
+          },
+          "pre_registration_details": {
+            "$ref": "#/components/schemas/PreRegistrationDetails"
+          },
+          "ui_state": {
+            "$ref": "#/components/schemas/OfferStateValue"
+          },
+          "partner": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Partner"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "total_contract_value_gross_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "total_contract_value_net_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "est_min_total_contract_value_gross_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "est_min_total_contract_value_net_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "est_max_total_contract_value_gross_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "est_max_total_contract_value_net_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "buyer_details": {
+            "$ref": "#/components/schemas/BuyerDetails"
+          },
+          "renewal": {
+            "type": "boolean"
+          },
+          "eula": {
+            "$ref": "#/components/schemas/EULA"
+          },
+          "product_ref": {
+            "type": "string"
+          },
+          "users_to_notify": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserToNotify"
+            }
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/OfferPricing"
+          },
+          "preparer_email": {
+            "type": "string",
+            "format": "email"
+          },
+          "start_on": {
+            "$ref": "#/components/schemas/StartOn"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "accept_by_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "offer_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "plan_template": {
+            "$ref": "#/components/schemas/PlanTemplate"
+          },
+          "plan_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subscription_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "offer_state": {
+            "$ref": "#/components/schemas/PrivateOfferState"
+          },
+          "msft_response": {
+            "$ref": "#/components/schemas/MsftResponse"
+          }
+        }
+      },
+      "PrivateOfferSalesforce": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "custom_object_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunity_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "PrivateOfferState": {
+        "type": "object",
+        "properties": {
+          "draft": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOfferStateDetail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "submitted": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOfferStateDetail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "accepted": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOfferStateDetail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "current_cloud": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOfferStateDetail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_modified": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PrivateOfferStateDetail": {
+        "type": "object",
+        "properties": {
+          "raw_message": {
+            "type": "string"
+          }
+        }
+      },
+      "PrivateOfferActivity": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "created-draft-offer"
+          },
+          "user_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "user": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PrivateOfferActivityUser"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "PrivateOfferActivityUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "principal_type": {
+            "type": "string"
+          }
+        }
+      },
+      "PrivateOfferError": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "MsftResponse": {
+        "type": "object",
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "offer_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resource_uri": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "raw_response": {
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "description": "A Microsoft Marketplace product owned by the calling seller. The\nfields below are the most commonly consumed; additional\nlisting-type-specific fields may also be present.\n",
+        "properties": {
+          "cloud": {
+            "type": "string",
+            "enum": [
+              "azure"
+            ],
+            "description": "Always `azure` for products returned by this API. Microsoft\nMarketplace products are stored upstream under the `azure`\ncloud identifier.\n"
+          },
+          "productid": {
+            "type": "string",
+            "description": "The Tackle product ID."
+          },
+          "productid_internal": {
+            "type": "string",
+            "description": "Internal Tackle product identifier."
+          },
+          "vendorid": {
+            "type": "string",
+            "description": "Tackle vendor (ISV) ID that owns the product."
+          },
+          "listing_type": {
+            "type": "string",
+            "description": "Listing type (e.g. `saas`)."
+          },
+          "listing_pricing_type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "registration_hosting": {
+            "type": "string"
+          },
+          "active_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ]
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "cloud",
+          "productid",
+          "vendorid",
+          "name",
+          "status"
+        ]
+      },
+      "ProductDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "external_id": {
+            "type": "string"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "plans": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanResponse"
+            }
+          }
+        }
+      },
+      "PlanResponse": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/PlanPricing"
+          },
+          "offer_pricing_type": {
+            "type": "string"
+          },
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "audience": {
+            "type": "string"
+          },
+          "alias": {
+            "type": "string"
+          },
+          "external_id": {
+            "type": "string"
+          }
+        }
+      },
+      "PlanPricing": {
+        "type": "object",
+        "properties": {
+          "recurrent_price": {
+            "$ref": "#/components/schemas/RecurrentPrice"
+          },
+          "custom_meters": {
+            "$ref": "#/components/schemas/CustomMeters"
+          }
+        }
+      },
+      "RecurrentPrice": {
+        "type": "object",
+        "properties": {
+          "price_input_option": {
+            "type": "string"
+          },
+          "recurrent_price_mode": {
+            "type": "string"
+          },
+          "user_limits": {
+            "$ref": "#/components/schemas/PlanUserLimits"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanPrice"
+            }
+          }
+        }
+      },
+      "PlanPrice": {
+        "type": "object",
+        "properties": {
+          "billing_term": {
+            "$ref": "#/components/schemas/TermValue"
+          },
+          "payment_option": {
+            "$ref": "#/components/schemas/TermValue"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceDetail"
+            }
+          },
+          "price_per_payment_in_usd": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "PlanUserLimits": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "integer"
+          },
+          "max": {
+            "type": "integer"
+          }
+        }
+      },
+      "TermValue": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
+      "PriceDetail": {
+        "type": "object",
+        "properties": {
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "currency": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "CustomMeters": {
+        "type": "object",
+        "properties": {
+          "price_input_option": {
+            "type": "string"
+          },
+          "meters": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Meter"
+            }
+          }
+        }
+      },
+      "Meter": {
+        "type": "object",
+        "properties": {
+          "included_quantities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncludedQuantity"
+            }
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PriceDetail"
+            }
+          }
+        }
+      },
+      "IncludedQuantity": {
+        "type": "object",
+        "properties": {
+          "billing_term": {
+            "$ref": "#/components/schemas/TermValue"
+          },
+          "is_infinite": {
+            "type": "boolean"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MarketCurrenciesResponse": {
+        "type": "object",
+        "properties": {
+          "currency_options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyOption"
+            }
+          },
+          "currency_markets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/MarketCurrency"
+              }
+            }
+          }
+        },
+        "example": {
+          "currency_options": [
+            {
+              "value": "USD",
+              "display": "United States Dollar | USD ($)"
+            }
+          ],
+          "currency_markets": {
+            "USD": [
+              {
+                "country_name": "United States",
+                "iso2": "US",
+                "currency": "USD"
+              }
+            ]
+          }
+        }
+      },
+      "CurrencyOption": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "ISO 4217 currency code.",
+            "example": "USD"
+          },
+          "display": {
+            "type": "string",
+            "example": "United States Dollar | USD ($)"
+          }
+        }
+      },
+      "MarketCurrency": {
+        "type": "object",
+        "properties": {
+          "country_name": {
+            "type": "string"
+          },
+          "iso2": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code.",
+            "example": "US"
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO 4217 currency code.",
+            "example": "USD"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "source_revision": {
+            "type": "string"
+          }
+        }
+      },
+      "CurrencyConversionRequest": {
+        "type": "object",
+        "required": [
+          "conversions"
+        ],
+        "properties": {
+          "as_of_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Requested FX rate date. Defaults to the current UTC date.",
+            "example": "2026-04-30"
+          },
+          "conversions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/CurrencyConversionPayload"
+            }
+          }
+        }
+      },
+      "CurrencyConversionPayload": {
+        "type": "object",
+        "required": [
+          "id",
+          "base_currency",
+          "target_currency",
+          "amount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Caller-provided row ID echoed in the response."
+          },
+          "base_currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "target_currency": {
+            "type": "string",
+            "example": "EUR"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "example": 100
+          }
+        }
+      },
+      "CurrencyConversionResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyConversionResult"
+            }
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "CurrencyConversionResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "base_currency": {
+            "type": "string"
+          },
+          "target_currency": {
+            "type": "string"
+          },
+          "original_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "converted_amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "exchange_rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "rate_source_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "rate_as_of_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "error": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CurrencyConversionError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CurrencyConversionError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

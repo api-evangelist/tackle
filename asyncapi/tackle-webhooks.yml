@@ -1,0 +1,22 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/tackle-api-openapi.json (webhook management operations + secured callbacks)
+spec_type: Webhooks
+description: >-
+  The Tackle API lets a vendor register HTTPS webhook endpoints to receive marketplace
+  lifecycle events (per vendor and per product). Deliveries are authenticated using one of
+  three callback schemes: HTTP Basic, a custom header API key (subscription-key), or OAuth2
+  client-credentials (Tackle fetches a token from your token_url).
+management_operations:
+  - {operationId: v1-create-or-update-webhook, method: POST, path: /v1/webhooks}
+  - {operationId: v1-get-all-webhooks, method: GET, path: /v1/webhooks}
+  - {operationId: v1-test-webhook, method: POST, path: /v1/webhooks/test}
+  - {operationId: v1-get-vendor-webhook, method: GET, path: /v1/webhooks/vendor}
+  - {operationId: v1-delete-webhook, method: DELETE, path: /v1/webhooks/vendor}
+  - {operationId: v1-get-product-webhook, method: GET, path: '/v1/webhooks/product/{productid}'}
+  - {operationId: v1-delete-product-webhook, method: DELETE, path: '/v1/webhooks/product/{productid}'}
+delivery_auth:
+  - HTTP Basic (BasicAuthCallback)
+  - Header API key subscription-key (HeaderApiKeyAuthCallback)
+  - OAuth2 client credentials (Oauth2AuthCallback)
+asyncapi_spec: null
