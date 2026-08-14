@@ -31,7 +31,7 @@ x-backed-by:
 - a16z
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-13'
 tags:
 - Company
 - Cloud Marketplace
@@ -735,18 +735,26 @@ common:
   url: https://help.tackle.io/en
 - type: Blog
   url: https://tackle.io/resources/blogs/
-- type: Pricing
-  url: https://tackle.io/pricing/
+- type: GitHubOrganization
+  url: https://github.com/tackle-io
 - type: SignUp
   url: https://downstream.tackle.io/login
 - type: PrivacyPolicy
   url: https://tackle.io/privacy-policy-tackle-platform/
+- type: TermsOfService
+  url: https://tackle.io/platform-terms-of-use/
+- type: Plans
+  url: plans/tackle-plans-pricing.yml
 - type: StatusPage
   url: https://status.tackle.io
 - type: Compliance
   url: https://trust.tackle.io/
 - type: TrustCenter
   url: security/tackle-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/tackle-vulnerability-disclosure.yml
+- type: Security
+  url: https://trust.tackle.io/
 - type: Authentication
   url: authentication/tackle-authentication.yml
 - type: OAuthScopes
@@ -763,10 +771,14 @@ common:
   url: data-model/tackle-data-model.yml
 - type: MCPServer
   url: mcp/tackle-mcp.yml
-- type: WellKnown
-  url: well-known/tackle-well-known.yml
 - type: Lifecycle
   url: lifecycle/tackle-lifecycle.yml
+- type: Packages
+  url: packages/tackle-packages.yml
+- type: RateLimits
+  url: rate-limits/tackle-rate-limits.yml
+- type: Sandbox
+  url: sandbox/tackle-sandbox.yml
 - type: Conformance
   url: conformance/tackle-conformance.yml
 - type: Webhooks
@@ -778,7 +790,7 @@ common:
 - type: LLMsTxt
   url: llms/tackle-llms.txt
 x-enrichment:
-  date: '2026-07-21'
+  date: '2026-08-13'
   status: enriched
-  artifacts_added: 36
+  artifacts_added: 5
   pass: local-v1
