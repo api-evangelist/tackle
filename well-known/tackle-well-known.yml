@@ -1,18 +1,71 @@
-generated: '2026-07-21'
-method: searched
-note: Probed /.well-known/* across tackle.io, developers.tackle.io and api.tackle.io. api.tackle.io returns 401 (auth-gated) for all paths; no host serves a public discovery document.
+generated: '2026-08-13'
+method: probed
+source: live HTTP probe of /.well-known/* on every Tackle host in apis.yml + OpenAPI servers[]
+note: >-
+  RE-PROBED 2026-08-13. NOTHING IS SERVED. No Tackle host returns a single /.well-known/
+  document. tackle.io and developers.tackle.io answer a hard 404 (nginx / ReadMe respectively —
+  not an SPA catch-all, so these are true negatives); api.tackle.io answers 401
+  ("authorization_header_missing") for every path because the API gateway authenticates before
+  routing, which means even RFC 9116 security.txt and RFC 8414 metadata are unreachable
+  anonymously; scim.tackle.io and the other API Gateway hosts answer 403 "Missing Authentication
+  Token" for the same reason. THIS FILE RECORDS AN ABSENCE — no `WellKnown` or `SecurityTxt`
+  pointer is wired into apis.yml, and the stale WellKnown pointer from the 2026-07-21 pass was
+  removed on this run because it credited Tackle with a discovery surface it does not serve.
 hosts:
-  - host: https://tackle.io
-    documents:
-      - {path: /.well-known/security.txt, status: 404}
-  - host: https://developers.tackle.io
-    documents:
-      - {path: /.well-known/security.txt, status: 404}
-  - host: https://api.tackle.io
-    documents:
-      - {path: /.well-known/security.txt, status: 401}
-      - {path: /.well-known/openid-configuration, status: 401}
-      - {path: /.well-known/oauth-authorization-server, status: 401}
-      - {path: /.well-known/api-catalog, status: 401}
-      - {path: /.well-known/ai-plugin.json, status: 401}
+- host: https://tackle.io
+  server: nginx
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://developers.tackle.io
+  server: ReadMe
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://api.tackle.io
+  gate: 'auth-before-route (401 authorization_header_missing on every path)'
+  documents:
+  - {path: /.well-known/security.txt, status: 401}
+  - {path: /.well-known/openid-configuration, status: 401}
+  - {path: /.well-known/oauth-authorization-server, status: 401}
+  - {path: /.well-known/oauth-protected-resource, status: 401}
+  - {path: /.well-known/api-catalog, status: 401}
+  - {path: /.well-known/ai-plugin.json, status: 401}
+- host: https://scim.tackle.io
+  gate: 'AWS API Gateway (403 Missing Authentication Token on every path)'
+  documents:
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/openid-configuration, status: 403}
+  - {path: /.well-known/oauth-authorization-server, status: 403}
+  - {path: /.well-known/oauth-protected-resource, status: 403}
+  - {path: /.well-known/api-catalog, status: 403}
+  - {path: /.well-known/ai-plugin.json, status: 403}
+- host: https://contracts.tackle.io
+  gate: 'AWS API Gateway (403 Missing Authentication Token)'
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403}
+  - {path: /.well-known/agent.json, status: 403}
+- host: https://aws.cosell.tackle.io
+  gate: 'AWS API Gateway (403 Missing Authentication Token)'
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403}
+  - {path: /.well-known/agent.json, status: 403}
+- host: https://aws.offers.tackle.io
+  gate: 'AWS API Gateway (403 Missing Authentication Token)'
+  documents:
+  - {path: /.well-known/agent-card.json, status: 403}
+  - {path: /.well-known/agent.json, status: 403}
 documents: []
+agent_card_found: false

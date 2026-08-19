@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Scores API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Scores",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Score domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/scores",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Scores a batch of domains for buyer-signal propensity."
+        },
+        {
+          "info": {
+            "name": "Search scored domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/scores/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Searches scored domains using filters and pagination. When no\nfilters are supplied, the response contains all scored domains\navailable to the calling account, limited by pagination.\n\nPagination uses `page_number` and `records_per_page`. For large\nresult sets, use `metadata.search_after` from one response as the\nnext request's `search_after` value to continue forward."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

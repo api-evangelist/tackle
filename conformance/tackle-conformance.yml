@@ -1,22 +1,62 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
-source: openapi/ + https://trust.tackle.io
+source: openapi/ + https://trust.tackle.io/ + https://developers.tackle.io/docs/scim
 standards:
   - id: scim-2.0
     conforms: true
-    evidence: Dedicated SCIM 2.0 API at scim.tackle.io (ServiceProviderConfig, Schemas, ResourceTypes, Users, PatchOp) — openapi/tackle-scim-openapi.json (version 2.0.0)
+    evidence: >-
+      Dedicated SCIM 2.0 API at scim.tackle.io implementing RFC 7644 (protocol) over RFC 7643
+      (core schema) — ServiceProviderConfig, Schemas, ResourceTypes, Users, Groups, PatchOp;
+      application/scim+json; urn:ietf:params:scim:schemas:core:2.0:User.
+      openapi/tackle-groups-api-openapi.yml, openapi/_original/tackle-scim-openapi.json (2.0.0)
+  - id: rfc7643-scim-core-schema
+    conforms: true
+    evidence: 'Group resources returned as full RFC 7643 §4.2 Group objects; User follows the core 2.0 User schema with required schemas/userName/name/emails/externalId.'
   - id: oauth2-client-credentials
     conforms: true
-    evidence: oauth2 clientCredentials flow declared for webhook callbacks (tokenUrl /oauth/token); M2M token issuance via /v1/authenticate
+    evidence: >-
+      M2M token issuance via POST /v1/authenticate with grant_type=client_credentials returning
+      {access_token, token_type: bearer, expires_in: 5400}; an oauth2 clientCredentials flow is
+      also declared for OUTBOUND webhook callbacks (tokenUrl supplied by the consumer).
+  - id: oauth2-authorization-server-metadata
+    conforms: false
+    evidence: 'RFC 8414 /.well-known/oauth-authorization-server is not served on any host (401/404) — well-known/tackle-well-known.yml'
   - id: jwt-bearer
     conforms: true
     evidence: All core services require Authorization Bearer JWT (bearerFormat JWT)
   - id: rfc9457-problem-details
     conforms: false
     evidence: Errors are proprietary JSON objects; no application/problem+json media type in any spec
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: '/.well-known/security.txt returns 404 on tackle.io and developers.tackle.io and 401 on api.tackle.io, despite a real responsible-disclosure program at trust.tackle.io'
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: No Sunset/Deprecation header support and no deprecation policy — lifecycle/tackle-lifecycle.yml
+  - id: asyncapi
+    conforms: false
+    evidence: 'Real webhook event surface (3 event families, sample payloads, published retry policy) but no AsyncAPI document — asyncapi/tackle-webhooks.yml'
+  - id: openapi-3
+    conforms: true
+    evidence: 'Seven OpenAPI documents published through the ReadMe developer portal and indexed from developers.tackle.io/llms.txt'
+  - id: llms-txt
+    conforms: true
+    evidence: 'https://developers.tackle.io/llms.txt returns 200 with a full page index in llms.txt format, and every page has a .md twin — llms/tackle-llms.txt'
   - id: soc2-type-ii
     conforms: true
-    evidence: SOC 2 Type II reported on trust.tackle.io (SafeBase trust center, continuous monitoring via Drata)
+    evidence: 'SOC 2 Type II re-attestation completed 2025-09-30, published on trust.tackle.io (SafeBase, continuous monitoring via Drata)'
+  - id: soc3
+    conforms: true
+    evidence: SOC 3 report listed under Compliance on trust.tackle.io
   - id: gdpr
     conforms: true
-    evidence: GDPR posture published on trust.tackle.io
+    evidence: 'GDPR posture and a public Data Processing Agreement published on trust.tackle.io; subprocessor list at go.tackle.io/tackle-subprocessors'
+  - id: iso-27001
+    conforms: false
+    evidence: Not claimed on the trust center
+  - id: pci-dss
+    conforms: false
+    evidence: 'Not claimed; Tackle does not process card data — marketplace transactions settle through AWS/Microsoft/Google billing'
+  - id: fedramp
+    conforms: false
+    evidence: Not claimed on the trust center

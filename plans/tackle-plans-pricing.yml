@@ -1,0 +1,20 @@
+generated: '2026-08-13'
+method: searched
+source: https://tackle.io/pricing/
+plan_count: 0
+pricing_model: contact-sales
+currency: null
+note: >-
+  Tackle publishes no pricing page and no plan tiers. https://tackle.io/pricing/ returns HTTP 200
+  but redirects to the site root (curl -L resolves to https://tackle.io/ with
+  rel=canonical https://tackle.io/), and /platform/pricing/ does the same — the pricing page has
+  been retired, not moved. The site's only commercial call to action is "Get a demo" /
+  "Contact us", and the platform login at downstream.tackle.io is for existing customers. There
+  is no self-serve signup, no free tier, no published list price, and no API-metered price list.
+  Tackle's own product is sold through an enterprise motion; the marketplace transaction fees it
+  charges ISVs are negotiated, not listed.
+evidence:
+- {url: 'https://tackle.io/pricing/', status: 200, resolved_to: 'https://tackle.io/', finding: soft-redirect to homepage, no pricing content}
+- {url: 'https://tackle.io/platform/pricing/', status: 200, resolved_to: 'https://tackle.io/', finding: soft-redirect to homepage}
+- {url: 'https://tackle.io/legal-compliance/', status: 200, finding: 'links Subscription Terms and Platform Terms of Use; neither states a price'}
+plans: []

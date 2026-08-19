@@ -1,0 +1,147 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Webhooks API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Webhooks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get All Webhooks for Vendor",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/webhooks",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all webhook configurations for a vendor including vendor-level and product-level webhooks"
+        },
+        {
+          "info": {
+            "name": "Create or Update a Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/v1/webhooks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or update an existing webhook to receive order, private offer, and metering events as they happen"
+        },
+        {
+          "info": {
+            "name": "Test a Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/v1/webhooks/test",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify your webhooks by sending a test payload to the configured webhook URL"
+        },
+        {
+          "info": {
+            "name": "Get a Vendor-Level Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/webhooks/vendor",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get your current vendor-level webhook configuration"
+        },
+        {
+          "info": {
+            "name": "Delete a Vendor-Level Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/v1/webhooks/vendor",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an existing vendor-level webhook"
+        },
+        {
+          "info": {
+            "name": "Get a Product-Level Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/webhooks/product/:productid",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get your current webhook configuration for a given product"
+        },
+        {
+          "info": {
+            "name": "Delete a Product-Level Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/v1/webhooks/product/:productid",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an existing webhook for a given product"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

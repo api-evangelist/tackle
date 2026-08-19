@@ -1,0 +1,449 @@
+{
+  "item": [
+    {
+      "id": "8698c5a8-18ef-4d05-93c3-6e1ca6644e94",
+      "name": "Subscriptions",
+      "description": {
+        "content": "Operations for Subscriptions",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "13f775ec-83af-4a61-ac24-4adf44d68f2b",
+          "name": "List Subscriptions",
+          "request": {
+            "name": "List Subscriptions",
+            "description": {
+              "content": "List all subscriptions, optionally filtered by search criteria",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "subscriptions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "productid",
+                  "value": "<string>",
+                  "description": "Product ID for a query"
+                },
+                {
+                  "disabled": false,
+                  "key": "customerid",
+                  "value": "<string>",
+                  "description": "Customer ID for a query"
+                },
+                {
+                  "disabled": false,
+                  "key": "clouds",
+                  "value": "aws",
+                  "description": "Cloud for a query"
+                },
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<dateTime>",
+                  "description": "Start date for subscription query"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<dateTime>",
+                  "description": "End date for subscription query"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b4e89a74-2025-4073-b317-319b34a33c30",
+              "name": "Example response for a list of subscriptions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "productid",
+                      "value": "1test1a2b3c4d5e6f7g8h9ijk"
+                    },
+                    {
+                      "key": "customerid",
+                      "value": "ij3sXMkN3or"
+                    },
+                    {
+                      "key": "clouds",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2021-11-29T16:10:15.000Z"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-11-29T16:10:01.000Z"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"tackle_subscription_id\": \"52fZSV7JbMI\",\n      \"productid\": \"exampleproductid\",\n      \"product_link\": \"https://api.tackle.io/v1/products/exampleproductid\",\n      \"cloud\": \"aws\",\n      \"customerid\": \"examplecustomerid\",\n      \"offerid\": \"exampleofferid\",\n      \"created_at\": \"2021-11-09T12:00:00.000Z\",\n      \"registered_at\": \"2021-11-10T12:00:00.000Z\",\n      \"updated_at\": \"2021-11-11T12:00:00.000Z\",\n      \"cancelled_at\": \"2021-11-11T12:00:00.000Z\",\n      \"started_at\": \"2021-11-09T12:00:00.000Z\",\n      \"ended_at\": \"2021-11-11T12:00:00.000Z\",\n      \"link\": \"https://api.tackle.io/v1/subscriptions/52fZSV7JbMI\"\n    },\n    {\n      \"tackle_subscription_id\": \"v2RFsznlfb8\",\n      \"productid\": \"exampleproductid\",\n      \"product_link\": \"https://api.tackle.io/v1/products/exampleproductid\",\n      \"cloud\": \"aws\",\n      \"customerid\": \"examplecustomerid\",\n      \"offerid\": \"exampleofferid2\",\n      \"created_at\": \"2021-11-12T12:00:00.000Z\",\n      \"registered_at\": \"2021-11-13T12:00:00.000Z\",\n      \"updated_at\": \"2021-11-13T12:00:00.000Z\",\n      \"cancelled_at\": null,\n      \"started_at\": \"2021-11-12T12:00:00.000Z\",\n      \"ended_at\": \"2022-11-12T12:00:00.000Z\",\n      \"link\": \"https://api.tackle.io/v1/subscriptions/v2RFsznlfb8\"\n    }\n  ],\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/subscriptions\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a26acc66-f5d3-4c2b-9d49-f1e8e975ed17",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "productid",
+                      "value": "1test1a2b3c4d5e6f7g8h9ijk"
+                    },
+                    {
+                      "key": "customerid",
+                      "value": "ij3sXMkN3or"
+                    },
+                    {
+                      "key": "clouds",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2021-11-29T16:10:15.000Z"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-11-29T16:10:01.000Z"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "54e69cff-5ff2-485f-9629-79798e7019c3",
+          "name": "Get a Subscription",
+          "request": {
+            "name": "Get a Subscription",
+            "description": {
+              "content": "Gets more detailed information for a specific subscription",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "subscriptions",
+                ":tackle_subscription_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "tackle_subscription_id",
+                  "description": "(Required) Subscription ID generated by Tackle"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "bef4f0d9-aaf9-4f25-8925-171acb6e2e5b",
+              "name": "Example response for a single subscription",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions",
+                    ":tackle_subscription_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "tackle_subscription_id",
+                      "description": "(Required) Subscription ID generated by Tackle"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"tackle_subscription_id\": \"52fZSV7JbMI\",\n    \"productid\": \"exampleproductid\",\n    \"product_link\": \"https://api.tackle.io/v1/products/exampleproductid\",\n    \"cloud\": \"gcp\",\n    \"customerid\": \"examplecustomerid\",\n    \"offerid\": \"exampleofferid2\",\n    \"created_at\": \"2021-11-12T12:00:00.000Z\",\n    \"registered_at\": \"2021-11-13T12:00:00.000Z\",\n    \"updated_at\": \"2021-11-13T12:00:00.000Z\",\n    \"cancelled_at\": null,\n    \"started_at\": \"2021-11-12T12:00:00.000Z\",\n    \"ended_at\": \"2022-11-12T12:00:00.000Z\",\n    \"is_free_trial\": false,\n    \"registration_details\": {\n      \"Company\": \"Tackle\",\n      \"Email Address\": \"support@tackle.io\",\n      \"Full Name\": \"Jane Doe\",\n      \"Company Website\": \"https://tackle.io\",\n      \"Phone Number\": \"1234567890\"\n    },\n    \"entitlements\": [\n      {\n        \"dimension\": \"example_entitlement_dimension1\",\n        \"expiration\": \"2022-11-12T12:00:00.000Z\",\n        \"skuid\": \"exampleproductid_awsdimension_1\",\n        \"value\": 1\n      },\n      {\n        \"dimension\": \"example_entitlement_dimension2\",\n        \"expiration\": \"2022-11-12T12:00:00.000Z\",\n        \"value\": 10,\n        \"skuid\": \"exampleproductid_awsdimension_2\"\n      }\n    ]\n  },\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/subscriptions/52fZSV7JbMI\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a248f70d-e1d0-4211-bdab-ca02bf4f98b0",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions",
+                    ":tackle_subscription_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "tackle_subscription_id",
+                      "description": "(Required) Subscription ID generated by Tackle"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"error\": \"client_id and client_secret are invalid.\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c24a0fa-21f3-4869-a66a-67b89fac7e76",
+              "name": "Response if subscription was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "subscriptions",
+                    ":tackle_subscription_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "tackle_subscription_id",
+                      "description": "(Required) Subscription ID generated by Tackle"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"subscription_not_found\",\n  \"error\": \"Subscription was not found\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d2c4b911-fa94-4505-90e9-9ad83cb0a9e4",
+    "name": "Tackle Authentication Subscriptions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Groups API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Groups",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Groups"
+          },
+          "docs": "Retrieve available groups (roles) for the organization.\nThis is the standard SCIM 2.0 Groups endpoint per RFC 7644.\nIt fetches roles from the RBAC service and returns them as SCIM Group resources\nwith meta.resourceType set to \"Group\", as required by identity providers (Okta, Azure AD).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

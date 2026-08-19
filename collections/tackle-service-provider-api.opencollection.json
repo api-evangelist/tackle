@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Service Provider API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Service Provider",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Service Provider Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/ServiceProviderConfig"
+          },
+          "docs": "Retrieve the service provider configuration as defined by SCIM 2.0 specification.\nThis endpoint provides information about the SCIM implementation capabilities.\n"
+        },
+        {
+          "info": {
+            "name": "Get Resource Types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/ResourceTypes"
+          },
+          "docs": "Retrieve the resource types supported by this SCIM implementation.\nCurrently supports User resources with enterprise extensions.\n"
+        },
+        {
+          "info": {
+            "name": "Get Schemas",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Schemas"
+          },
+          "docs": "Retrieve the schemas supported by this SCIM implementation.\nIncludes both core User schema and enterprise extension schema.\n"
+        },
+        {
+          "info": {
+            "name": "Get Schema by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Schemas/:schemaId",
+            "params": [
+              {
+                "name": "schemaId",
+                "value": "",
+                "type": "path",
+                "description": "The schema identifier (URN)"
+              }
+            ]
+          },
+          "docs": "Retrieve a specific schema by its unique identifier.\nSupports User schema, Enterprise User extension schema, and Entitlement schema.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

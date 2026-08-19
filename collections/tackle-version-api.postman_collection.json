@@ -1,0 +1,104 @@
+{
+  "item": [
+    {
+      "id": "f402a654-149b-479b-b6b9-568063f6f8a1",
+      "name": "Version",
+      "description": {
+        "content": "Operations for API Versions",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a9c528f4-d8ee-431a-b30d-83995f3dbb6e",
+          "name": "Get API Version",
+          "request": {
+            "name": "Get API Version",
+            "description": {
+              "content": "Current API Version",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "version"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "92f17828-b428-44ae-8b2f-83c0578ba106",
+              "name": "Successful version response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "version"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"version\": \"1.0.0\",\n  \"sub_versions\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "88e25099-b5ee-41fb-9b9a-fd5d9570486a",
+    "name": "Tackle Authentication Version API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

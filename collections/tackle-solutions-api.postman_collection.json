@@ -1,0 +1,240 @@
+{
+  "item": [
+    {
+      "id": "b837429e-5b50-4f2c-9f08-b718ae3be482",
+      "name": "Solutions",
+      "description": {
+        "content": "List the co-sell solutions registered with AWS Partner Central for\nyour account. Solution identifiers are referenced by `solutions` on\nopportunities.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6197387b-f0d3-4726-b0ed-a72d62838b28",
+          "name": "List co-sell solutions",
+          "request": {
+            "name": "List co-sell solutions",
+            "description": {
+              "content": "Returns the active co-sell solutions registered with AWS Partner Central for the\nauthenticated vendor.\n\nFor vendor accounts provisioned for use in a test environment, this endpoint\nreturns a fixed three-solution fixture; the `q`, `from`, `pageSize`, and\n`all` query parameters are **ignored** for these vendors and the response\nbody is the same fixture set regardless of what the client sends. Production\nvendor accounts receive vendor-specific results that honor every query\nparameter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "solutions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "A search query to filter the solutions."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The starting index of the solutions to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "The number of solutions to return per page (minimum 1, maximum 100, default 10)."
+                },
+                {
+                  "disabled": false,
+                  "key": "all",
+                  "value": "<boolean>",
+                  "description": "Set to `true` to return solutions in any status, including inactive ones.\nDefaults to `false` (only active solutions are returned)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "64c7fa8c-5fff-45ec-90f5-9ee694fab5f5",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "solutions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "10"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"solutions\": [\n    {\n      \"id\": \"tackle-solution-2lFAiYiiVZZabcdefgh7dPNWXWm\",\n      \"cloudProviderId\": \"S-0050456\",\n      \"name\": \"Tackle AI\",\n      \"status\": \"Active\",\n      \"category\": \"Software Product\",\n      \"created\": \"2024-08-27T13:32:58Z\",\n      \"lastSynced\": \"2024-08-27T13:32:58Z\"\n    },\n    {\n      \"id\": \"tackle-solution-2lFAieUdS1PKs6abcdefghbCktS\",\n      \"cloudProviderId\": \"S-0050123\",\n      \"name\": \"Tackle Cloud Sync\",\n      \"status\": \"Active\",\n      \"category\": \"Software Product\",\n      \"created\": \"2024-08-27T13:32:58Z\",\n      \"lastSynced\": \"2024-08-27T13:32:58Z\"\n    }\n  ],\n  \"total\": 5,\n  \"currentPageCount\": 2,\n  \"isNextPage\": true,\n  \"nextIndex\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d94996cf-3f3d-4d3e-939b-ea298c42f399",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "solutions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "10"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f901ee6d-f599-40af-98fb-36a66646ecba",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "solutions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "10"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "all",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "1c55bfee-7350-4780-9b2f-0697a4ee342e",
+    "name": "Tackle Authentication Solutions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

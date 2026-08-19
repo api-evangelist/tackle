@@ -1,0 +1,171 @@
+{
+  "item": [
+    {
+      "id": "380eff3d-9c49-4cb2-9f3c-63fe1d2dc64a",
+      "name": "Partners",
+      "description": {
+        "content": "AWS Marketplace partner (reseller) reference data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "abe896c6-7426-4cda-9648-d25e962e5cb3",
+          "name": "List AWS Marketplace Partners",
+          "request": {
+            "name": "List AWS Marketplace Partners",
+            "description": {
+              "content": "Returns a curated list of AWS Marketplace resale partners with their\ncompany names and AWS account IDs. Use this list to populate a\npartner picker when creating a partner (resale) private offer.\n\n**Required RBAC permission:** `offers:CreateDraftOffer`\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "partners"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "6d0f63b5-2704-40c6-9378-f03d9c5e04de",
+              "name": "List of AWS Marketplace partners.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "partners"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"awsAccountId\": \"977757234053\",\n    \"name\": \"RiskQ, Inc,\"\n  },\n  {\n    \"awsAccountId\": \"977757234053\",\n    \"name\": \"RiskQ, Inc,\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b3fc3957-0272-4c98-9c50-3cff881bc1d2",
+              "name": "Missing or invalid Tackle JWT.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "partners"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"private offer not found\",\n  \"error\": \"authorization failed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fb4d2f54-4d0b-4d26-b884-23acdcd1c76d",
+              "name": "Caller is authenticated but not authorized for this resource.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "partners"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"private offer not found\",\n  \"error\": \"authorization failed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "20b44450-193e-40c4-965e-4024a82239bc",
+    "name": "Tackle Authentication Partners API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

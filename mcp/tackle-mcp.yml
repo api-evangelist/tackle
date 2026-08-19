@@ -1,243 +1,266 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: derived
 status: candidate
 source: openapi/ (one candidate tool per operation; no official hosted Tackle MCP server was found)
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+  checked: '2026-08-13'
+  note: >-
+    Tackle ships NO MCP server of any kind — no hosted/remote endpoint and no stdio package.
+    Searched the docs (developers.tackle.io/llms.txt, which indexes every published page and
+    names none), the verified GitHub org github.com/tackle-io (2 public repos: a Terraform
+    onboarding module and an archived Zappa fork), npm (@tackle*/tackle-io: no first-party
+    package), and the MCP registries. The tools[] list below is DERIVED from the harvested
+    OpenAPI as a candidate surface for anyone who wants to build one — it is not something
+    Tackle publishes and no endpoint URL is asserted. Tackle is, separately, the marketplace
+    listing/transaction channel through which other vendors sell their MCP servers; that is a
+    different fact and does not mean Tackle operates one.
 server:
   name: tackle
   transport: http
   url: null
 tools:
-  - name: v1-get-token
-    description: "Retrieve an Access Token"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-token
-  - name: v1-create-registration
-    description: "Register an Order"
-    source_operation: openapi/tackle-api-openapi.json#v1-create-registration
-  - name: v1-get-version
-    description: "Get API Version"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-version
-  - name: v1-create-or-update-webhook
-    description: "Create or Update a Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-create-or-update-webhook
-  - name: v1-get-all-webhooks
-    description: "Get All Webhooks for Vendor"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-all-webhooks
-  - name: v1-test-webhook
-    description: "Test a Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-test-webhook
-  - name: v1-delete-webhook
-    description: "Delete a Vendor-Level Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-delete-webhook
-  - name: v1-get-vendor-webhook
-    description: "Get a Vendor-Level Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-vendor-webhook
-  - name: v1-delete-product-webhook
-    description: "Delete a Product-Level Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-delete-product-webhook
-  - name: v1-get-product-webhook
-    description: "Get a Product-Level Webhook"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-product-webhook
-  - name: v1-create-metering-usage-records
-    description: "Create Usage Records"
-    source_operation: openapi/tackle-api-openapi.json#v1-create-metering-usage-records
-  - name: v1-create-update-metering-usage-records
-    description: "Create or Update Usage Records"
-    source_operation: openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
-  - name: v1-list-metering-usage-records
-    description: "List Usage Records"
-    source_operation: openapi/tackle-api-openapi.json#v1-list-metering-usage-records
-  - name: v1-get-metering-usage-record
-    description: "Get a Usage Record"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-metering-usage-record
-  - name: v1-delete-metering-usage-record
-    description: "Delete a Usage Record"
-    source_operation: openapi/tackle-api-openapi.json#v1-delete-metering-usage-record
-  - name: v1-list-products
-    description: "List Products"
-    source_operation: openapi/tackle-api-openapi.json#v1-list-products
-  - name: v1-get-product
-    description: "Get a Product"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-product
-  - name: v1-get-product-registration-redirects
-    description: "Get Product Registration Redirects"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-product-registration-redirects
-  - name: v1-put-products-registration-redirects
-    description: "Update Product Registration Redirects"
-    source_operation: openapi/tackle-api-openapi.json#v1-put-products-registration-redirects
-  - name: v1-delete-product-registration-redirects
-    description: "Delete Product Registration Redirects"
-    source_operation: openapi/tackle-api-openapi.json#v1-delete-product-registration-redirects
-  - name: v1-get-product-registration-redirect
-    description: "Get a Product Registration Redirect"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-product-registration-redirect
-  - name: v1-delete-product-registration-redirect
-    description: "Delete a Product Registration Redirect"
-    source_operation: openapi/tackle-api-openapi.json#v1-delete-product-registration-redirect
-  - name: v1-get-disbursements
-    description: "List Disbursements"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-disbursements
-  - name: v1-get-invoices
-    description: "List Invoices"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-invoices
-  - name: v1-list-subscriptions
-    description: "List Subscriptions"
-    source_operation: openapi/tackle-api-openapi.json#v1-list-subscriptions
-  - name: v1-get-subscription
-    description: "Get a Subscription"
-    source_operation: openapi/tackle-api-openapi.json#v1-get-subscription
-  - name: listContracts
-    description: "List contracts"
-    source_operation: openapi/tackle-contracts-openapi.json#listContracts
-  - name: getContract
-    description: "Describe contract"
-    source_operation: openapi/tackle-contracts-openapi.json#getContract
-  - name: listOpportunities
-    description: "List co-sell opportunities"
-    source_operation: openapi/tackle-cosell-openapi.json#listOpportunities
-  - name: createOpportunity
-    description: "Create a co-sell opportunity"
-    source_operation: openapi/tackle-cosell-openapi.json#createOpportunity
-  - name: getOpportunity
-    description: "Get a co-sell opportunity"
-    source_operation: openapi/tackle-cosell-openapi.json#getOpportunity
-  - name: updateOpportunity
-    description: "Update a co-sell opportunity"
-    source_operation: openapi/tackle-cosell-openapi.json#updateOpportunity
-  - name: listOpportunityEvents
-    description: "List opportunity events"
-    source_operation: openapi/tackle-cosell-openapi.json#listOpportunityEvents
-  - name: listInvitationEvents
-    description: "List invitation events"
-    source_operation: openapi/tackle-cosell-openapi.json#listInvitationEvents
-  - name: listInvitations
-    description: "List co-sell invitations"
-    source_operation: openapi/tackle-cosell-openapi.json#listInvitations
-  - name: createInvitation
-    description: "Create a co-sell invitation (test-environment-only)"
-    source_operation: openapi/tackle-cosell-openapi.json#createInvitation
-  - name: getInvitation
-    description: "Get a co-sell invitation"
-    source_operation: openapi/tackle-cosell-openapi.json#getInvitation
-  - name: updateInvitation
-    description: "Update a co-sell invitation"
-    source_operation: openapi/tackle-cosell-openapi.json#updateInvitation
-  - name: listSolutions
-    description: "List co-sell solutions"
-    source_operation: openapi/tackle-cosell-openapi.json#listSolutions
-  - name: listPrivateOffers
-    description: "List Private Offers"
-    source_operation: openapi/tackle-marketplace-openapi.json#listPrivateOffers
-  - name: createPrivateOffer
-    description: "Create Private Offer"
-    source_operation: openapi/tackle-marketplace-openapi.json#createPrivateOffer
-  - name: getPrivateOffer
-    description: "Get Private Offer"
-    source_operation: openapi/tackle-marketplace-openapi.json#getPrivateOffer
-  - name: updatePrivateOffer
-    description: "Update Private Offer"
-    source_operation: openapi/tackle-marketplace-openapi.json#updatePrivateOffer
-  - name: deletePrivateOffer
-    description: "Delete Private Offer"
-    source_operation: openapi/tackle-marketplace-openapi.json#deletePrivateOffer
-  - name: cancelPrivateOffer
-    description: "Cancel Private Offer"
-    source_operation: openapi/tackle-marketplace-openapi.json#cancelPrivateOffer
-  - name: marketplaceCreatePrivateOffer
-    description: "Push Private Offer to AWS Marketplace"
-    source_operation: openapi/tackle-marketplace-openapi.json#marketplaceCreatePrivateOffer
-  - name: listAgreements
-    description: "List AWS Marketplace Agreements"
-    source_operation: openapi/tackle-marketplace-openapi.json#listAgreements
-  - name: listProducts
-    description: "List Products"
-    source_operation: openapi/tackle-marketplace-openapi.json#listProducts
-  - name: getProductPricing
-    description: "Get Product Pricing"
-    source_operation: openapi/tackle-marketplace-openapi.json#getProductPricing
-  - name: listAllowedCurrencies
-    description: "List Allowed Currencies"
-    source_operation: openapi/tackle-marketplace-openapi.json#listAllowedCurrencies
-  - name: listPartners
-    description: "List AWS Marketplace Partners"
-    source_operation: openapi/tackle-marketplace-openapi.json#listPartners
-  - name: archivePrivateOffer
-    description: "Archive an offer"
-    source_operation: openapi/tackle-offers-openapi.json#archivePrivateOffer
-  - name: unarchivePrivateOffer
-    description: "Unarchive an offer"
-    source_operation: openapi/tackle-offers-openapi.json#unarchivePrivateOffer
-  - name: cancelPrivateOffer
-    description: "Cancel an offer"
-    source_operation: openapi/tackle-offers-openapi.json#cancelPrivateOffer
-  - name: syncPrivateOffer
-    description: "Sync an offer from Microsoft"
-    source_operation: openapi/tackle-offers-openapi.json#syncPrivateOffer
-  - name: updatePrivateOffer
-    description: "Update a Microsoft offer"
-    source_operation: openapi/tackle-offers-openapi.json#updatePrivateOffer
-  - name: getPrivateOffer
-    description: "Get an offer"
-    source_operation: openapi/tackle-offers-openapi.json#getPrivateOffer
-  - name: createPrivateOffer
-    description: "Create or import a Microsoft offer"
-    source_operation: openapi/tackle-offers-openapi.json#createPrivateOffer
-  - name: listPrivateOffers
-    description: "List offers"
-    source_operation: openapi/tackle-offers-openapi.json#listPrivateOffers
-  - name: listProducts
-    description: "List Microsoft products"
-    source_operation: openapi/tackle-offers-openapi.json#listProducts
-  - name: getProductDetails
-    description: "Get Microsoft product details"
-    source_operation: openapi/tackle-offers-openapi.json#getProductDetails
-  - name: createPrivateOfferNotification
-    description: "Create an offer notification"
-    source_operation: openapi/tackle-offers-openapi.json#createPrivateOfferNotification
-  - name: getMarketCurrencies
-    description: "Get Microsoft market currencies"
-    source_operation: openapi/tackle-offers-openapi.json#getMarketCurrencies
-  - name: convertCurrencies
-    description: "Convert currencies"
-    source_operation: openapi/tackle-offers-openapi.json#convertCurrencies
-  - name: scoreDomains
-    description: "Score domains"
-    source_operation: openapi/tackle-prospect-openapi.json#scoreDomains
-  - name: searchScoredDomains
-    description: "Search scored domains"
-    source_operation: openapi/tackle-prospect-openapi.json#searchScoredDomains
-  - name: getUsers
-    description: "List Users"
-    source_operation: openapi/tackle-scim-openapi.json#getUsers
-  - name: createUser
-    description: "Create User"
-    source_operation: openapi/tackle-scim-openapi.json#createUser
-  - name: getUserById
-    description: "Get User by ID"
-    source_operation: openapi/tackle-scim-openapi.json#getUserById
-  - name: updateUser
-    description: "Update User"
-    source_operation: openapi/tackle-scim-openapi.json#updateUser
-  - name: patchUser
-    description: "Patch User"
-    source_operation: openapi/tackle-scim-openapi.json#patchUser
-  - name: deleteUser
-    description: "Delete User"
-    source_operation: openapi/tackle-scim-openapi.json#deleteUser
-  - name: getServiceProviderConfig
-    description: "Get Service Provider Configuration"
-    source_operation: openapi/tackle-scim-openapi.json#getServiceProviderConfig
-  - name: getResourceTypes
-    description: "Get Resource Types"
-    source_operation: openapi/tackle-scim-openapi.json#getResourceTypes
-  - name: getSchemas
-    description: "Get Schemas"
-    source_operation: openapi/tackle-scim-openapi.json#getSchemas
-  - name: getSchemaById
-    description: "Get Schema by ID"
-    source_operation: openapi/tackle-scim-openapi.json#getSchemaById
-  - name: getGroups
-    description: "Get Groups"
-    source_operation: openapi/tackle-scim-openapi.json#getGroups
-  - name: getEntitlements
-    description: "Get Entitlements"
-    source_operation: openapi/tackle-scim-openapi.json#getEntitlements
+- name: v1-get-token
+  description: Retrieve an Access Token
+  source_operation: openapi/tackle-api-openapi.json#v1-get-token
+- name: v1-create-registration
+  description: Register an Order
+  source_operation: openapi/tackle-api-openapi.json#v1-create-registration
+- name: v1-get-version
+  description: Get API Version
+  source_operation: openapi/tackle-api-openapi.json#v1-get-version
+- name: v1-create-or-update-webhook
+  description: Create or Update a Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-create-or-update-webhook
+- name: v1-get-all-webhooks
+  description: Get All Webhooks for Vendor
+  source_operation: openapi/tackle-api-openapi.json#v1-get-all-webhooks
+- name: v1-test-webhook
+  description: Test a Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-test-webhook
+- name: v1-delete-webhook
+  description: Delete a Vendor-Level Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-delete-webhook
+- name: v1-get-vendor-webhook
+  description: Get a Vendor-Level Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-get-vendor-webhook
+- name: v1-delete-product-webhook
+  description: Delete a Product-Level Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-delete-product-webhook
+- name: v1-get-product-webhook
+  description: Get a Product-Level Webhook
+  source_operation: openapi/tackle-api-openapi.json#v1-get-product-webhook
+- name: v1-create-metering-usage-records
+  description: Create Usage Records
+  source_operation: openapi/tackle-api-openapi.json#v1-create-metering-usage-records
+- name: v1-create-update-metering-usage-records
+  description: Create or Update Usage Records
+  source_operation: openapi/tackle-api-openapi.json#v1-create-update-metering-usage-records
+- name: v1-list-metering-usage-records
+  description: List Usage Records
+  source_operation: openapi/tackle-api-openapi.json#v1-list-metering-usage-records
+- name: v1-get-metering-usage-record
+  description: Get a Usage Record
+  source_operation: openapi/tackle-api-openapi.json#v1-get-metering-usage-record
+- name: v1-delete-metering-usage-record
+  description: Delete a Usage Record
+  source_operation: openapi/tackle-api-openapi.json#v1-delete-metering-usage-record
+- name: v1-list-products
+  description: List Products
+  source_operation: openapi/tackle-api-openapi.json#v1-list-products
+- name: v1-get-product
+  description: Get a Product
+  source_operation: openapi/tackle-api-openapi.json#v1-get-product
+- name: v1-get-product-registration-redirects
+  description: Get Product Registration Redirects
+  source_operation: openapi/tackle-api-openapi.json#v1-get-product-registration-redirects
+- name: v1-put-products-registration-redirects
+  description: Update Product Registration Redirects
+  source_operation: openapi/tackle-api-openapi.json#v1-put-products-registration-redirects
+- name: v1-delete-product-registration-redirects
+  description: Delete Product Registration Redirects
+  source_operation: openapi/tackle-api-openapi.json#v1-delete-product-registration-redirects
+- name: v1-get-product-registration-redirect
+  description: Get a Product Registration Redirect
+  source_operation: openapi/tackle-api-openapi.json#v1-get-product-registration-redirect
+- name: v1-delete-product-registration-redirect
+  description: Delete a Product Registration Redirect
+  source_operation: openapi/tackle-api-openapi.json#v1-delete-product-registration-redirect
+- name: v1-get-disbursements
+  description: List Disbursements
+  source_operation: openapi/tackle-api-openapi.json#v1-get-disbursements
+- name: v1-get-invoices
+  description: List Invoices
+  source_operation: openapi/tackle-api-openapi.json#v1-get-invoices
+- name: v1-list-subscriptions
+  description: List Subscriptions
+  source_operation: openapi/tackle-api-openapi.json#v1-list-subscriptions
+- name: v1-get-subscription
+  description: Get a Subscription
+  source_operation: openapi/tackle-api-openapi.json#v1-get-subscription
+- name: listContracts
+  description: List contracts
+  source_operation: openapi/tackle-contracts-openapi.json#listContracts
+- name: getContract
+  description: Describe contract
+  source_operation: openapi/tackle-contracts-openapi.json#getContract
+- name: listOpportunities
+  description: List co-sell opportunities
+  source_operation: openapi/tackle-cosell-openapi.json#listOpportunities
+- name: createOpportunity
+  description: Create a co-sell opportunity
+  source_operation: openapi/tackle-cosell-openapi.json#createOpportunity
+- name: getOpportunity
+  description: Get a co-sell opportunity
+  source_operation: openapi/tackle-cosell-openapi.json#getOpportunity
+- name: updateOpportunity
+  description: Update a co-sell opportunity
+  source_operation: openapi/tackle-cosell-openapi.json#updateOpportunity
+- name: listOpportunityEvents
+  description: List opportunity events
+  source_operation: openapi/tackle-cosell-openapi.json#listOpportunityEvents
+- name: listInvitationEvents
+  description: List invitation events
+  source_operation: openapi/tackle-cosell-openapi.json#listInvitationEvents
+- name: listInvitations
+  description: List co-sell invitations
+  source_operation: openapi/tackle-cosell-openapi.json#listInvitations
+- name: createInvitation
+  description: Create a co-sell invitation (test-environment-only)
+  source_operation: openapi/tackle-cosell-openapi.json#createInvitation
+- name: getInvitation
+  description: Get a co-sell invitation
+  source_operation: openapi/tackle-cosell-openapi.json#getInvitation
+- name: updateInvitation
+  description: Update a co-sell invitation
+  source_operation: openapi/tackle-cosell-openapi.json#updateInvitation
+- name: listSolutions
+  description: List co-sell solutions
+  source_operation: openapi/tackle-cosell-openapi.json#listSolutions
+- name: listPrivateOffers
+  description: List Private Offers
+  source_operation: openapi/tackle-marketplace-openapi.json#listPrivateOffers
+- name: createPrivateOffer
+  description: Create Private Offer
+  source_operation: openapi/tackle-marketplace-openapi.json#createPrivateOffer
+- name: getPrivateOffer
+  description: Get Private Offer
+  source_operation: openapi/tackle-marketplace-openapi.json#getPrivateOffer
+- name: updatePrivateOffer
+  description: Update Private Offer
+  source_operation: openapi/tackle-marketplace-openapi.json#updatePrivateOffer
+- name: deletePrivateOffer
+  description: Delete Private Offer
+  source_operation: openapi/tackle-marketplace-openapi.json#deletePrivateOffer
+- name: cancelPrivateOffer
+  description: Cancel Private Offer
+  source_operation: openapi/tackle-marketplace-openapi.json#cancelPrivateOffer
+- name: marketplaceCreatePrivateOffer
+  description: Push Private Offer to AWS Marketplace
+  source_operation: openapi/tackle-marketplace-openapi.json#marketplaceCreatePrivateOffer
+- name: listAgreements
+  description: List AWS Marketplace Agreements
+  source_operation: openapi/tackle-marketplace-openapi.json#listAgreements
+- name: listProducts
+  description: List Products
+  source_operation: openapi/tackle-marketplace-openapi.json#listProducts
+- name: getProductPricing
+  description: Get Product Pricing
+  source_operation: openapi/tackle-marketplace-openapi.json#getProductPricing
+- name: listAllowedCurrencies
+  description: List Allowed Currencies
+  source_operation: openapi/tackle-marketplace-openapi.json#listAllowedCurrencies
+- name: listPartners
+  description: List AWS Marketplace Partners
+  source_operation: openapi/tackle-marketplace-openapi.json#listPartners
+- name: archivePrivateOffer
+  description: Archive an offer
+  source_operation: openapi/tackle-offers-openapi.json#archivePrivateOffer
+- name: unarchivePrivateOffer
+  description: Unarchive an offer
+  source_operation: openapi/tackle-offers-openapi.json#unarchivePrivateOffer
+- name: cancelPrivateOffer
+  description: Cancel an offer
+  source_operation: openapi/tackle-offers-openapi.json#cancelPrivateOffer
+- name: syncPrivateOffer
+  description: Sync an offer from Microsoft
+  source_operation: openapi/tackle-offers-openapi.json#syncPrivateOffer
+- name: updatePrivateOffer
+  description: Update a Microsoft offer
+  source_operation: openapi/tackle-offers-openapi.json#updatePrivateOffer
+- name: getPrivateOffer
+  description: Get an offer
+  source_operation: openapi/tackle-offers-openapi.json#getPrivateOffer
+- name: createPrivateOffer
+  description: Create or import a Microsoft offer
+  source_operation: openapi/tackle-offers-openapi.json#createPrivateOffer
+- name: listPrivateOffers
+  description: List offers
+  source_operation: openapi/tackle-offers-openapi.json#listPrivateOffers
+- name: listProducts
+  description: List Microsoft products
+  source_operation: openapi/tackle-offers-openapi.json#listProducts
+- name: getProductDetails
+  description: Get Microsoft product details
+  source_operation: openapi/tackle-offers-openapi.json#getProductDetails
+- name: createPrivateOfferNotification
+  description: Create an offer notification
+  source_operation: openapi/tackle-offers-openapi.json#createPrivateOfferNotification
+- name: getMarketCurrencies
+  description: Get Microsoft market currencies
+  source_operation: openapi/tackle-offers-openapi.json#getMarketCurrencies
+- name: convertCurrencies
+  description: Convert currencies
+  source_operation: openapi/tackle-offers-openapi.json#convertCurrencies
+- name: scoreDomains
+  description: Score domains
+  source_operation: openapi/tackle-prospect-openapi.json#scoreDomains
+- name: searchScoredDomains
+  description: Search scored domains
+  source_operation: openapi/tackle-prospect-openapi.json#searchScoredDomains
+- name: getUsers
+  description: List Users
+  source_operation: openapi/tackle-scim-openapi.json#getUsers
+- name: createUser
+  description: Create User
+  source_operation: openapi/tackle-scim-openapi.json#createUser
+- name: getUserById
+  description: Get User by ID
+  source_operation: openapi/tackle-scim-openapi.json#getUserById
+- name: updateUser
+  description: Update User
+  source_operation: openapi/tackle-scim-openapi.json#updateUser
+- name: patchUser
+  description: Patch User
+  source_operation: openapi/tackle-scim-openapi.json#patchUser
+- name: deleteUser
+  description: Delete User
+  source_operation: openapi/tackle-scim-openapi.json#deleteUser
+- name: getServiceProviderConfig
+  description: Get Service Provider Configuration
+  source_operation: openapi/tackle-scim-openapi.json#getServiceProviderConfig
+- name: getResourceTypes
+  description: Get Resource Types
+  source_operation: openapi/tackle-scim-openapi.json#getResourceTypes
+- name: getSchemas
+  description: Get Schemas
+  source_operation: openapi/tackle-scim-openapi.json#getSchemas
+- name: getSchemaById
+  description: Get Schema by ID
+  source_operation: openapi/tackle-scim-openapi.json#getSchemaById
+- name: getGroups
+  description: Get Groups
+  source_operation: openapi/tackle-scim-openapi.json#getGroups
+- name: getEntitlements
+  description: Get Entitlements
+  source_operation: openapi/tackle-scim-openapi.json#getEntitlements
+tool_count: 78
+prior_census:
+  date: '2026-08-12'
+  source: catalog MCP census
+  finding: 'mode: none (derived) — superseded by the searched deployment block at the top of this file'

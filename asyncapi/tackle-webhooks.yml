@@ -1,6 +1,9 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
-source: openapi/tackle-api-openapi.json (webhook management operations + secured callbacks)
+source: >-
+  openapi/_original/tackle-api-openapi.json (webhook management operations + secured callbacks) +
+  https://developers.tackle.io/docs/overview (event catalog) +
+  https://developers.tackle.io/reference/webhook-delivery-and-retry-policy (delivery contract)
 spec_type: Webhooks
 description: >-
   The Tackle API lets a vendor register HTTPS webhook endpoints to receive marketplace
@@ -19,4 +22,87 @@ delivery_auth:
   - HTTP Basic (BasicAuthCallback)
   - Header API key subscription-key (HeaderApiKeyAuthCallback)
   - OAuth2 client credentials (Oauth2AuthCallback)
+event_catalog:
+  source: https://developers.tackle.io/docs/overview
+  families:
+    - family: Order
+      events:
+        - New orders
+        - Order modifications
+        - Order cancellations
+    - family: Private Offer
+      events:
+        - Private Offer Created — a Private Offer is created in Tackle
+        - Instructions Emailed To Buyer — an email with a link to Private Offer details is sent to designated buyer contact(s)
+        - Buyer Opened Instructions Email — a buyer email recipient opened an instructions email
+        - Buyer Viewed Offer — a buyer email recipient clicks through to the Private Offer details page
+        - Buyer Accepted Offer — a buyer clicks to accept a Private Offer and redirects to the Marketplace to transact
+        - Private Offer Created in Marketplace
+        - Private Offer Failed to Create in Marketplace
+        - Private Offer Cancelled in Marketplace
+        - Private Offer Failed to Cancel in Marketplace
+    - family: Metering
+      events:
+        - Usage Record Processed — a usage record has been processed
+  enablement:
+    note: >-
+      Metering events are opt-in: set `metering_events_enabled: true` on the webhook
+      registration (v1-create-or-update-webhook) to receive a notification for every individual
+      usage record submitted to and processed by Tackle.
+    source: https://developers.tackle.io/docs/metering-faqs
+  payload_references:
+    - {name: Sample Agreement (AWS) Payloads, url: 'https://developers.tackle.io/reference/sample-agreement-aws-payloads'}
+    - {name: Private Offer Payload Variables, url: 'https://developers.tackle.io/reference/private-offer-payloads'}
+    - {name: Sample Private Offer Payloads, url: 'https://developers.tackle.io/reference/sample-private-offer-payloads'}
+    - {name: Metering Payload Variables, url: 'https://developers.tackle.io/reference/metering-payload-variables'}
+    - {name: Sample Metering Payloads, url: 'https://developers.tackle.io/reference/sample-metering-payloads'}
+delivery_contract:
+  source: https://developers.tackle.io/reference/webhook-delivery-and-retry-policy
+  method: POST
+  content_type: application/json
+  ack: any 2xx HTTP status code
+  timeout_seconds: 10
+  retry_triggers:
+    - HTTP 429 (consumer is rate-limiting)
+    - HTTP 5xx (consumer internal error)
+    - no response
+  max_retries: 12
+  recovery_window: ~22 hours
+  backoff_schedule:
+    - {attempt: 1, delay: 1 minute, cumulative: 1 minute}
+    - {attempt: 2, delay: 1 minute, cumulative: 2 minutes}
+    - {attempt: 3, delay: 2 minutes, cumulative: 4 minutes}
+    - {attempt: 4, delay: 5 minutes, cumulative: 9 minutes}
+    - {attempt: 5, delay: 10 minutes, cumulative: 19 minutes}
+    - {attempt: 6, delay: 30 minutes, cumulative: 49 minutes}
+    - {attempt: 7, delay: 1 hour, cumulative: 1 hour 49 minutes}
+    - {attempt: 8, delay: 2 hours, cumulative: 3 hours 49 minutes}
+    - {attempt: 9, delay: 3 hours, cumulative: 6 hours 49 minutes}
+    - {attempt: 10, delay: 4 hours, cumulative: 10 hours 49 minutes}
+    - {attempt: 11, delay: 5 hours, cumulative: 15 hours 49 minutes}
+    - {attempt: 12, delay: 6 hours, cumulative: ~22 hours}
+  terminal_state: >-
+    If the 12th attempt fails the event is marked Failed and no further automated attempts are
+    made. There is no documented replay/redrive endpoint, so a consumer that is down for more
+    than ~22 hours loses the event.
+  consumer_guidance:
+    - Return 200 OK immediately and move long-running work to a background worker or queue; the endpoint must respond within 10 seconds.
+    - Route on `event_type`; each event_type maps to a specific schema within the payload object.
+    - Parse defensively — on an unrecognized event_type, log it and still return 200 OK so Tackle does not retry.
+  signature_verification: none
+  signature_note: >-
+    Tackle does not sign webhook payloads (no HMAC signature header is documented). Authenticity
+    is established by the OUTBOUND credential Tackle presents to the consumer's endpoint (basic,
+    header API key, or an OAuth2 client-credentials token it fetches from the consumer's
+    token_url), so the consumer must authenticate the caller rather than verify a payload digest.
+testing:
+  ref: sandbox/tackle-sandbox.yml
+  operations: [v1-test-webhook]
+  note: 'POST /v1/webhooks/test with an optional forward_to_url to send a synthetic event of any event_type to an alternate endpoint.'
 asyncapi_spec: null
+asyncapi_note: >-
+  Tackle publishes no AsyncAPI document. The event surface is real and well documented in prose
+  and sample payloads, but there is no machine-readable channel/message schema — an agent must
+  read the payload-variable reference pages to learn the shapes. Publishing an AsyncAPI 3.x doc
+  over the three event families above would be a small, high-leverage addition.
+

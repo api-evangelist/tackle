@@ -1,37 +1,149 @@
-generated: '2026-07-21'
-method: derived
-source: openapi/ + https://developers.tackle.io/reference
+generated: '2026-08-13'
+method: searched
+source: >-
+  openapi/ + https://developers.tackle.io/reference +
+  https://developers.tackle.io/docs/best-practices +
+  https://developers.tackle.io/docs/getting-an-access-token +
+  https://developers.tackle.io/docs/scim +
+  https://developers.tackle.io/docs/create-a-metering-record
 summary: Cross-cutting request/response semantics for the Tackle Cloud GTM APIs (a family of per-cloud services behind developers.tackle.io).
 authentication:
   style: JWT Bearer (machine-to-machine)
   detail: >-
     Obtain an access token from POST https://api.tackle.io/v1/authenticate using an M2M
-    client_id/client_secret, then send it as 'Authorization: Bearer <JWT>'. The SCIM service
-    (scim.tackle.io) uses an apiKey header instead. See authentication/tackle-authentication.yml.
+    client_id/client_secret with grant_type=client_credentials, then send it as
+    'Authorization: Bearer <JWT>'. The SCIM service (scim.tackle.io) uses an apiKey header
+    instead — the raw key goes in Authorization with no scheme prefix. See
+    authentication/tackle-authentication.yml.
   token_url: https://api.tackle.io/v1/authenticate
+  token_lifetime_seconds: 5400
+  token_lifetime_note: 'Access tokens expire in 5400 seconds (90 minutes); the response carries expires_in.'
+  credential_provisioning: >-
+    M2M client_id/client_secret are minted by a Tackle administrator in the platform UI
+    (downstream.tackle.io -> Settings -> M2M Applications). SCIM API keys are not self-serve —
+    they are provisioned by Tackle Support on request (support@tackle.io).
   docs: https://developers.tackle.io/docs/getting-an-access-token
+request:
+  content_type: application/json
+  encoding: UTF-8
+  rule: >-
+    "All payloads sent to Tackle must be valid JSON and UTF-8 encoded with
+    Content-Type: application/json" — https://developers.tackle.io/docs/best-practices
+  scim_content_type: application/scim+json
 idempotency:
-  supported: false
-  note: No Idempotency-Key header or idempotent-retry contract is documented in the OpenAPI or docs.
+  supported: partial
+  header: none
+  detail: >-
+    Tackle documents NO Idempotency-Key header and no general safe-retry contract. There is
+    exactly one idempotent write path, in metering: PUT (v1-create-update-metering-usage-records)
+    is an upsert keyed on (customer, product, dimension, start_time hour) and the docs
+    explicitly recommend it over POST — "We highly recommend using the PUT method to prevent
+    creation of duplicate usage records". POST
+    (v1-create-metering-usage-records) is NOT idempotent and will happily create duplicate usage
+    records for the same hour, which the marketplaces generally reject. If the record has already
+    been submitted to the marketplace, the PUT returns 409 Conflict rather than silently
+    overwriting.
+  scope: [v1-create-update-metering-usage-records]
+  agent_guidance: >-
+    An agent retrying a Tackle write outside metering has no protection against duplication.
+    Co-sell and offer creates return 202 Accepted with a Tackle-side id and are dispatched
+    asynchronously to the cloud; a blind retry can queue a second cloud request. Use the
+    read-back endpoints (getOpportunity, listOpportunityEvents, getPrivateOffer) to confirm
+    before retrying, and prefer the draft/dry_run paths documented in sandbox/tackle-sandbox.yml.
+  no_pointer_reason: >-
+    No `Idempotency` pointer is wired into apis.yml — a single idempotent upsert in one product
+    is not a platform idempotency contract, and asserting one would overstate what an agent can
+    rely on.
+async_write_model:
+  pattern: 202 Accepted + poll
+  detail: >-
+    The co-sell services (AWS, Microsoft, Google) queue writes against the cloud partner API and
+    return 202 Accepted with a Tackle identifier and a requestId. The cloud-side outcome is
+    observed by polling the resource (getOpportunity / getreferral) or its event history
+    (listOpportunityEvents / listReferralEvents / listOpportunityHistory), or by receiving a
+    webhook. The AWS private-offer cancel is the same shape — the response means the request was
+    accepted, not that the cancellation completed.
+  sub_operation_header: tackle-operation-id
+  sub_operation_note: >-
+    A single HTTP operation multiplexes many business operations via the `tackle-operation-id`
+    request header (e.g. updateOpportunity, updateDraftOpportunity, startEngagement,
+    closeLostOpportunity, submitOpportunity, requestSyncFromSalesforce). The header value, not
+    the URL, determines the effect and the RBAC permission required. This is the single most
+    important convention for an agent to get right on Tackle, and it is invisible in the path.
+authorization:
+  model: RBAC permissions per operation
+  detail: >-
+    Operations declare a required permission in their description, namespaced by product —
+    cosell:ListOpportunities, cosell:CreateOpportunity, cosell:StartEngagement,
+    cosell:GetPicklistOptions, offers:ListOffers, offers:CreateDraftOffer, offers:GetOffer,
+    offers:UpdateOffer, offers:CancelOffer, offers:CreateOfferOnMarketplace, offers:ListProducts.
+    These are platform RBAC actions, not OAuth scopes — they are not requested at token time and
+    do not appear in any securityScheme. See scopes/tackle-scopes.yml.
 pagination:
   style: varies-by-service
   services:
     - {service: Contracts, host: contracts.tackle.io, params: [cursor, limit]}
-    - {service: Co-Sell, host: aws.cosell.tackle.io, params: [pageSize]}
+    - {service: 'Co-Sell (AWS)', host: aws.cosell.tackle.io, params: [pageSize, from]}
+    - {service: 'Co-Sell (Microsoft/Google)', params: [next], note: opaque forward cursor}
     - {service: Offers AWS, host: aws.offers.tackle.io, params: [limit, offset, next_token]}
+    - {service: Prospect, host: prospect.tackle.io, params: [page_number, records_per_page, search_after], note: 'metadata.search_after from one response is passed as the next request search_after for deep result sets'}
     - {service: SCIM, host: scim.tackle.io, params: [cursor, maxResults]}
+  warning: >-
+    Five different pagination idioms across six services. There is no shared envelope; a client
+    cannot write one pager.
 versioning:
   scheme: uri-path
   current: v1
-  note: Core Tackle API is under /v1/*. Offers AWS API is separately versioned (3.2.0); SCIM implements protocol 2.0.
+  note: >-
+    Core Tackle API is under /v1/*. Offers AWS API is separately versioned (3.2.0); SCIM
+    implements protocol 2.0. See lifecycle/tackle-lifecycle.yml.
+  additive_change_policy: >-
+    "Validation is not recommended on the presence of new returned payload fields. Tackle will
+    provide notification of planned breaking changes to existing fields, however we may add
+    fields to the payload at any time." — https://developers.tackle.io/docs/best-practices
 error_envelope:
   format: proprietary JSON (not RFC 9457)
+  detail: >-
+    Shapes vary by service: contracts/offers return an Error/ErrorResponse object; prospect
+    returns MessageError/SearchError. No service emits application/problem+json.
   ref: errors/tackle-error-codes.yml
+  notable_asymmetry: >-
+    listOpportunityHistory returns 200 with an empty events array for an unknown opportunity id,
+    while GET /api/opportunities/{id} returns 404 for the same id — an agent cannot infer
+    existence from the history endpoint.
+response_envelope:
+  detail: >-
+    Core v1 responses wrap the payload as {"data": ..., "metadata": {...}}; metadata commonly
+    carries a `link` back to the request URL. The co-sell and offers services return the resource
+    directly without the data/metadata wrapper.
+request_tracing:
+  request_id_header: none
+  detail: >-
+    No request-id / correlation header is documented or declared in any spec. The nearest
+    equivalent is the `requestId` in the BODY of a 202 response from the co-sell services, which
+    correlates to entries returned by listReferralEvents / listOpportunityEvents. There is no
+    header an agent can log to open a support ticket against a failed call.
 rate_limiting:
   signaled: false
-  note: No RateLimit-* / Retry-After headers are declared in the OpenAPI.
+  documented_limits: 1
+  detail: >-
+    Only SCIM publishes a limit (1,000 TPS per organization). No RateLimit-*, X-RateLimit-* or
+    Retry-After response header is documented on any service, and no spec declares a 429.
+  ref: rate-limits/tackle-rate-limits.yml
+webhooks:
+  ref: asyncapi/tackle-webhooks.yml
+  ack: 2xx within 10 seconds
+  retries: 12 attempts over ~22 hours (graduated backoff)
+  signature: none (Tackle authenticates ITSELF to your endpoint rather than signing the payload)
+sandbox:
+  ref: sandbox/tackle-sandbox.yml
+  model: per-vendor-account test provisioning + in-band `test` / `dry_run` / `forward_to_url` switches
 cross_links:
   authentication: authentication/tackle-authentication.yml
+  scopes: scopes/tackle-scopes.yml
   errors: errors/tackle-error-codes.yml
   lifecycle: lifecycle/tackle-lifecycle.yml
   webhooks: asyncapi/tackle-webhooks.yml
+  rate_limits: rate-limits/tackle-rate-limits.yml
+  sandbox: sandbox/tackle-sandbox.yml
+  data_model: data-model/tackle-data-model.yml

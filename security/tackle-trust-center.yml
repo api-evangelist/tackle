@@ -1,11 +1,48 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
 probe: true
+source: https://trust.tackle.io/
 url: https://trust.tackle.io/
 platform: SafeBase (continuous monitoring via Drata)
 certifications:
-  - SOC 2 Type II
-  - GDPR
+- SOC 2 Type II
+- SOC 3
+- GDPR
+attestations_and_badges:
+- AWS Qualified Software
+- Salesforce AppExchange Approved (SFDC AppExchange Partner)
+documents_published:
+- {name: Security Whitepaper, category: reports, access: public}
+- {name: SOC 2 report, category: compliance, access: gated}
+- {name: SOC 3 report, category: compliance, access: gated}
+- {name: Data Processing Agreement, category: legal, access: public}
+- {name: Vulnerability Management Policy, category: policies, access: gated}
+- {name: Pentest Report, category: reports, access: gated}
+- {name: Data Flow Diagram (DFD), category: reports, access: gated}
+- {name: Subprocessors, category: legal, access: public, url: 'https://go.tackle.io/tackle-subprocessors'}
+- {name: Cyber Insurance, category: legal, access: gated}
+- {name: CAIQ Lite, category: self-assessment, access: gated}
+- {name: SIG Lite, category: self-assessment, access: gated}
 subprocessors_published: true
+security_grades_published:
+- SecurityScorecard (Tackle GTM Platform)
+- CryptCheck (Tackle GTM Platform Service API)
+- Qualys SSL Labs (Tackle GTM Platform, Tackle GTM Platform CDN)
+risk_profile:
+  data_access_level: Internal
+  hosting: Amazon Web Services
+  recovery_time_objective: 4 hours
+ai_posture_published: true
+ai_posture_note: >-
+  The trust center carries an AI section — AI Overview, AI Training Data and Bias, AI Security —
+  which is still uncommon for a GTM platform and is the surface an agent-integration reviewer
+  would read first.
+recent_updates:
+- {date: '2025-09-30', title: SOC 2 Type II Re-Attestation has been completed, category: compliance}
+- {date: '2025-08-27', title: Tackle.io Security White Paper published, category: general}
+- {date: '2025-09-05', title: 'Salesloft Drift security incident — Salesloft connectivity disabled; no indication of Tackle data compromise', category: incidents}
+disclosure_ref: security/tackle-vulnerability-disclosure.yml
 evidence:
-  - {source: https://trust.tackle.io/, keywords: [soc 2 type ii, gdpr, drata, safebase, subprocessor]}
+- source: https://trust.tackle.io/
+  status: 200
+  keywords: [soc 2, soc 3, soc 2 type ii, gdpr, dpa, safebase, drata, subprocessors, pentest report, caiq lite, sig lite, responsible disclosure]

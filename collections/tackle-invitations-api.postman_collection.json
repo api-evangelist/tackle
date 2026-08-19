@@ -1,0 +1,1677 @@
+{
+  "item": [
+    {
+      "id": "d75e7404-d809-418a-b933-658c53eb0cd9",
+      "name": "Invitations",
+      "description": {
+        "content": "Create (test-environment-only), read, update, and list co-sell\ninvitations — AWS-led requests to partner with you on a specific\nopportunity. Use the update operation to accept or reject an\ninvitation, and the history endpoint to inspect cloud-side detail.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "12c18155-02c4-4c41-bed8-fc8516361c1a",
+          "name": "List invitation events",
+          "request": {
+            "name": "List invitation events",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "invitations",
+                ":invitation_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Cursor token used to resume a paginated history query. When supplied, the\nquery continues from where a previous request left off.\n\n**Note**: this endpoint does not currently emit `next` cursors on responses\n(see the `next` field of the response schema below), so in practice clients\nhave no way to obtain a cursor from the API itself today. This parameter is\ntherefore rarely useful unless a cursor value is already known from another\nsource."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "invitation_id",
+                  "description": "(Required) The Tackle identifier for the invitation (for example,\n`tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`\nfield of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement\ninvitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "88048347-3321-4ae9-9961-dc914f1c8ae4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oie#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The Tackle identifier for the invitation (for example,\n`tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`\nfield of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement\ninvitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"events\": [\n    {\n      \"operation\": \"string\",\n      \"eventID\": \"2lsw6rdFuCz0d7cVNCubTYGSznY\",\n      \"timestamp\": \"2024-09-10T15:25:19Z\",\n      \"cloudRaw\": {\n        \"key_0\": \"string\"\n      },\n      \"rawRequest\": {\n        \"operation\": \"string\",\n        \"key_0\": false\n      },\n      \"cloudResponses\": [\n        {\n          \"requestID\": \"string\",\n          \"success\": true,\n          \"timestamp\": \"string\",\n          \"response\": {\n            \"key_0\": 42.049679008766546,\n            \"key_1\": false\n          },\n          \"errorType\": \"string\",\n          \"errorResponse\": \"string\",\n          \"errorResponses\": [\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            },\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            }\n          ]\n        },\n        {\n          \"requestID\": \"string\",\n          \"success\": true,\n          \"timestamp\": \"string\",\n          \"response\": {\n            \"key_0\": false,\n            \"key_1\": 6574,\n            \"key_2\": 1661\n          },\n          \"errorType\": \"string\",\n          \"errorResponse\": \"string\",\n          \"errorResponses\": [\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            },\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"cloudRequests\": [\n        {\n          \"operation\": \"string\",\n          \"requestID\": \"string\",\n          \"timestamp\": \"string\",\n          \"request\": {\n            \"key_0\": 6898,\n            \"key_1\": \"string\",\n            \"key_2\": 9193\n          }\n        },\n        {\n          \"operation\": \"string\",\n          \"requestID\": \"string\",\n          \"timestamp\": \"string\",\n          \"request\": {\n            \"key_0\": false,\n            \"key_1\": false\n          }\n        }\n      ],\n      \"activityDetails\": {\n        \"displayText\": \"string\",\n        \"id\": \"string\",\n        \"type\": \"string\",\n        \"email\": \"string\",\n        \"givenName\": \"string\",\n        \"familyName\": \"string\",\n        \"pictureUrl\": \"string\"\n      }\n    },\n    {\n      \"operation\": \"string\",\n      \"eventID\": \"2lsw6rdFuCz0d7cVNCubTYGSznY\",\n      \"timestamp\": \"2024-09-10T15:25:19Z\",\n      \"cloudRaw\": {\n        \"key_0\": true,\n        \"key_1\": 9965.10587319038\n      },\n      \"rawRequest\": {\n        \"operation\": \"string\",\n        \"key_0\": true,\n        \"key_1\": 7538\n      },\n      \"cloudResponses\": [\n        {\n          \"requestID\": \"string\",\n          \"success\": true,\n          \"timestamp\": \"string\",\n          \"response\": {\n            \"key_0\": 9274,\n            \"key_1\": 5560.789784667227\n          },\n          \"errorType\": \"string\",\n          \"errorResponse\": \"string\",\n          \"errorResponses\": [\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            },\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            }\n          ]\n        },\n        {\n          \"requestID\": \"string\",\n          \"success\": false,\n          \"timestamp\": \"string\",\n          \"response\": {\n            \"key_0\": 5059.55651108296,\n            \"key_1\": \"string\"\n          },\n          \"errorType\": \"string\",\n          \"errorResponse\": \"string\",\n          \"errorResponses\": [\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            },\n            {\n              \"fieldName\": \"string\",\n              \"errorMessage\": \"string\"\n            }\n          ]\n        }\n      ],\n      \"cloudRequests\": [\n        {\n          \"operation\": \"string\",\n          \"requestID\": \"string\",\n          \"timestamp\": \"string\",\n          \"request\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"operation\": \"string\",\n          \"requestID\": \"string\",\n          \"timestamp\": \"string\",\n          \"request\": {\n            \"key_0\": \"string\"\n          }\n        }\n      ],\n      \"activityDetails\": {\n        \"displayText\": \"string\",\n        \"id\": \"string\",\n        \"type\": \"string\",\n        \"email\": \"string\",\n        \"givenName\": \"string\",\n        \"familyName\": \"string\",\n        \"pictureUrl\": \"string\"\n      }\n    }\n  ],\n  \"next\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee5ff34c-16fa-4272-9b89-7e24bab1eda0",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oie#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The Tackle identifier for the invitation (for example,\n`tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`\nfield of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement\ninvitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6338e72f-2038-4643-bf94-219e8136cedb",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oie#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The Tackle identifier for the invitation (for example,\n`tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`\nfield of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement\ninvitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cfe88254-74c7-4ee2-bbbf-b06354220b03",
+          "name": "List co-sell invitations",
+          "request": {
+            "name": "List co-sell invitations",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "invitations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "A search query to filter the invitations."
+                },
+                {
+                  "disabled": false,
+                  "key": "cloudStatus",
+                  "value": "<string>",
+                  "description": "Filter invitations by their AWS Partner Central status. Accepts multiple\nvalues; results match any of the supplied statuses. Common values include\n`PENDING`, `ACCEPTED`, `REJECTED`, and `EXPIRED` — see the `status` field\non `InvitationResponse` for the full list of values returned by the API."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "The number of invitations to return per page (minimum 1, maximum 100, default 10)."
+                },
+                {
+                  "disabled": false,
+                  "key": "crmId",
+                  "value": "<string>",
+                  "description": "Filter by the Salesforce CRM identifier of the linked opportunity record.\nFor Salesforce, both 15- and 18-character IDs are accepted. To filter by\na HubSpot Deal ID instead, see the `hubspotCrmId` field on\n`OpportunityMetadata`."
+                },
+                {
+                  "disabled": false,
+                  "key": "opportunityId",
+                  "value": "<string>",
+                  "description": "Filter invitations by the AWS Partner Central opportunity identifier\n(for example, `O1234123`) of the opportunity an invitation is linked to.\nThis is the cloud-provider identifier, not the Tackle identifier — to\nlook up an invitation by Tackle ID, use the path-level `getInvitation`\noperation instead."
+                },
+                {
+                  "disabled": false,
+                  "key": "origin",
+                  "value": "<string>",
+                  "description": "Filter invitations by who initiated them. Use `aws` to return only AWS-led\ninvitations (AWS reaching out to your account about an opportunity), and\n`partner` to return only partner-led invitations (your account reaching\nout to AWS)."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The starting index of the invitations to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "startExpirationDate",
+                  "value": "<date>",
+                  "description": "Used to filter invitations by specifying the earliest expiration date. Invitations expiring on or after this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "endExpirationDate",
+                  "value": "<date>",
+                  "description": "Used to filter invitations by specifying the latest expiration date. Invitations expiring on or before this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "startCloudCreated",
+                  "value": "<date>",
+                  "description": "Used to filter invitations by specifying the earliest creation date. Invitations created on or after this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "endCloudCreated",
+                  "value": "<date>",
+                  "description": "Used to filter invitations by specifying the latest creation date. Invitations created on or before this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortField",
+                  "value": "<string>",
+                  "description": "The field to sort the invitations by. Only takes effect when `sortOrder`\nis also supplied; both query parameters must be present together for sorting\nto apply. If only `sortField` is provided, the response uses the default\nordering instead. Note that `cloudProviderID` is case-sensitive: the trailing\n`ID` is uppercase, and sending `cloudProviderId` (lowercase `d`) returns\n`400 Bad Request: Invalid sortField`."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction. Only takes effect when `sortField` is also supplied — both\nquery parameters must be present together. If only `sortOrder` is provided\n(without `sortField`), the response uses the underlying default ordering\ninstead of any sort. There is no implicit ascending default applied when\nonly one of the two parameters is sent."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasCloudErrors",
+                  "value": "<boolean>",
+                  "description": "Filter invitations by their AWS Partner Central error state. Set to\n`true` to return only invitations whose most recent AWS Partner Central\nrequest failed; set to `false` to return only invitations with no\ncloud-side errors. Omit to disable the filter. Inspect\n`listInvitationEvents` for the matching invitation to see the error\ndetail."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasCrmId",
+                  "value": "<boolean>",
+                  "description": "Filter invitations by whether a CRM identifier is linked. Set to `true`\nto return only invitations that have a `crmId` (Salesforce) or\n`hubspotCrmId` value populated; set to `false` to return only\ninvitations with no CRM identifier linked. Omit to disable the filter."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasSalesforceErrors",
+                  "value": "<boolean>",
+                  "description": "Filter invitations by their Salesforce sync state. Set to `true` to\nreturn only invitations whose most recent Salesforce sync attempt\nfailed; set to `false` to return only invitations with no Salesforce\nsync errors. Omit to disable the filter. The error message itself is\navailable on the matching invitation in the `salesforceSyncError` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasAnyError",
+                  "value": "<boolean>",
+                  "description": "Filters invitations by their error state.\n\n- `true` returns only invitations that currently have at least one\n  cloud-side error or Salesforce-sync error.\n- `false` returns only invitations that have no cloud-side or\n  Salesforce-sync errors.\n- Omit the parameter to disable this filter entirely.\n\nSee `hasCloudErrors` and `hasSalesforceErrors` to filter on each error\nsource independently."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "29600196-dfa0-4194-9d11-4a68657fbba7",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "ACCEPTED"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "opportunityId",
+                      "value": "O1234123"
+                    },
+                    {
+                      "key": "origin",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "from",
+                      "value": "11"
+                    },
+                    {
+                      "key": "startExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"invitations\": [\n    {\n      \"id\": \"tackle-cosell-2oCgmaMiJ35vQefn2O7x1zRQcqL\",\n      \"cloudProviderId\": \"O456789\",\n      \"cloudStatus\": \"Approved\",\n      \"cloudCreated\": \"2024-10-30T04:33:07Z\",\n      \"created\": \"2024-10-31T12:52:11Z\",\n      \"crmId\": \"000XYZ\",\n      \"companyName\": \"Ally Segal\",\n      \"title\": \"Project Title\",\n      \"hasCloudErrors\": false,\n      \"unifiedCreatedDate\": \"2024-10-30T04:33:07Z\"\n    },\n    {\n      \"id\": \"tackle-cosell-2oCgmaMiJ35vQefn2O7x1zRQcqL\",\n      \"cloudProviderId\": \"O4549835\",\n      \"cloudStatus\": \"EXPIRED\",\n      \"cloudCreated\": \"2024-05-30T04:33:07Z\",\n      \"created\": \"2024-05-20T12:52:11Z\",\n      \"crmId\": \"000XYZ\",\n      \"companyName\": \"Ally Segal\",\n      \"title\": \"Another Title\",\n      \"opportunityID\": \"O123412\",\n      \"origin\": \"aws\",\n      \"senderCompanyName\": \"AWS\",\n      \"hasCloudErrors\": false,\n      \"unifiedCreatedDate\": \"2024-05-30T04:33:07Z\"\n    }\n  ],\n  \"total\": 14,\n  \"currentPageCount\": 2,\n  \"isNextPage\": true,\n  \"nextIndex\": 2\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80fe36ce-c06d-4462-8029-606c45a7e3b1",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "ACCEPTED"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "opportunityId",
+                      "value": "O1234123"
+                    },
+                    {
+                      "key": "origin",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "from",
+                      "value": "11"
+                    },
+                    {
+                      "key": "startExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "770f6884-ecd3-4a12-8ba0-82380362cec0",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "ACCEPTED"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "opportunityId",
+                      "value": "O1234123"
+                    },
+                    {
+                      "key": "origin",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "from",
+                      "value": "11"
+                    },
+                    {
+                      "key": "startExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ce23bc64-aa4e-4ecf-bc81-ec711355e813",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "ACCEPTED"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "opportunityId",
+                      "value": "O1234123"
+                    },
+                    {
+                      "key": "origin",
+                      "value": "aws"
+                    },
+                    {
+                      "key": "from",
+                      "value": "11"
+                    },
+                    {
+                      "key": "startExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endExpirationDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee7855f7-c333-4159-9bdb-ae20f661e3ea",
+          "name": "Create a co-sell invitation (test-environment-only)",
+          "request": {
+            "name": "Create a co-sell invitation (test-environment-only)",
+            "description": {
+              "content": "Creates a simulated invitation for exercising invitation workflows in a\ntest environment. This endpoint is only available to vendor accounts\nprovisioned for use in a test environment; production vendor accounts\nreceive `403 Forbidden`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "invitations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "tackle-operation-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"senderAwsAccountID\": \"<string>\",\n  \"payload\": {\n    \"value\": {\n      \"customer\": {\n        \"companyName\": \"<string>\",\n        \"countryCode\": \"<string>\",\n        \"industry\": \"<string>\",\n        \"websiteUrl\": \"<string>\"\n      },\n      \"project\": {\n        \"businessProblem\": \"<string>\",\n        \"targetCompletionDate\": \"<dateTime>\",\n        \"title\": \"<string>\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"<string>\",\n            \"currencyCode\": \"<string>\",\n            \"frequency\": \"<string>\",\n            \"targetCompany\": \"<string>\"\n          },\n          {\n            \"amount\": \"<string>\",\n            \"currencyCode\": \"<string>\",\n            \"frequency\": \"<string>\",\n            \"targetCompany\": \"<string>\"\n          }\n        ]\n      },\n      \"receiverResponsibilities\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"senderContacts\": [\n        {\n          \"email\": \"<email>\",\n          \"businessTitle\": \"<string>\",\n          \"firstName\": \"<string>\",\n          \"lastName\": \"<string>\",\n          \"phone\": \"<string>\"\n        },\n        {\n          \"email\": \"<email>\",\n          \"businessTitle\": \"<string>\",\n          \"firstName\": \"<string>\",\n          \"lastName\": \"<string>\",\n          \"phone\": \"<string>\"\n        }\n      ]\n    }\n  },\n  \"engagementTitle\": \"<string>\",\n  \"expirationDate\": \"<dateTime>\",\n  \"invitationDate\": \"<dateTime>\",\n  \"payloadType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0002e0e6-60f9-4895-b5bc-b32468205739",
+              "name": "Invitation created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engagementTitle\": \"New Collaboration Opportunity\",\n  \"expirationDate\": \"2025-12-22T17:00:00Z\",\n  \"invitationDate\": \"2025-04-08T14:30:00Z\",\n  \"payload\": {\n    \"value\": {\n      \"receiverResponsibilities\": [\n        \"SoftwarePartner\"\n      ],\n      \"customer\": {\n        \"companyName\": \"Acme Corporation\",\n        \"countryCode\": \"US\",\n        \"industry\": \"Computers and Electronics\",\n        \"websiteUrl\": \"www.acmecorp.com\"\n      },\n      \"project\": {\n        \"businessProblem\": \"Need to modernize legacy systems\",\n        \"targetCompletionDate\": \"2024-11-28T17:00:00Z\",\n        \"title\": \"Cloud Migration Project\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"25000\",\n            \"currencyCode\": \"USD\",\n            \"frequency\": \"Monthly\",\n            \"targetCompany\": \"Acme Corporation\"\n          }\n        ]\n      },\n      \"senderContacts\": [\n        {\n          \"email\": \"john.smith@example.com\",\n          \"businessTitle\": \"AWSAccountOwner\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Smith\",\n          \"phone\": \"123-456-7890\"\n        }\n      ]\n    }\n  },\n  \"payloadType\": \"OpportunityInvitation\",\n  \"senderAwsAccountID\": \"123456789098\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"invitationID\": \"tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q\",\n  \"id\": \"engi-abc123def456\",\n  \"arn\": \"arn:aws:partnercentral:us-east-1:aws:catalog/Sandbox/engagement-invitation/engi-abc123def456\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3c2f0be-4c42-4c71-abb2-c30fce50b7c7",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engagementTitle\": \"New Collaboration Opportunity\",\n  \"expirationDate\": \"2025-12-22T17:00:00Z\",\n  \"invitationDate\": \"2025-04-08T14:30:00Z\",\n  \"payload\": {\n    \"value\": {\n      \"receiverResponsibilities\": [\n        \"SoftwarePartner\"\n      ],\n      \"customer\": {\n        \"companyName\": \"Acme Corporation\",\n        \"countryCode\": \"US\",\n        \"industry\": \"Computers and Electronics\",\n        \"websiteUrl\": \"www.acmecorp.com\"\n      },\n      \"project\": {\n        \"businessProblem\": \"Need to modernize legacy systems\",\n        \"targetCompletionDate\": \"2024-11-28T17:00:00Z\",\n        \"title\": \"Cloud Migration Project\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"25000\",\n            \"currencyCode\": \"USD\",\n            \"frequency\": \"Monthly\",\n            \"targetCompany\": \"Acme Corporation\"\n          }\n        ]\n      },\n      \"senderContacts\": [\n        {\n          \"email\": \"john.smith@example.com\",\n          \"businessTitle\": \"AWSAccountOwner\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Smith\",\n          \"phone\": \"123-456-7890\"\n        }\n      ]\n    }\n  },\n  \"payloadType\": \"OpportunityInvitation\",\n  \"senderAwsAccountID\": \"123456789098\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5bef09be-ae13-4920-9362-84c4e547c4d8",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engagementTitle\": \"New Collaboration Opportunity\",\n  \"expirationDate\": \"2025-12-22T17:00:00Z\",\n  \"invitationDate\": \"2025-04-08T14:30:00Z\",\n  \"payload\": {\n    \"value\": {\n      \"receiverResponsibilities\": [\n        \"SoftwarePartner\"\n      ],\n      \"customer\": {\n        \"companyName\": \"Acme Corporation\",\n        \"countryCode\": \"US\",\n        \"industry\": \"Computers and Electronics\",\n        \"websiteUrl\": \"www.acmecorp.com\"\n      },\n      \"project\": {\n        \"businessProblem\": \"Need to modernize legacy systems\",\n        \"targetCompletionDate\": \"2024-11-28T17:00:00Z\",\n        \"title\": \"Cloud Migration Project\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"25000\",\n            \"currencyCode\": \"USD\",\n            \"frequency\": \"Monthly\",\n            \"targetCompany\": \"Acme Corporation\"\n          }\n        ]\n      },\n      \"senderContacts\": [\n        {\n          \"email\": \"john.smith@example.com\",\n          \"businessTitle\": \"AWSAccountOwner\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Smith\",\n          \"phone\": \"123-456-7890\"\n        }\n      ]\n    }\n  },\n  \"payloadType\": \"OpportunityInvitation\",\n  \"senderAwsAccountID\": \"123456789098\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0c0bb31e-3478-434c-b120-3a951ab850dc",
+              "name": "Forbidden. Production vendors that call `createInvitation` receive this\nresponse. Unlike most error responses on this API, this 403 response is\nreturned as plain text (`Forbidden`) with `Content-Type: text/plain` rather\nthan the `Error` JSON envelope used elsewhere. Clients should not attempt\nto JSON-decode this 403 body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "text/plain"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engagementTitle\": \"New Collaboration Opportunity\",\n  \"expirationDate\": \"2025-12-22T17:00:00Z\",\n  \"invitationDate\": \"2025-04-08T14:30:00Z\",\n  \"payload\": {\n    \"value\": {\n      \"receiverResponsibilities\": [\n        \"SoftwarePartner\"\n      ],\n      \"customer\": {\n        \"companyName\": \"Acme Corporation\",\n        \"countryCode\": \"US\",\n        \"industry\": \"Computers and Electronics\",\n        \"websiteUrl\": \"www.acmecorp.com\"\n      },\n      \"project\": {\n        \"businessProblem\": \"Need to modernize legacy systems\",\n        \"targetCompletionDate\": \"2024-11-28T17:00:00Z\",\n        \"title\": \"Cloud Migration Project\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"25000\",\n            \"currencyCode\": \"USD\",\n            \"frequency\": \"Monthly\",\n            \"targetCompany\": \"Acme Corporation\"\n          }\n        ]\n      },\n      \"senderContacts\": [\n        {\n          \"email\": \"john.smith@example.com\",\n          \"businessTitle\": \"AWSAccountOwner\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Smith\",\n          \"phone\": \"123-456-7890\"\n        }\n      ]\n    }\n  },\n  \"payloadType\": \"OpportunityInvitation\",\n  \"senderAwsAccountID\": \"123456789098\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "Forbidden",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0eae1f07-3969-4b35-8ef3-0fe09082d7bb",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engagementTitle\": \"New Collaboration Opportunity\",\n  \"expirationDate\": \"2025-12-22T17:00:00Z\",\n  \"invitationDate\": \"2025-04-08T14:30:00Z\",\n  \"payload\": {\n    \"value\": {\n      \"receiverResponsibilities\": [\n        \"SoftwarePartner\"\n      ],\n      \"customer\": {\n        \"companyName\": \"Acme Corporation\",\n        \"countryCode\": \"US\",\n        \"industry\": \"Computers and Electronics\",\n        \"websiteUrl\": \"www.acmecorp.com\"\n      },\n      \"project\": {\n        \"businessProblem\": \"Need to modernize legacy systems\",\n        \"targetCompletionDate\": \"2024-11-28T17:00:00Z\",\n        \"title\": \"Cloud Migration Project\",\n        \"expectedCustomerSpend\": [\n          {\n            \"amount\": \"25000\",\n            \"currencyCode\": \"USD\",\n            \"frequency\": \"Monthly\",\n            \"targetCompany\": \"Acme Corporation\"\n          }\n        ]\n      },\n      \"senderContacts\": [\n        {\n          \"email\": \"john.smith@example.com\",\n          \"businessTitle\": \"AWSAccountOwner\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Smith\",\n          \"phone\": \"123-456-7890\"\n        }\n      ]\n    }\n  },\n  \"payloadType\": \"OpportunityInvitation\",\n  \"senderAwsAccountID\": \"123456789098\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "642af793-fa84-4b24-ba96-b1d71d55e2d1",
+          "name": "Get a co-sell invitation",
+          "request": {
+            "name": "Get a co-sell invitation",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "invitations",
+                ":invitation_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "invitation_id",
+                  "description": "(Required) The unique identifier for the invitation"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "47fcbdbc-672f-4aaf-ab32-f1aa75e78283",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"invitationId\": \"tackle-invitation-2kvfkeGp015GC1abcUHB2xChqOG\",\n  \"id\": \"oi-xABCDzzuu\",\n  \"arn\": \"arn:aws:partnercentral-selling:us-east-1:aws:AWS/opportunity-engagement-invitation/oi-xABCDzzuu\",\n  \"engagementTitle\": \"Example Company\",\n  \"expirationDate\": \"2024-01-27T07:00:00Z\",\n  \"invitationDate\": \"2024-01-22T22:22:27Z\",\n  \"payloadType\": \"OpportunityInvitation\",\n  \"receiver\": {\n    \"awsAccountId\": \"116371111114\",\n    \"alias\": \"example.com\"\n  },\n  \"senderAwsAccountId\": \"aws\",\n  \"senderCompanyName\": \"AWS\",\n  \"origin\": \"aws\",\n  \"status\": \"PENDING\",\n  \"opportunityInvitationPayload\": {\n    \"receiverResponsibilities\": [\n      \"SoftwarePartner\"\n    ],\n    \"customer\": {\n      \"companyName\": \"SomeOpp D\",\n      \"websiteUrl\": \"www.amazon.com\",\n      \"countryCode\": \"CA\",\n      \"industry\": \"Mining\"\n    },\n    \"project\": {\n      \"title\": \"Cloud Migration Project\",\n      \"businessProblem\": \"Customer needs to migrate three legacy datacenter workloads to AWS to reduce operational overhead and improve disaster-recovery posture.\",\n      \"targetCompletionDate\": \"2024-08-09\",\n      \"expectedCustomerSpend\": [\n        {\n          \"amount\": \"100\",\n          \"currencyCode\": \"USD\",\n          \"frequency\": \"Monthly\",\n          \"targetCompany\": \"Example.com\"\n        }\n      ]\n    },\n    \"senderContacts\": [\n      {\n        \"businessTitle\": \"WWPSPDM\",\n        \"email\": \"acc6-85469@test.cck\"\n      },\n      {\n        \"businessTitle\": \"PDM\",\n        \"email\": \"pdm-21@test.cck.a1x8a12345amtzpeab\",\n        \"firstName\": \"Kress\",\n        \"lastName\": \"Franzen\"\n      },\n      {\n        \"businessTitle\": \"AWSAccountOwner\",\n        \"email\": \"accountowner@amazon.com\",\n        \"firstName\": \"accountOwnerName\",\n        \"lastName\": \"accountOwnerName\"\n      },\n      {\n        \"businessTitle\": \"AWSSalesRep\",\n        \"email\": \"awsrep@amazon.com\"\n      },\n      {\n        \"businessTitle\": \"PSM\",\n        \"email\": \"isv@amazon.com\",\n        \"firstName\": \"isv\",\n        \"lastName\": \"isv\"\n      },\n      {\n        \"businessTitle\": \"ISVSM\",\n        \"email\": \"isv@amazon.com\",\n        \"firstName\": \"isv\",\n        \"lastName\": \"isv\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b3c3fd8-6229-4a4a-8229-0e0cdc7d1bb7",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "860bd934-aa5b-4fc3-932a-e58ce5d929fc",
+              "name": "Not Found. No resource exists at the requested path for the authenticated vendor.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Opportunity not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "83c2cbde-d213-4bed-8487-6be9d5f403c4",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cb6fe71a-1737-477e-b783-2789c6ab55a1",
+          "name": "Update a co-sell invitation",
+          "request": {
+            "name": "Update a co-sell invitation",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "invitations",
+                ":invitation_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "invitation_id",
+                  "description": "(Required) The unique identifier for the invitation"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) ",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"crmId\": \"<string>\",\n  \"rejectionReason\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8d691955-3cfd-4dd4-a120-75ea24ba2a97",
+              "name": "Accepted. The invitation update has been queued for asynchronous processing in AWS\nPartner Central. The response body is empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c1cbf431-00ab-4ad4-a6a6-cc0c14c1d2df",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f222a410-884d-45f5-a30c-32f87da16079",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "067b8bfb-61ed-4e2b-b7fc-d0d4c433b94e",
+              "name": "Not Found. No resource exists at the requested path for the authenticated vendor.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Opportunity not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0c6bb1d-4498-4aae-bd55-01c0cf02a942",
+              "name": "Locked. The request was rejected because the vendor is currently in a mid-reset state\n(for example, while the vendor's AWS Partner Central connection is being re-established).\nRetry the request once the vendor's reset has completed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Locked (WebDAV) (RFC 4918)",
+              "code": 423,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Locked\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2d4d186f-2d04-4f5b-a56a-444cab125fbd",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "invitations",
+                    ":invitation_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invitation_id",
+                      "description": "(Required) The unique identifier for the invitation"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "acceptInvitation"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"crmId\": \"006QL00001BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "ee0ce174-2f87-4673-9836-45b2a7cd2d52",
+    "name": "Tackle Authentication Invitations API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

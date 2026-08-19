@@ -1,0 +1,116 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Marketplace API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Marketplace",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List AWS Marketplace Agreements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/agreements",
+            "params": [
+              {
+                "name": "buyer_billing_account_ref",
+                "value": "",
+                "type": "query",
+                "description": "Filter to agreements for the given 12-digit AWS buyer account."
+              },
+              {
+                "name": "offerid",
+                "value": "",
+                "type": "query",
+                "description": "Filter to the agreement produced by the given marketplace offer ID."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size."
+              },
+              {
+                "name": "next_token",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor returned by a previous response."
+              }
+            ]
+          },
+          "docs": "Returns the seller's AWS Marketplace agreements (entitlements). Used\nwhen assembling an amendment offer to discover an existing\nbuyer-seller agreement to amend.\n\nEach agreement carries a `public_productid` field which is the AWS\nencrypted product ID and can be passed as the `productId` path\nparameter to `GET /products/{productId}/pricing`.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (agreement\nlisting is gated on the create permission because it is part of the\noffer-creation flow).\n"
+        },
+        {
+          "info": {
+            "name": "List Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/products",
+            "params": [
+              {
+                "name": "listing_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by product listing type (e.g. `saas`, `ami`)."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by product status."
+              },
+              {
+                "name": "registration_hosting",
+                "value": "",
+                "type": "query",
+                "description": "Filter by registration hosting type."
+              }
+            ]
+          },
+          "docs": "Returns the AWS Marketplace product listings owned by the authenticated\nseller. Use this to populate a product picker before creating a private\noffer.\n\nEach product object includes two distinct identifiers:\n\n- `productid` -- the **Tackle** product identifier.\n- `encrypted_productid` -- the **AWS Marketplace Catalog API** product\n  identifier. This is the value to pass as the `productId` path\n  parameter on `GET /products/{productId}/pricing`. Passing\n  `productid` instead will result in a `404` "
+        },
+        {
+          "info": {
+            "name": "Get Product Pricing",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/products/:productId/pricing",
+            "params": [
+              {
+                "name": "productId",
+                "value": "prod-xxxxxxxxxxxxx",
+                "type": "path",
+                "description": "The **AWS Marketplace Catalog API encrypted product identifier**.\n\nThis is **not** the Tackle product ID. Pass the\n`encrypted_productid` field from a product object returned by\n`GET /products`, or the `public_productid` field from an agreement\nreturned by `GET /agreements`. Passing the Tackle `productid` (or\n`id`) will return `404`.\n"
+              }
+            ]
+          },
+          "docs": "Returns the pricing dimensions, billing terms, and payment-model\ndefaults for an AWS Marketplace product. Use the response to\npre-populate a private-offer creation form with values that match the\nproduct's public listing.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (gated on the\ncreate permission because pricing is fetched as part of the\noffer-creation flow).\n"
+        },
+        {
+          "info": {
+            "name": "List Allowed Currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/allowed-currencies"
+          },
+          "docs": "Returns the 3-letter ISO 4217 currency codes the calling seller may\nquote in a private offer. The seller is identified by the vendor ID\nin the bearer token; no path parameter is required.\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (currency\nselection is part of the offer-creation flow).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

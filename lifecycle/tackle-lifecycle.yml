@@ -1,16 +1,58 @@
-generated: '2026-07-21'
+generated: '2026-08-13'
 method: searched
-source: https://developers.tackle.io + https://status.tackle.io
+source: >-
+  https://developers.tackle.io + https://developers.tackle.io/docs/best-practices +
+  https://status.tackle.io/api/v2/summary.json
 versioning:
   scheme: uri-path
   current: v1
-  note: Core Tackle API paths are under /v1/*. Offers AWS API is independently versioned (3.2.0); SCIM implements protocol 2.0.
+  note: >-
+    Core Tackle API paths are under /v1/*. The AWS Offers API is independently versioned
+    (3.2.0); SCIM implements protocol 2.0. There is no version header, no dated version train,
+    and no published version-support matrix.
+change_policy:
+  breaking_change_notification: true
+  policy_url: https://developers.tackle.io/docs/best-practices
+  quote: >-
+    'Validation is not recommended on the presence of new returned payload fields. Tackle will
+    provide notification of planned breaking changes to existing fields, however we may add
+    fields to the payload at any time.'
+  interpretation: >-
+    Tackle commits to NOTIFYING customers of planned breaking changes to existing fields, and
+    reserves the right to add fields at any time (so clients must tolerate unknown fields). This
+    is a change-communication commitment, not a deprecation policy — it names no notice period,
+    no support window, and no channel the notification arrives on.
 deprecation:
   policy_url: null
   sunset_header: false
-  note: No public deprecation/sunset policy or RFC 8594 header support documented.
+  deprecation_header: false
+  notice_period: null
+  note: >-
+    No public deprecation or sunset policy, and no RFC 8594 Sunset / Deprecation header support.
+    None of the 7 harvested OpenAPI documents marks a single operation `deprecated: true`. No
+    `Deprecation` pointer is wired into apis.yml because the best-practices sentence above falls
+    short of a policy an integrator could plan against.
 sla:
   url: null
+  uptime_target: null
+  note: >-
+    No public SLA or uptime target. The trust center publishes a 4-hour Recovery Time Objective
+    under its risk profile (see security/tackle-trust-center.yml), which is a BC/DR figure, not
+    an availability commitment.
 status_page: https://status.tackle.io
 status_page_name: Tackle.io Status (Atlassian Statuspage)
+status_page_api: https://status.tackle.io/api/v2/summary.json
+status_page_components:
+  - Order processing & notifications
+status_page_note: 'Component list read live from the Statuspage v2 summary API on 2026-08-13; page id t9y7q1gkszqc, timezone America/Denver.'
+changelog:
+  ref: changelog/tackle-changelog.yml
+  developer_changelog: null
+  note: 'developers.tackle.io/changelog returns 404; product changes are announced in monthly blog posts, not a developer changelog.'
+event_delivery_window:
+  ref: asyncapi/tackle-webhooks.yml
+  note: >-
+    The only hard durability figure Tackle publishes is on the webhook side: 12 delivery attempts
+    over ~22 hours, after which an event is marked Failed with no documented redrive. That is the
+    effective recovery window for an event-driven integration.
 deprecated_operations: []

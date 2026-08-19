@@ -1,0 +1,2769 @@
+{
+  "item": [
+    {
+      "id": "30fcc86b-38a7-4e09-b5fd-3acae56a59fe",
+      "name": "public",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "23875be0-ecef-4193-8e32-1808b3562796",
+          "name": "Update a Microsoft offer",
+          "request": {
+            "name": "Update a Microsoft offer",
+            "description": {
+              "content": "Updates an existing Microsoft private offer. If `status` is\n`submit_to_cloud`, the handler merges EULA documents when present,\nvalidates the request, and stores the Microsoft submission payload.\n\nRequired RBAC action: `offers:UpdateOffer`. Submitting to Microsoft also\nrequires `offers:CreateOfferOnMarketplace`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "private-offers",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Tackle private offer ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"salesforce\": {\n    \"custom_object_id\": \"<string,null>\",\n    \"opportunity_id\": \"<string,null>\"\n  },\n  \"marketplace_fee\": \"<number,null-double>\",\n  \"state\": \"<string>\",\n  \"status\": \"<string>\",\n  \"product_name\": \"<string,null>\",\n  \"product_id\": \"<string,null>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"pre_registration_details\": {\n    \"company_website\": \"<string,null-uri>\",\n    \"details\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\"\n    }\n  },\n  \"partner\": {\n    \"partner_name\": \"<string,null>\",\n    \"partner_seller_id\": \"<string>\"\n  },\n  \"notes\": \"<string,null>\",\n  \"name\": \"<string,null>\",\n  \"description\": \"<string,null>\",\n  \"buyer_details\": {\n    \"company_name\": \"<string,null>\",\n    \"billing_account_id\": \"<string,null>\",\n    \"buyers\": [\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      },\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      }\n    ]\n  },\n  \"renewal\": \"<boolean,null>\",\n  \"eula\": {\n    \"type\": \"<string,null>\",\n    \"document_urns\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"merged_urn\": \"<string,null>\",\n    \"presigned_url\": \"<string,null-uri>\"\n  },\n  \"product_ref\": \"<string,null>\",\n  \"users_to_notify\": [\n    {\n      \"contact_type\": \"<string>\",\n      \"value\": \"<string>\",\n      \"email\": \"<email>\"\n    },\n    {\n      \"contact_type\": \"<string>\",\n      \"value\": \"<string>\",\n      \"email\": \"<email>\"\n    }\n  ],\n  \"pricing\": {\n    \"plan_name\": \"<string,null>\",\n    \"description\": \"<string,null>\",\n    \"contract_duration\": {\n      \"type\": \"<string,null>\",\n      \"frequency\": \"<integer,null>\"\n    },\n    \"payment_model\": \"<string>\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": \"<number,null-double>\"\n    },\n    \"payment_schedule\": {\n      \"initial_charge\": {\n        \"price_per_payment_in_usd\": \"<number,null-double>\",\n        \"note\": \"<string,null>\"\n      },\n      \"payment_schedule\": [\n        {\n          \"charge_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"price_per_payment_in_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"note\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"charge_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"price_per_payment_in_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"note\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ]\n    },\n    \"pricing_type\": \"<string>\",\n    \"user_limits\": {\n      \"min\": \"<integer>\",\n      \"max\": \"<integer>\"\n    },\n    \"dimensions\": {\n      \"key_0\": {\n        \"enabled\": \"<boolean,null>\",\n        \"id\": \"<string,null>\",\n        \"unit_of_measure\": \"<string,null>\",\n        \"price_per_unit_in_usd\": \"<number,null-double>\",\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"quantity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"quantity\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      }\n    }\n  },\n  \"preparer_email\": \"<string,null-email>\",\n  \"start_on\": \"<string>\",\n  \"start_date\": \"<string,null-date>\",\n  \"end_date\": \"<string,null-date>\",\n  \"accept_by_date\": \"<string,null-date>\",\n  \"plan_template\": {\n    \"ref\": \"<string>\",\n    \"display\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4fff2e8f-f59c-44c0-9609-caa8092a1ea2",
+              "name": "Offer updated",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"po_id\": \"string\",\n  \"accepted_at\": \"2015-01-30T04:39:22.958Z\",\n  \"accepted_source\": \"string\",\n  \"archived_at\": null,\n  \"created_at\": \"1994-11-22T04:53:58.423Z\",\n  \"cancelled_at\": \"2009-08-13T14:28:54.497Z\",\n  \"last_modified_at\": \"1952-02-04T00:48:38.823Z\",\n  \"last_update_source\": null,\n  \"viewed_offer_at\": \"2013-03-03T13:25:01.453Z\",\n  \"sent_at\": null,\n  \"submitted_at\": \"2006-07-22T20:38:08.617Z\",\n  \"opened_instructions_at\": null,\n  \"subscribed_at\": null,\n  \"partner_marked_up_at\": \"2016-12-30T05:34:21.926Z\",\n  \"marketplace_acceptance_link\": \"http://ejaqeExNitQsiUqpgF.kdZo3z2x9Wo4RSC7CzeP,fgo0Xqiu6i2a3,UY4STccRax\",\n  \"salesforce\": {\n    \"created_at\": null,\n    \"custom_object_id\": \"string\",\n    \"opportunity_id\": null\n  },\n  \"vendor_id\": \"string\",\n  \"vendor_name\": \"string\",\n  \"product_contact_email\": \"VnlDl8K2fpCOp@AHjliya.ue\",\n  \"state\": \"<string>\",\n  \"status\": \"<string>\",\n  \"offer_type\": \"direct\",\n  \"marketplace_fee\": 5574.464118556622,\n  \"activities\": [\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": null,\n      \"created_at\": \"1983-01-28T18:37:25.037Z\",\n      \"metadata\": {\n        \"key_0\": 1285,\n        \"key_1\": true,\n        \"key_2\": 7258\n      },\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"Pgebf@zqaXggQkuxI.fbh\",\n        \"principal_type\": \"string\"\n      }\n    },\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": \"string\",\n      \"created_at\": \"1975-11-01T07:29:58.678Z\",\n      \"metadata\": null,\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"LL3RACviG9cNV@thSIjzesaKPXImYPmlRcRWaUcvuwIBRQ.bx\",\n        \"principal_type\": \"string\"\n      }\n    }\n  ],\n  \"archived\": false,\n  \"version\": \"string\",\n  \"product_id\": \"string\",\n  \"product_name\": \"string\",\n  \"source\": \"salesforce\",\n  \"marketplace_created_at\": \"2013-10-04T11:50:55.691Z\",\n  \"clone\": {\n    \"source\": \"tackle\",\n    \"originating_offer_id\": \"string\"\n  },\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\"\n  },\n  \"product_type\": \"ami\",\n  \"errors\": [\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    }\n  ],\n  \"pre_registration_details\": {\n    \"company_website\": \"<string,null-uri>\",\n    \"details\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"ui_state\": \"<string>\",\n  \"partner\": {\n    \"partner_name\": \"<string,null>\",\n    \"partner_seller_id\": \"<string>\"\n  },\n  \"total_contract_value_gross_amount\": 7610.952334205238,\n  \"total_contract_value_net_amount\": 2158.8977430074565,\n  \"est_min_total_contract_value_gross_amount\": 2647.26528346955,\n  \"est_min_total_contract_value_net_amount\": 7501.5939830892285,\n  \"est_max_total_contract_value_gross_amount\": 1821.1297453009422,\n  \"est_max_total_contract_value_net_amount\": 1825.6629730185937,\n  \"name\": null,\n  \"description\": null,\n  \"buyer_details\": {\n    \"company_name\": \"string\",\n    \"billing_account_id\": \"string\",\n    \"buyers\": [\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      },\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      }\n    ]\n  },\n  \"renewal\": false,\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"merged_urn\": \"<string,null>\",\n    \"presigned_url\": \"<string,null-uri>\"\n  },\n  \"product_ref\": \"string\",\n  \"users_to_notify\": [\n    {\n      \"contact_type\": \"string\",\n      \"value\": null,\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"rvjRgdSbLIKIJ3o@qdvDwGLYnryNmsuCyoBp.olf\"\n    },\n    {\n      \"contact_type\": \"string\",\n      \"value\": null,\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"FBO@iCGTzPZUrQxVIGuXoKHZckCQCGYo.glc\"\n    }\n  ],\n  \"pricing\": {\n    \"plan_ref\": \"string\",\n    \"plan_name\": \"string\",\n    \"description\": \"string\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"<string>\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 7634.070170574634\n    },\n    \"payment_schedule\": {\n      \"initial_charge\": {\n        \"price_per_payment_in_usd\": \"<number,null-double>\",\n        \"note\": \"<string,null>\"\n      },\n      \"payment_schedule\": [\n        {\n          \"charge_date\": \"2026-03-30\",\n          \"price_per_payment_in_usd\": 7156.135048876549,\n          \"note\": \"string\"\n        },\n        {\n          \"charge_date\": \"2019-05-17\",\n          \"price_per_payment_in_usd\": null,\n          \"note\": null\n        }\n      ]\n    },\n    \"pricing_type\": \"<string>\",\n    \"user_limits\": {\n      \"min\": \"<integer>\",\n      \"max\": \"<integer>\"\n    },\n    \"dimensions\": {\n      \"key_0\": {\n        \"enabled\": true,\n        \"id\": \"string\",\n        \"unit_of_measure\": \"string\",\n        \"price_per_unit_in_usd\": 8726.735057063544,\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 1634.9100400648297\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 9900.07744001859\n          }\n        ]\n      }\n    }\n  },\n  \"preparer_email\": \"CjeG1@tnPpyFRtPHWAaesuSvHxVWwhe.crf\",\n  \"start_on\": \"<string>\",\n  \"start_date\": \"1957-12-18\",\n  \"end_date\": \"2011-03-04\",\n  \"accept_by_date\": \"1975-12-23\",\n  \"offer_ref\": \"string\",\n  \"plan_template\": {\n    \"ref\": \"<string>\",\n    \"display\": \"<string>\"\n  },\n  \"plan_ref\": null,\n  \"subscription_ref\": null,\n  \"notes\": \"string\",\n  \"offer_state\": {\n    \"draft\": {\n      \"raw_message\": \"string\"\n    },\n    \"submitted\": {\n      \"raw_message\": \"string\"\n    },\n    \"accepted\": {\n      \"raw_message\": \"string\"\n    },\n    \"current_cloud\": {\n      \"raw_message\": \"string\"\n    },\n    \"last_modified\": \"1956-03-06T02:18:31.033Z\"\n  },\n  \"msft_response\": {\n    \"job_id\": \"string\",\n    \"offer_id\": \"string\",\n    \"resource_uri\": null,\n    \"raw_response\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b8cc0230-167d-4719-b8b5-1f2ceb3123c6",
+              "name": "Invalid request or unsupported operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4bec2bc-c9e2-4ebd-8363-a82cb17fbba1",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1ac87a2-196d-4cf7-9405-f2b617517c12",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7afd4b8d-ca23-43e4-aafa-20a62757c2b7",
+              "name": "Requested offer or resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f13aa525-ea32-450c-b2c2-fb6576a9eb3c",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"draft_status\",\n  \"name\": \"Updated draft offer\",\n  \"description\": \"Updated draft description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1742d730-1579-41a1-8474-6a4d3a38527f",
+          "name": "Get an offer",
+          "request": {
+            "name": "Get an offer",
+            "description": {
+              "content": "Returns one private offer by Tackle offer ID after checking that the\ncaller can access the offer's vendor.\n\nRequired RBAC action: `offers:GetOffer`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "private-offers",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Tackle private offer ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "c3eb44ff-b07a-4f9e-8ab3-73fddb5a3fe1",
+              "name": "Offer found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"po_id\": \"string\",\n  \"accepted_at\": null,\n  \"accepted_source\": \"string\",\n  \"archived_at\": \"1968-08-16T16:07:46.223Z\",\n  \"created_at\": \"1980-08-16T03:02:24.343Z\",\n  \"cancelled_at\": null,\n  \"last_modified_at\": \"1992-04-05T12:37:36.168Z\",\n  \"last_update_source\": null,\n  \"viewed_offer_at\": null,\n  \"sent_at\": \"1988-01-04T04:24:16.304Z\",\n  \"submitted_at\": \"2025-04-10T17:22:26.994Z\",\n  \"opened_instructions_at\": null,\n  \"subscribed_at\": null,\n  \"partner_marked_up_at\": \"2013-12-18T17:12:45.904Z\",\n  \"marketplace_acceptance_link\": null,\n  \"salesforce\": {\n    \"created_at\": \"1958-08-10T20:48:23.038Z\",\n    \"custom_object_id\": null,\n    \"opportunity_id\": \"string\"\n  },\n  \"vendor_id\": \"string\",\n  \"vendor_name\": \"string\",\n  \"product_contact_email\": \"QJR@zDVdsPfSH.qfb\",\n  \"state\": \"<string>\",\n  \"status\": \"<string>\",\n  \"offer_type\": \"direct\",\n  \"marketplace_fee\": 9500.91758497742,\n  \"activities\": [\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": \"string\",\n      \"created_at\": \"1952-07-10T00:19:56.167Z\",\n      \"metadata\": {\n        \"key_0\": true\n      },\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"Q2J@RtAcCnGyCfqAnvDDIRoUkKMTYdd.akul\",\n        \"principal_type\": \"string\"\n      }\n    },\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": null,\n      \"created_at\": \"1979-08-20T20:42:59.693Z\",\n      \"metadata\": null,\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"SH0cr@LOAGiTJgkESEyi.rhga\",\n        \"principal_type\": \"string\"\n      }\n    }\n  ],\n  \"archived\": true,\n  \"version\": \"string\",\n  \"product_id\": \"string\",\n  \"product_name\": \"string\",\n  \"source\": \"microsoft\",\n  \"marketplace_created_at\": \"2017-05-26T11:35:59.718Z\",\n  \"clone\": {\n    \"source\": \"salesforce\",\n    \"originating_offer_id\": \"string\"\n  },\n  \"metadata\": {\n    \"key_0\": \"string\"\n  },\n  \"product_type\": \"professional_services\",\n  \"errors\": [\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    }\n  ],\n  \"pre_registration_details\": {\n    \"company_website\": \"<string,null-uri>\",\n    \"details\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\",\n      \"key_3\": \"<string>\"\n    }\n  },\n  \"ui_state\": \"<string>\",\n  \"partner\": {\n    \"partner_name\": \"<string,null>\",\n    \"partner_seller_id\": \"<string>\"\n  },\n  \"total_contract_value_gross_amount\": 6026.9427271521245,\n  \"total_contract_value_net_amount\": 9329.6822951946,\n  \"est_min_total_contract_value_gross_amount\": 2617.5572264411685,\n  \"est_min_total_contract_value_net_amount\": 1804.1871708740887,\n  \"est_max_total_contract_value_gross_amount\": 8432.273766533592,\n  \"est_max_total_contract_value_net_amount\": 8460.699406517397,\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"buyer_details\": {\n    \"company_name\": \"string\",\n    \"billing_account_id\": \"string\",\n    \"buyers\": [\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      },\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      }\n    ]\n  },\n  \"renewal\": false,\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"merged_urn\": \"<string,null>\",\n    \"presigned_url\": \"<string,null-uri>\"\n  },\n  \"product_ref\": \"string\",\n  \"users_to_notify\": [\n    {\n      \"contact_type\": \"string\",\n      \"value\": \"string\",\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"HpT@JvxISujox.dutw\"\n    },\n    {\n      \"contact_type\": \"string\",\n      \"value\": \"string\",\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"xgiwq96s6yd@NCbeEJO.vgt\"\n    }\n  ],\n  \"pricing\": {\n    \"plan_ref\": \"string\",\n    \"plan_name\": \"string\",\n    \"description\": \"string\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"<string>\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 85.24140241793154\n    },\n    \"payment_schedule\": {\n      \"initial_charge\": {\n        \"price_per_payment_in_usd\": \"<number,null-double>\",\n        \"note\": \"<string,null>\"\n      },\n      \"payment_schedule\": [\n        {\n          \"charge_date\": \"1989-03-14\",\n          \"price_per_payment_in_usd\": null,\n          \"note\": \"string\"\n        },\n        {\n          \"charge_date\": null,\n          \"price_per_payment_in_usd\": null,\n          \"note\": \"string\"\n        }\n      ]\n    },\n    \"pricing_type\": \"<string>\",\n    \"user_limits\": {\n      \"min\": \"<integer>\",\n      \"max\": \"<integer>\"\n    },\n    \"dimensions\": {\n      \"key_0\": {\n        \"enabled\": true,\n        \"id\": \"string\",\n        \"unit_of_measure\": \"string\",\n        \"price_per_unit_in_usd\": 3680.6670190349378,\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 6009.729733376394\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": true,\n            \"quantity\": 9522.277352573044\n          }\n        ]\n      },\n      \"key_1\": {\n        \"enabled\": false,\n        \"id\": \"string\",\n        \"unit_of_measure\": \"string\",\n        \"price_per_unit_in_usd\": 5963.222544643602,\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 1681.6328452088003\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 963.2426157844698\n          }\n        ]\n      }\n    }\n  },\n  \"preparer_email\": \"DU0OWSX8thiueq@iWyMNIVhtjMINIXnZKcUuykFMXJOdhu.qjwy\",\n  \"start_on\": \"<string>\",\n  \"start_date\": \"2006-09-29\",\n  \"end_date\": \"1962-07-26\",\n  \"accept_by_date\": \"2004-02-05\",\n  \"offer_ref\": \"string\",\n  \"plan_template\": {\n    \"ref\": \"<string>\",\n    \"display\": \"<string>\"\n  },\n  \"plan_ref\": \"string\",\n  \"subscription_ref\": \"string\",\n  \"notes\": \"string\",\n  \"offer_state\": {\n    \"draft\": {\n      \"raw_message\": \"string\"\n    },\n    \"submitted\": {\n      \"raw_message\": \"string\"\n    },\n    \"accepted\": {\n      \"raw_message\": \"string\"\n    },\n    \"current_cloud\": {\n      \"raw_message\": \"string\"\n    },\n    \"last_modified\": \"2008-12-22T17:53:07.206Z\"\n  },\n  \"msft_response\": {\n    \"job_id\": \"string\",\n    \"offer_id\": null,\n    \"resource_uri\": null,\n    \"raw_response\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5bfeaa21-25c3-4046-bfb0-e4f76f64d416",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63246918-b715-4ff1-8fb8-6f28da6d0ec8",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c7ebae8f-5a7b-4f39-8fe1-95148a820472",
+              "name": "Requested offer or resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d52f72f1-2938-4665-a7f3-83ff92a171ee",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2662815b-22da-4cd0-9bdf-463d6541a277",
+          "name": "Create or import a Microsoft offer",
+          "request": {
+            "name": "Create or import a Microsoft offer",
+            "description": {
+              "content": "Creates a new Microsoft private offer from a full offer payload, or\nimports an existing live Microsoft private offer when the body contains\n`microsoftOfferId` and `buyer_company_name`.\n\nFor full create payloads, if `status` is `submit_to_cloud`, the handler\nvalidates and transforms the request for Microsoft submission before\nsaving the offer. For import payloads, the vendor context is derived\nfrom the authenticated principal; sandbox vendors use their production\nparent vendor's Microsoft credentials.\n\nRequired RBAC action: `offers:CreateDraftOffer`. Submitting to Microsoft\nalso requires `offers:CreateOfferOnMarketplace`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "private-offers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"offer_type\": \"<string>\",\n  \"salesforce\": {\n    \"custom_object_id\": \"<string,null>\",\n    \"opportunity_id\": \"<string,null>\"\n  },\n  \"vendor_id\": \"<string>\",\n  \"state\": \"<string>\",\n  \"status\": \"<string>\",\n  \"marketplace_fee\": \"<double>\",\n  \"vendor_name\": \"<string>\",\n  \"product_id\": \"<string>\",\n  \"product_name\": \"<string>\",\n  \"source\": \"<string>\",\n  \"clone\": {\n    \"source\": \"<string>\",\n    \"originating_offer_id\": \"<string>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"pre_registration_details\": {\n    \"company_website\": \"<string,null-uri>\",\n    \"details\": {\n      \"key_0\": \"<string>\"\n    }\n  },\n  \"partner\": {\n    \"partner_name\": \"<string,null>\",\n    \"partner_seller_id\": \"<string>\"\n  },\n  \"notes\": \"<string,null>\",\n  \"name\": \"<string,null>\",\n  \"description\": \"<string,null>\",\n  \"buyer_details\": {\n    \"company_name\": \"<string>\",\n    \"billing_account_id\": \"<string>\",\n    \"buyers\": [\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      },\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      }\n    ]\n  },\n  \"renewal\": \"<boolean>\",\n  \"eula\": {\n    \"type\": \"<string,null>\",\n    \"document_urns\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"merged_urn\": \"<string,null>\",\n    \"presigned_url\": \"<string,null-uri>\"\n  },\n  \"product_ref\": \"<string>\",\n  \"users_to_notify\": [\n    {\n      \"contact_type\": \"<string>\",\n      \"value\": \"<string,null>\",\n      \"email\": \"<email>\"\n    },\n    {\n      \"contact_type\": \"<string>\",\n      \"value\": \"<string,null>\",\n      \"email\": \"<email>\"\n    }\n  ],\n  \"pricing\": {\n    \"plan_ref\": \"<string>\",\n    \"plan_name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"contract_duration\": {\n      \"type\": \"<string>\",\n      \"frequency\": \"<integer>\"\n    },\n    \"payment_model\": \"<string>\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": \"<double>\"\n    },\n    \"payment_schedule\": {\n      \"initial_charge\": {\n        \"price_per_payment_in_usd\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"note\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      },\n      \"payment_schedule\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ]\n    },\n    \"pricing_type\": \"<string>\",\n    \"user_limits\": {\n      \"min\": \"<integer>\",\n      \"max\": \"<integer>\"\n    },\n    \"dimensions\": {\n      \"key_0\": {\n        \"enabled\": \"<boolean>\",\n        \"id\": \"<string>\",\n        \"unit_of_measure\": \"<string>\",\n        \"price_per_unit_in_usd\": \"<double>\",\n        \"included_quantities\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      \"key_1\": {\n        \"enabled\": \"<boolean>\",\n        \"id\": \"<string>\",\n        \"unit_of_measure\": \"<string>\",\n        \"price_per_unit_in_usd\": \"<double>\",\n        \"included_quantities\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    }\n  },\n  \"preparer_email\": \"<email>\",\n  \"start_on\": \"<string>\",\n  \"start_date\": \"<date>\",\n  \"end_date\": \"<date>\",\n  \"accept_by_date\": \"<date>\",\n  \"plan_template\": {\n    \"ref\": \"<string>\",\n    \"display\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "dfaf7c24-d110-48cb-aabf-d6a1e3002bac",
+              "name": "Offer created or imported",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_type\": \"direct\",\n  \"vendor_id\": \"vendor-123\",\n  \"status\": \"draft_status\",\n  \"vendor_name\": \"Example Vendor\",\n  \"product_id\": \"product-123\",\n  \"product_name\": \"Example Product\",\n  \"buyer_details\": {\n    \"company_name\": \"Example Buyer\",\n    \"billing_account_id\": \"billing-account-123\"\n  },\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": []\n  },\n  \"pricing\": {\n    \"plan_name\": \"Example Plan\",\n    \"description\": \"Annual plan\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"OneTime\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 1200\n    },\n    \"pricing_type\": \"flat_rate\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"po_id\": \"string\",\n  \"accepted_at\": null,\n  \"accepted_source\": \"string\",\n  \"archived_at\": null,\n  \"created_at\": \"1992-07-08T12:37:28.116Z\",\n  \"cancelled_at\": null,\n  \"last_modified_at\": \"2016-04-26T12:45:26.944Z\",\n  \"last_update_source\": \"string\",\n  \"viewed_offer_at\": null,\n  \"sent_at\": \"2011-10-16T15:13:08.646Z\",\n  \"submitted_at\": null,\n  \"opened_instructions_at\": \"2010-01-26T17:25:57.340Z\",\n  \"subscribed_at\": null,\n  \"partner_marked_up_at\": \"1955-07-29T20:16:07.546Z\",\n  \"marketplace_acceptance_link\": \"http://aXinPnFrhEFFqaYNgkEI.wwswubzIu.5EmawFF-VeI1ezMLqzGerOVH1PIfnBJBNuHnHhn\",\n  \"salesforce\": {\n    \"created_at\": \"2005-03-17T10:16:03.143Z\",\n    \"custom_object_id\": \"string\",\n    \"opportunity_id\": \"string\"\n  },\n  \"vendor_id\": \"string\",\n  \"vendor_name\": \"string\",\n  \"product_contact_email\": \"7V19@ZLZsBqEfcfroPYniyofiDbh.iuv\",\n  \"state\": \"<string>\",\n  \"status\": \"<string>\",\n  \"offer_type\": \"<string>\",\n  \"marketplace_fee\": 3909.906847731708,\n  \"activities\": [\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": \"string\",\n      \"created_at\": \"1989-01-13T09:08:33.218Z\",\n      \"metadata\": {\n        \"key_0\": 9547.434146332096,\n        \"key_1\": 9240,\n        \"key_2\": \"string\",\n        \"key_3\": \"string\",\n        \"key_4\": 870.682099432134\n      },\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"rFnaFcKQZk@QkXv.npd\",\n        \"principal_type\": \"string\"\n      }\n    },\n    {\n      \"slug\": \"created-draft-offer\",\n      \"user_id\": \"string\",\n      \"created_at\": \"1969-04-01T15:57:42.424Z\",\n      \"metadata\": {\n        \"key_0\": 1281,\n        \"key_1\": 276,\n        \"key_2\": 2219.044110626304,\n        \"key_3\": true\n      },\n      \"user\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"c2xog1a@IBykBXcLfipEivKWxrTMAb.tnh\",\n        \"principal_type\": \"string\"\n      }\n    }\n  ],\n  \"archived\": false,\n  \"version\": \"string\",\n  \"product_id\": \"string\",\n  \"product_name\": \"string\",\n  \"source\": \"<string>\",\n  \"marketplace_created_at\": null,\n  \"clone\": {\n    \"source\": \"<string>\",\n    \"originating_offer_id\": \"<string>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  },\n  \"product_type\": \"ami\",\n  \"errors\": [\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    },\n    {\n      \"source\": \"string\",\n      \"type\": \"string\",\n      \"message\": \"string\"\n    }\n  ],\n  \"pre_registration_details\": {\n    \"company_website\": \"<string,null-uri>\",\n    \"details\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    }\n  },\n  \"ui_state\": \"<string>\",\n  \"partner\": {\n    \"partner_name\": \"<string,null>\",\n    \"partner_seller_id\": \"<string>\"\n  },\n  \"total_contract_value_gross_amount\": 2069.4042643024877,\n  \"total_contract_value_net_amount\": 7642.81425589425,\n  \"est_min_total_contract_value_gross_amount\": 5638.419247098937,\n  \"est_min_total_contract_value_net_amount\": 4352.093738008812,\n  \"est_max_total_contract_value_gross_amount\": 1566.3514357964382,\n  \"est_max_total_contract_value_net_amount\": 9732.151074503097,\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"buyer_details\": {\n    \"company_name\": \"<string>\",\n    \"billing_account_id\": \"<string>\",\n    \"buyers\": [\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      },\n      {\n        \"full_name\": \"<string>\",\n        \"email_address\": \"<email>\",\n        \"title\": \"<string>\"\n      }\n    ]\n  },\n  \"renewal\": true,\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"merged_urn\": \"<string,null>\",\n    \"presigned_url\": \"<string,null-uri>\"\n  },\n  \"product_ref\": \"string\",\n  \"users_to_notify\": [\n    {\n      \"contact_type\": \"string\",\n      \"value\": null,\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"wBKCH@FLBQhGc.ek\"\n    },\n    {\n      \"contact_type\": \"string\",\n      \"value\": \"string\",\n      \"first_name\": \"string\",\n      \"last_name\": \"string\",\n      \"email\": \"KAWD-yVow4dG71S@gghNSnjtQmrJTOllzWZS.aczm\"\n    }\n  ],\n  \"pricing\": {\n    \"plan_ref\": \"<string>\",\n    \"plan_name\": \"<string>\",\n    \"description\": \"<string>\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"<string>\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": \"<double>\"\n    },\n    \"payment_schedule\": {\n      \"initial_charge\": {\n        \"price_per_payment_in_usd\": \"<number,null-double>\",\n        \"note\": \"<string,null>\"\n      },\n      \"payment_schedule\": [\n        {\n          \"charge_date\": null,\n          \"price_per_payment_in_usd\": null,\n          \"note\": null\n        },\n        {\n          \"charge_date\": null,\n          \"price_per_payment_in_usd\": null,\n          \"note\": null\n        }\n      ]\n    },\n    \"pricing_type\": \"<string>\",\n    \"user_limits\": {\n      \"min\": \"<integer>\",\n      \"max\": \"<integer>\"\n    },\n    \"dimensions\": {\n      \"key_0\": {\n        \"enabled\": \"<boolean>\",\n        \"id\": \"<string>\",\n        \"unit_of_measure\": \"<string>\",\n        \"price_per_unit_in_usd\": \"<double>\",\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": false,\n            \"quantity\": 7883.426605689664\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": true,\n            \"quantity\": 9688.136779132714\n          }\n        ]\n      },\n      \"key_1\": {\n        \"enabled\": \"<boolean>\",\n        \"id\": \"<string>\",\n        \"unit_of_measure\": \"<string>\",\n        \"price_per_unit_in_usd\": \"<double>\",\n        \"included_quantities\": [\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": true,\n            \"quantity\": 1384.419057301146\n          },\n          {\n            \"dimension_term\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"unlimited_quantity\": true,\n            \"quantity\": 6785.653864516127\n          }\n        ]\n      }\n    }\n  },\n  \"preparer_email\": \"X0pIVn6DHer3GMD@icMAVFvrbwYwIFvrjSxVKqobBjWGxDpR.ye\",\n  \"start_on\": \"<string>\",\n  \"start_date\": \"1965-04-10\",\n  \"end_date\": \"2014-07-04\",\n  \"accept_by_date\": \"2002-08-16\",\n  \"offer_ref\": null,\n  \"plan_template\": {\n    \"ref\": \"<string>\",\n    \"display\": \"<string>\"\n  },\n  \"plan_ref\": \"string\",\n  \"subscription_ref\": \"string\",\n  \"notes\": \"string\",\n  \"offer_state\": {\n    \"draft\": {\n      \"raw_message\": \"string\"\n    },\n    \"submitted\": {\n      \"raw_message\": \"string\"\n    },\n    \"accepted\": {\n      \"raw_message\": \"string\"\n    },\n    \"current_cloud\": {\n      \"raw_message\": \"string\"\n    },\n    \"last_modified\": \"1992-03-04T15:36:04.687Z\"\n  },\n  \"msft_response\": {\n    \"job_id\": \"string\",\n    \"offer_id\": \"string\",\n    \"resource_uri\": \"string\",\n    \"raw_response\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9b186d39-9b3d-4ca3-a6eb-f3978ba25a3f",
+              "name": "Invalid request or unsupported operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_type\": \"direct\",\n  \"vendor_id\": \"vendor-123\",\n  \"status\": \"draft_status\",\n  \"vendor_name\": \"Example Vendor\",\n  \"product_id\": \"product-123\",\n  \"product_name\": \"Example Product\",\n  \"buyer_details\": {\n    \"company_name\": \"Example Buyer\",\n    \"billing_account_id\": \"billing-account-123\"\n  },\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": []\n  },\n  \"pricing\": {\n    \"plan_name\": \"Example Plan\",\n    \"description\": \"Annual plan\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"OneTime\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 1200\n    },\n    \"pricing_type\": \"flat_rate\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc1c758f-0d47-476c-9b04-6af901ffbd40",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_type\": \"direct\",\n  \"vendor_id\": \"vendor-123\",\n  \"status\": \"draft_status\",\n  \"vendor_name\": \"Example Vendor\",\n  \"product_id\": \"product-123\",\n  \"product_name\": \"Example Product\",\n  \"buyer_details\": {\n    \"company_name\": \"Example Buyer\",\n    \"billing_account_id\": \"billing-account-123\"\n  },\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": []\n  },\n  \"pricing\": {\n    \"plan_name\": \"Example Plan\",\n    \"description\": \"Annual plan\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"OneTime\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 1200\n    },\n    \"pricing_type\": \"flat_rate\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3c3d9da-0a01-4fb9-962a-3daf096c2e8a",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_type\": \"direct\",\n  \"vendor_id\": \"vendor-123\",\n  \"status\": \"draft_status\",\n  \"vendor_name\": \"Example Vendor\",\n  \"product_id\": \"product-123\",\n  \"product_name\": \"Example Product\",\n  \"buyer_details\": {\n    \"company_name\": \"Example Buyer\",\n    \"billing_account_id\": \"billing-account-123\"\n  },\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": []\n  },\n  \"pricing\": {\n    \"plan_name\": \"Example Plan\",\n    \"description\": \"Annual plan\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"OneTime\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 1200\n    },\n    \"pricing_type\": \"flat_rate\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff2f6e6a-6cbb-48cd-bd97-7acb2e9474b3",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offer_type\": \"direct\",\n  \"vendor_id\": \"vendor-123\",\n  \"status\": \"draft_status\",\n  \"vendor_name\": \"Example Vendor\",\n  \"product_id\": \"product-123\",\n  \"product_name\": \"Example Product\",\n  \"buyer_details\": {\n    \"company_name\": \"Example Buyer\",\n    \"billing_account_id\": \"billing-account-123\"\n  },\n  \"eula\": {\n    \"type\": \"standard\",\n    \"document_urns\": []\n  },\n  \"pricing\": {\n    \"plan_name\": \"Example Plan\",\n    \"description\": \"Annual plan\",\n    \"contract_duration\": {\n      \"type\": \"month\",\n      \"frequency\": 12\n    },\n    \"payment_model\": \"OneTime\",\n    \"payment_installments\": {\n      \"price_per_payment_in_usd\": 1200\n    },\n    \"pricing_type\": \"flat_rate\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c5a46431-4f1d-40f4-99b7-3abf29243653",
+          "name": "List offers",
+          "request": {
+            "name": "List offers",
+            "description": {
+              "content": "Finds the authenticated seller's offers, optionally filtered by Microsoft\noffer reference or Microsoft plan reference. Vendor scope is derived\nfrom the bearer token; no vendor identifier is accepted from the caller.\n\nRequired RBAC action: `offers:ListOffers`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "private-offers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offer_ref",
+                  "value": "<string>",
+                  "description": "Filter offers by Microsoft offer reference."
+                },
+                {
+                  "disabled": false,
+                  "key": "plan_ref",
+                  "value": "<string>",
+                  "description": "Filter offers by Microsoft plan reference."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "00001b58-8082-4ba9-a07b-99e9a54211b5",
+              "name": "Offers matching the search",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offer_ref",
+                      "value": "ms-offer-123"
+                    },
+                    {
+                      "key": "plan_ref",
+                      "value": "plan-123"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"po_id\": \"string\",\n    \"accepted_at\": \"1978-03-21T01:05:21.809Z\",\n    \"accepted_source\": null,\n    \"archived_at\": \"2009-03-14T08:21:51.836Z\",\n    \"created_at\": \"1972-07-15T02:09:30.212Z\",\n    \"cancelled_at\": null,\n    \"last_modified_at\": \"1968-07-09T18:12:04.293Z\",\n    \"last_update_source\": null,\n    \"viewed_offer_at\": \"1966-03-20T22:20:36.332Z\",\n    \"sent_at\": null,\n    \"submitted_at\": null,\n    \"opened_instructions_at\": \"2019-07-26T05:19:40.844Z\",\n    \"subscribed_at\": null,\n    \"partner_marked_up_at\": null,\n    \"marketplace_acceptance_link\": \"http://texToNACBLTihxmAEkA.zlyIv,IfTpbRJ9dEeGhPqdKLRv.vSQCbKAhLh1C2W3Ynqw6pDNmuGm0Qvo\",\n    \"salesforce\": {\n      \"created_at\": null,\n      \"custom_object_id\": \"string\",\n      \"opportunity_id\": \"string\"\n    },\n    \"vendor_id\": \"string\",\n    \"vendor_name\": \"string\",\n    \"product_contact_email\": \"2WATW3dldD@kgBjwlaGwWNElIlXSfnvifnUsG.iia\",\n    \"state\": \"<string>\",\n    \"status\": \"<string>\",\n    \"offer_type\": \"<string>\",\n    \"marketplace_fee\": 7211.046439666336,\n    \"activities\": [\n      {\n        \"slug\": \"created-draft-offer\",\n        \"user_id\": null,\n        \"created_at\": \"2008-03-21T13:43:28.506Z\",\n        \"metadata\": null,\n        \"user\": {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"email\": \"XruaMLnQ@oQfGNCW.lbfp\",\n          \"principal_type\": \"string\"\n        }\n      },\n      {\n        \"slug\": \"created-draft-offer\",\n        \"user_id\": \"string\",\n        \"created_at\": \"2017-07-02T08:04:49.444Z\",\n        \"metadata\": {\n          \"key_0\": true\n        },\n        \"user\": {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"email\": \"Nq5aOu9@E.ujdj\",\n          \"principal_type\": \"string\"\n        }\n      }\n    ],\n    \"archived\": true,\n    \"version\": \"string\",\n    \"product_id\": \"string\",\n    \"product_name\": \"string\",\n    \"source\": \"<string>\",\n    \"marketplace_created_at\": \"2005-09-21T16:51:53.348Z\",\n    \"clone\": {\n      \"source\": \"<string>\",\n      \"originating_offer_id\": \"<string>\"\n    },\n    \"metadata\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"product_type\": \"professional_services\",\n    \"errors\": [\n      {\n        \"source\": \"string\",\n        \"type\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"source\": \"string\",\n        \"type\": \"string\",\n        \"message\": \"string\"\n      }\n    ],\n    \"pre_registration_details\": {\n      \"company_website\": \"<string,null-uri>\",\n      \"details\": {\n        \"key_0\": \"<string>\"\n      }\n    },\n    \"ui_state\": \"<string>\",\n    \"partner\": {\n      \"partner_name\": \"<string,null>\",\n      \"partner_seller_id\": \"<string>\"\n    },\n    \"total_contract_value_gross_amount\": 9811.700790729145,\n    \"total_contract_value_net_amount\": 9453.72370007931,\n    \"est_min_total_contract_value_gross_amount\": 5987.417721280728,\n    \"est_min_total_contract_value_net_amount\": 5021.134927919783,\n    \"est_max_total_contract_value_gross_amount\": 3386.490623317123,\n    \"est_max_total_contract_value_net_amount\": 6022.916788589935,\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"buyer_details\": {\n      \"company_name\": \"<string>\",\n      \"billing_account_id\": \"<string>\",\n      \"buyers\": [\n        {\n          \"full_name\": \"<string>\",\n          \"email_address\": \"<email>\",\n          \"title\": \"<string>\"\n        },\n        {\n          \"full_name\": \"<string>\",\n          \"email_address\": \"<email>\",\n          \"title\": \"<string>\"\n        }\n      ]\n    },\n    \"renewal\": false,\n    \"eula\": {\n      \"type\": \"standard\",\n      \"document_urns\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"merged_urn\": \"<string,null>\",\n      \"presigned_url\": \"<string,null-uri>\"\n    },\n    \"product_ref\": \"string\",\n    \"users_to_notify\": [\n      {\n        \"contact_type\": \"string\",\n        \"value\": \"string\",\n        \"first_name\": \"string\",\n        \"last_name\": \"string\",\n        \"email\": \"JEQbGsI1eY5xr0A@yAhpmUxJjusNArtECaxYvSOMDL.kmvq\"\n      },\n      {\n        \"contact_type\": \"string\",\n        \"value\": \"string\",\n        \"first_name\": \"string\",\n        \"last_name\": \"string\",\n        \"email\": \"K13@PmkABegZsPFVmBWWAzjeVJYVlzCD.ubom\"\n      }\n    ],\n    \"pricing\": {\n      \"plan_ref\": \"<string>\",\n      \"plan_name\": \"<string>\",\n      \"description\": \"<string>\",\n      \"contract_duration\": {\n        \"type\": \"month\",\n        \"frequency\": 12\n      },\n      \"payment_model\": \"<string>\",\n      \"payment_installments\": {\n        \"price_per_payment_in_usd\": \"<double>\"\n      },\n      \"payment_schedule\": {\n        \"initial_charge\": {\n          \"price_per_payment_in_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"note\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"payment_schedule\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      \"pricing_type\": \"<string>\",\n      \"user_limits\": {\n        \"min\": \"<integer>\",\n        \"max\": \"<integer>\"\n      },\n      \"dimensions\": {\n        \"key_0\": {\n          \"enabled\": \"<boolean>\",\n          \"id\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"price_per_unit_in_usd\": \"<double>\",\n          \"included_quantities\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"key_1\": {\n          \"enabled\": \"<boolean>\",\n          \"id\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"price_per_unit_in_usd\": \"<double>\",\n          \"included_quantities\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      }\n    },\n    \"preparer_email\": \"pijcZYGsO9IBP@aQOUrSjLTZsyinm.qz\",\n    \"start_on\": \"<string>\",\n    \"start_date\": \"1948-02-04\",\n    \"end_date\": \"1993-01-05\",\n    \"accept_by_date\": \"1953-11-19\",\n    \"offer_ref\": \"string\",\n    \"plan_template\": {\n      \"ref\": \"<string>\",\n      \"display\": \"<string>\"\n    },\n    \"plan_ref\": null,\n    \"subscription_ref\": null,\n    \"notes\": null,\n    \"offer_state\": {\n      \"draft\": {\n        \"raw_message\": \"string\"\n      },\n      \"submitted\": {\n        \"raw_message\": \"string\"\n      },\n      \"accepted\": {\n        \"raw_message\": \"string\"\n      },\n      \"current_cloud\": {\n        \"raw_message\": \"string\"\n      },\n      \"last_modified\": \"2012-04-11T18:44:47.060Z\"\n    },\n    \"msft_response\": {\n      \"job_id\": \"string\",\n      \"offer_id\": null,\n      \"resource_uri\": \"string\",\n      \"raw_response\": \"string\"\n    }\n  },\n  {\n    \"po_id\": \"string\",\n    \"accepted_at\": \"1984-11-15T22:19:54.138Z\",\n    \"accepted_source\": \"string\",\n    \"archived_at\": null,\n    \"created_at\": \"1973-05-27T09:36:20.687Z\",\n    \"cancelled_at\": \"2007-03-30T23:42:06.092Z\",\n    \"last_modified_at\": \"2010-12-27T06:26:50.266Z\",\n    \"last_update_source\": \"string\",\n    \"viewed_offer_at\": \"2022-03-03T14:16:45.778Z\",\n    \"sent_at\": null,\n    \"submitted_at\": null,\n    \"opened_instructions_at\": \"2024-10-09T17:46:31.413Z\",\n    \"subscribed_at\": null,\n    \"partner_marked_up_at\": null,\n    \"marketplace_acceptance_link\": \"https://YqhaEca.jwFZClvQVsRFIyHFhehFqnFaAfI2IjH0QQpQJQF\",\n    \"salesforce\": {\n      \"created_at\": null,\n      \"custom_object_id\": \"string\",\n      \"opportunity_id\": null\n    },\n    \"vendor_id\": \"string\",\n    \"vendor_name\": \"string\",\n    \"product_contact_email\": \"A3480b1T@DwPVzzWxyk.qu\",\n    \"state\": \"<string>\",\n    \"status\": \"<string>\",\n    \"offer_type\": \"<string>\",\n    \"marketplace_fee\": 7188.010869996222,\n    \"activities\": [\n      {\n        \"slug\": \"created-draft-offer\",\n        \"user_id\": null,\n        \"created_at\": \"1983-11-09T03:04:29.788Z\",\n        \"metadata\": {\n          \"key_0\": 4139\n        },\n        \"user\": {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"email\": \"IUiQ1hjhPCLu9yV@Vh.dr\",\n          \"principal_type\": \"string\"\n        }\n      },\n      {\n        \"slug\": \"created-draft-offer\",\n        \"user_id\": \"string\",\n        \"created_at\": \"2020-11-24T21:27:40.742Z\",\n        \"metadata\": null,\n        \"user\": {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"email\": \"IeAm3IvcX9NGPD@rCbwXawGTrEfrvKgoU.xcjy\",\n          \"principal_type\": \"string\"\n        }\n      }\n    ],\n    \"archived\": true,\n    \"version\": \"string\",\n    \"product_id\": \"string\",\n    \"product_name\": \"string\",\n    \"source\": \"<string>\",\n    \"marketplace_created_at\": \"1974-07-05T04:35:37.919Z\",\n    \"clone\": {\n      \"source\": \"<string>\",\n      \"originating_offer_id\": \"<string>\"\n    },\n    \"metadata\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    },\n    \"product_type\": \"saas\",\n    \"errors\": [\n      {\n        \"source\": \"string\",\n        \"type\": \"string\",\n        \"message\": \"string\"\n      },\n      {\n        \"source\": \"string\",\n        \"type\": \"string\",\n        \"message\": \"string\"\n      }\n    ],\n    \"pre_registration_details\": {\n      \"company_website\": \"<string,null-uri>\",\n      \"details\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      }\n    },\n    \"ui_state\": \"<string>\",\n    \"partner\": {\n      \"partner_name\": \"<string,null>\",\n      \"partner_seller_id\": \"<string>\"\n    },\n    \"total_contract_value_gross_amount\": 5993.995305602922,\n    \"total_contract_value_net_amount\": 1641.8393040422352,\n    \"est_min_total_contract_value_gross_amount\": 6438.55979510602,\n    \"est_min_total_contract_value_net_amount\": 6328.3483677270615,\n    \"est_max_total_contract_value_gross_amount\": 3123.5828384393603,\n    \"est_max_total_contract_value_net_amount\": 1403.8994698469621,\n    \"name\": \"string\",\n    \"description\": \"string\",\n    \"buyer_details\": {\n      \"company_name\": \"<string>\",\n      \"billing_account_id\": \"<string>\",\n      \"buyers\": [\n        {\n          \"full_name\": \"<string>\",\n          \"email_address\": \"<email>\",\n          \"title\": \"<string>\"\n        },\n        {\n          \"full_name\": \"<string>\",\n          \"email_address\": \"<email>\",\n          \"title\": \"<string>\"\n        }\n      ]\n    },\n    \"renewal\": false,\n    \"eula\": {\n      \"type\": \"standard\",\n      \"document_urns\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"merged_urn\": \"<string,null>\",\n      \"presigned_url\": \"<string,null-uri>\"\n    },\n    \"product_ref\": \"string\",\n    \"users_to_notify\": [\n      {\n        \"contact_type\": \"string\",\n        \"value\": null,\n        \"first_name\": \"string\",\n        \"last_name\": \"string\",\n        \"email\": \"OuZ2KUy3aiwg@VZQbbhAdFzcgyUCYZkBwtScTStBDwgXb.fwu\"\n      },\n      {\n        \"contact_type\": \"string\",\n        \"value\": null,\n        \"first_name\": \"string\",\n        \"last_name\": \"string\",\n        \"email\": \"4JD5QRqDkzzrf@ZgkZahRRXOeJgZPkxBBUjiSwYXIDE.thi\"\n      }\n    ],\n    \"pricing\": {\n      \"plan_ref\": \"<string>\",\n      \"plan_name\": \"<string>\",\n      \"description\": \"<string>\",\n      \"contract_duration\": {\n        \"type\": \"month\",\n        \"frequency\": 12\n      },\n      \"payment_model\": \"<string>\",\n      \"payment_installments\": {\n        \"price_per_payment_in_usd\": \"<double>\"\n      },\n      \"payment_schedule\": {\n        \"initial_charge\": {\n          \"price_per_payment_in_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"note\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"payment_schedule\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      },\n      \"pricing_type\": \"<string>\",\n      \"user_limits\": {\n        \"min\": \"<integer>\",\n        \"max\": \"<integer>\"\n      },\n      \"dimensions\": {\n        \"key_0\": {\n          \"enabled\": \"<boolean>\",\n          \"id\": \"<string>\",\n          \"unit_of_measure\": \"<string>\",\n          \"price_per_unit_in_usd\": \"<double>\",\n          \"included_quantities\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        }\n      }\n    },\n    \"preparer_email\": \"XQoUB@fqcXfMmIwrLC.nl\",\n    \"start_on\": \"<string>\",\n    \"start_date\": \"1969-09-10\",\n    \"end_date\": \"1991-05-19\",\n    \"accept_by_date\": \"2021-11-11\",\n    \"offer_ref\": null,\n    \"plan_template\": {\n      \"ref\": \"<string>\",\n      \"display\": \"<string>\"\n    },\n    \"plan_ref\": null,\n    \"subscription_ref\": \"string\",\n    \"notes\": null,\n    \"offer_state\": {\n      \"draft\": {\n        \"raw_message\": \"string\"\n      },\n      \"submitted\": {\n        \"raw_message\": \"string\"\n      },\n      \"accepted\": {\n        \"raw_message\": \"string\"\n      },\n      \"current_cloud\": {\n        \"raw_message\": \"string\"\n      },\n      \"last_modified\": \"1983-10-24T06:11:41.085Z\"\n    },\n    \"msft_response\": {\n      \"job_id\": \"string\",\n      \"offer_id\": null,\n      \"resource_uri\": null,\n      \"raw_response\": \"string\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ae0b335e-aaad-4bc2-803c-052efabd6101",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offer_ref",
+                      "value": "ms-offer-123"
+                    },
+                    {
+                      "key": "plan_ref",
+                      "value": "plan-123"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "414e0775-6869-4d62-ade9-d25c387f331f",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offer_ref",
+                      "value": "ms-offer-123"
+                    },
+                    {
+                      "key": "plan_ref",
+                      "value": "plan-123"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d3af3e31-db44-43d7-8d78-2e31b036fb00",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offer_ref",
+                      "value": "ms-offer-123"
+                    },
+                    {
+                      "key": "plan_ref",
+                      "value": "plan-123"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "760051e4-428c-4333-b699-5c708755973f",
+          "name": "List Microsoft products",
+          "request": {
+            "name": "List Microsoft products",
+            "description": {
+              "content": "Returns the Microsoft Marketplace product listings owned by the\nauthenticated seller. Use this to populate a product picker before\ncreating a private offer. The seller is identified by the vendor in\nthe bearer token; no path or query parameter is required.\n\nEach product object includes the Tackle product identifier\n(`productid`), the listing type (`listing_type`), and human-readable\n`name` and `status` fields. Pass `productid` as the `id` path\nparameter to `GET /api/products/{id}` to fetch plan and pricing\ndetails for a specific product.\n\nRequired RBAC action: `offers:ListProducts`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "8569073d-f813-48e1-b87c-0ea3a85694d1",
+              "name": "List of Microsoft products owned by the seller.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"cloud\": \"azure\",\n    \"productid\": \"string\",\n    \"vendorid\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\",\n    \"productid_internal\": \"string\",\n    \"listing_type\": \"string\",\n    \"listing_pricing_type\": \"string\",\n    \"registration_hosting\": \"string\",\n    \"active_status\": \"inactive\",\n    \"archived\": true\n  },\n  {\n    \"cloud\": \"azure\",\n    \"productid\": \"string\",\n    \"vendorid\": \"string\",\n    \"name\": \"string\",\n    \"status\": \"string\",\n    \"productid_internal\": \"string\",\n    \"listing_type\": \"string\",\n    \"listing_pricing_type\": \"string\",\n    \"registration_hosting\": \"string\",\n    \"active_status\": \"inactive\",\n    \"archived\": false\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9ac7b587-4980-4082-8587-11d388817294",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ea93c72c-8bd7-4b91-9efb-46a13a849208",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dab6716c-aae0-4a88-a5d1-f3f5faaf0e79",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "928e39fc-b949-433e-807a-1b6ec0e3469d",
+          "name": "Get Microsoft product details",
+          "request": {
+            "name": "Get Microsoft product details",
+            "description": {
+              "content": "Preferred route for retrieving Microsoft product plan and pricing details.\nThe vendor context is derived from the authenticated principal; sandbox\nvendors use their production parent vendor's Microsoft credentials.\nDemo vendors receive static demo product details; other vendors retrieve\nproduct details from Microsoft Partner Center.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "products",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Microsoft product ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "ea4fceba-7508-401c-be25-312034505ad3",
+              "name": "Product details found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Microsoft product ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"external_id\": \"string\",\n  \"alias\": \"string\",\n  \"plans\": [\n    {\n      \"description\": \"string\",\n      \"product\": \"string\",\n      \"plan\": \"string\",\n      \"pricing\": {\n        \"recurrent_price\": {\n          \"price_input_option\": \"string\",\n          \"recurrent_price_mode\": \"string\",\n          \"user_limits\": {\n            \"min\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"max\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"prices\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"custom_meters\": {\n          \"price_input_option\": \"string\",\n          \"meters\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      },\n      \"offer_pricing_type\": \"string\",\n      \"markets\": [\n        \"string\",\n        \"string\"\n      ],\n      \"audience\": \"string\",\n      \"alias\": \"string\",\n      \"external_id\": \"string\"\n    },\n    {\n      \"description\": \"string\",\n      \"product\": \"string\",\n      \"plan\": \"string\",\n      \"pricing\": {\n        \"recurrent_price\": {\n          \"price_input_option\": \"string\",\n          \"recurrent_price_mode\": \"string\",\n          \"user_limits\": {\n            \"min\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"max\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"prices\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"custom_meters\": {\n          \"price_input_option\": \"string\",\n          \"meters\": {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_3\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      },\n      \"offer_pricing_type\": \"string\",\n      \"markets\": [\n        \"string\",\n        \"string\"\n      ],\n      \"audience\": \"string\",\n      \"alias\": \"string\",\n      \"external_id\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25dfdc44-b25a-4f4b-aef5-15e2d913d6e0",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Microsoft product ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a30e9e66-bb89-41b6-aeca-4e096bbbf9bd",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Microsoft product ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b62012cb-76f3-4a29-a827-caa68526f5bc",
+              "name": "Requested offer or resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Microsoft product ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a0c497d6-c33c-4bb0-bc17-ba4514d7d6f0",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "products",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Microsoft product ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6bacb45a-bbc2-4581-aa06-b3568b3b49b1",
+          "name": "Create an offer notification",
+          "request": {
+            "name": "Create an offer notification",
+            "description": {
+              "content": "Creates an offer notification. Currently only buyer instruction emails\nare supported. To send buyer instructions, use `type:\nbuyer_instructions` and `channel: email`. The handler publishes through\nTackle Notification Service and marks the offer as email sent.\n\nRequired RBAC action: `offers:SendOfferInstructions`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "private-offers",
+                ":id",
+                "notifications"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Tackle private offer ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"channel\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4b841392-10bc-44e8-b024-daaa31724afe",
+              "name": "Operation completed successfully with no response body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "bb9890c6-3df5-42b2-9e49-4f006b7b94dc",
+              "name": "Invalid request or unsupported operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "26663b73-d8af-4f4d-9d27-4c59f686f6b2",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d6044adc-900a-47d5-b04c-db654ddc8ded",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "90741e37-4904-49f2-9be3-e08a16c05e89",
+              "name": "Requested offer or resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6d946a2c-2adf-4507-b26a-405ba23c81e3",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "private-offers",
+                    ":id",
+                    "notifications"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Tackle private offer ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"buyer_instructions\",\n  \"channel\": \"email\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ee8fd1ba-e3a6-49f6-a7b0-6f1c727b3a33",
+          "name": "Get Microsoft market currencies",
+          "request": {
+            "name": "Get Microsoft market currencies",
+            "description": {
+              "content": "Returns accepted currencies and the Microsoft marketplace countries\ngrouped by accepted currency.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "currencies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "d316ded5-9514-4d05-9f29-d98bb5219b7d",
+              "name": "Market currencies found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"currency_options\": [\n    {\n      \"value\": \"USD\",\n      \"display\": \"United States Dollar | USD ($)\"\n    }\n  ],\n  \"currency_markets\": {\n    \"USD\": [\n      {\n        \"country_name\": \"United States\",\n        \"iso2\": \"US\",\n        \"currency\": \"USD\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31a5bd7f-3348-4412-b3e5-64c40f4aef62",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5a9b89c6-09c2-477e-81fb-175a65f49f50",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "207a07a6-89a0-4df7-bc92-0f111cff88f8",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3bea6780-c51d-48e8-b130-088eb66bbaa6",
+          "name": "Convert currencies",
+          "request": {
+            "name": "Convert currencies",
+            "description": {
+              "content": "Converts one or more amounts from a base currency to a target currency\nusing cached Microsoft foreign exchange rates. Row-level conversion\nerrors are returned in `results[].error` without failing the entire\nrequest.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "currencies",
+                "convert"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional caller-provided operation ID for request tracing.",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"<string>\",\n      \"target_currency\": \"<string>\",\n      \"amount\": \"<double>\"\n    }\n  ],\n  \"as_of_date\": \"<date>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2c23802b-8fe7-4758-ae62-b31a9ff1e991",
+              "name": "Currency conversion results",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies",
+                    "convert"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"USD\",\n      \"target_currency\": \"EUR\",\n      \"amount\": 100\n    }\n  ],\n  \"as_of_date\": \"2026-04-30\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"base_currency\": \"string\",\n      \"target_currency\": \"string\",\n      \"original_amount\": 6741.38558357411,\n      \"converted_amount\": 2920.3150515066677,\n      \"exchange_rate\": 8925.357647465848,\n      \"rate_source_date\": \"1983-07-18\",\n      \"rate_as_of_date\": \"1987-08-23\",\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"base_currency\": \"string\",\n      \"target_currency\": \"string\",\n      \"original_amount\": 9253.4363390082,\n      \"converted_amount\": 985.9131663893883,\n      \"exchange_rate\": 9831.826778696504,\n      \"rate_source_date\": \"1999-08-02\",\n      \"rate_as_of_date\": \"1967-09-21\",\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\"\n      }\n    }\n  ],\n  \"success\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a730171b-6963-4410-932e-26c077bbedc0",
+              "name": "Invalid request or unsupported operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies",
+                    "convert"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"USD\",\n      \"target_currency\": \"EUR\",\n      \"amount\": 100\n    }\n  ],\n  \"as_of_date\": \"2026-04-30\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d758ca63-6620-489e-94e7-415df21155cc",
+              "name": "Authentication failed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies",
+                    "convert"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"USD\",\n      \"target_currency\": \"EUR\",\n      \"amount\": 100\n    }\n  ],\n  \"as_of_date\": \"2026-04-30\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5c1e7771-36eb-4085-a0ce-260dca3624d7",
+              "name": "Caller is not allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies",
+                    "convert"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"USD\",\n      \"target_currency\": \"EUR\",\n      \"amount\": 100\n    }\n  ],\n  \"as_of_date\": \"2026-04-30\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1348bb8f-e28c-4339-906c-e411b7abe9cc",
+              "name": "Internal server error or upstream dependency failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "currencies",
+                    "convert"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Optional caller-provided operation ID for request tracing.",
+                    "key": "tackle-operation-id",
+                    "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"conversions\": [\n    {\n      \"id\": \"<string>\",\n      \"base_currency\": \"USD\",\n      \"target_currency\": \"EUR\",\n      \"amount\": 100\n    }\n  ],\n  \"as_of_date\": \"2026-04-30\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"missing id\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "0194121f-e67b-4e59-a322-20f2f432256c",
+    "name": "Tackle Authentication public API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

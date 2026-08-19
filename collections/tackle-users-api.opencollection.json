@@ -1,0 +1,148 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Users API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Users",
+            "params": [
+              {
+                "name": "startIndex",
+                "value": "",
+                "type": "query",
+                "description": "The 1-based index of the first result in the current set of results"
+              },
+              {
+                "name": "count",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "filter",
+                "value": "",
+                "type": "query",
+                "description": "SCIM filter expression"
+              }
+            ]
+          },
+          "docs": "Retrieve a list of users. Supports pagination through startIndex and count parameters.\n"
+        },
+        {
+          "info": {
+            "name": "Create User",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/scim/v2/Users",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new user. The user will be created in Auth0 SCIM and then have\ntheir metadata updated with organization information.\n"
+        },
+        {
+          "info": {
+            "name": "Get User by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Users/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              }
+            ]
+          },
+          "docs": "Retrieve a specific user by their unique identifier."
+        },
+        {
+          "info": {
+            "name": "Update User",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.tackle.io/scim/v2/Users/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing user. This performs a full replacement of the user resource.\n"
+        },
+        {
+          "info": {
+            "name": "Patch User",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.tackle.io/scim/v2/Users/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Perform a partial update of a user using SCIM PATCH operations.\nSupports operations like updating user roles (entitlements), active status, and other attributes.\n\nCommon use cases:\n- Update user role by patching entitlements\n- Deactivate a user (clears vendorid and role in metadata)\n- Reactivate a user (restores vendorid from organization data)\n"
+        },
+        {
+          "info": {
+            "name": "Delete User",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/scim/v2/Users/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the user"
+              }
+            ]
+          },
+          "docs": "Soft-delete a user. Per SCIM 2.0 (RFC 7644 §3.6) this returns 204 No\nContent on success. Internally the user is deactivated (active=false)\nand the vendorid/role app_metadata are cleared so the user can no\nlonger access Tackle resources. The underlying Auth0 user record is\npreserved so SSO logins can be re-authorized if the user is later\nre-provisioned, and so identity providers that probe DELETE during\ntheir connection-test lifecycle (e.g. JumpCloud) can complete\nactivation without permanently d"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

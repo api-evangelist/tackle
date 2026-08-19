@@ -1,0 +1,97 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://developers.tackle.io/docs/create-a-metering-record.md,
+  https://developers.tackle.io/docs/test-a-webhook.md,
+  https://developers.tackle.io/llms.txt (operation descriptions for the co-sell services)
+summary: >-
+  Tackle has no separate sandbox host and no test-vs-live key prefix. Test isolation is
+  per-VENDOR-ACCOUNT: an account is provisioned by Tackle as a test/demo vendor, and the same
+  production endpoints then behave differently for it. On top of that, two operation families
+  carry in-band test switches that keep a real production call from reaching the cloud
+  marketplace — the metering `test` attribute and the webhook `forward_to_url` override.
+separation:
+  model: per-vendor-account provisioning
+  hosts: same as production (api.tackle.io, aws.cosell.tackle.io, aws.offers.tackle.io, scim.tackle.io)
+  key_prefixes: none
+  note: >-
+    There is no api-sandbox.tackle.io and no test-mode credential. Vendor accounts are
+    provisioned "for use in a test environment" (or as demo vendors) by Tackle; the docs direct
+    integrators to their Tackle account team rather than to a self-serve sandbox signup.
+test_switches:
+- name: metering test attribute
+  operations: [v1-create-metering-usage-records, v1-create-update-metering-usage-records]
+  mechanism: '`test` attribute on the usage-record payload'
+  values: [accepted, rejected, not-operable]
+  effect: >-
+    Exercises the metering pipeline without any risk of the usage record being submitted to the
+    cloud marketplace, and lets the caller force the marketplace-side outcome to simulate.
+  source: https://developers.tackle.io/docs/create-a-metering-record#testing
+- name: webhook test delivery
+  operations: [v1-test-webhook]
+  mechanism: 'POST /v1/webhooks/test with productid + event_type'
+  effect: >-
+    Sends a synthetic payload of the chosen event_type to the configured product-level (falling
+    back to vendor-level) webhook and returns the full request/response transcript, including
+    the auth_type used and an `info` log of what the dispatcher did.
+  source: https://developers.tackle.io/docs/test-a-webhook
+- name: webhook forward_to_url override
+  operations: [v1-test-webhook]
+  mechanism: '`forward_to_url` field on the test-webhook body'
+  effect: >-
+    Redirects the test payload to an alternate endpoint (dev/staging) instead of the registered
+    URL, reusing the auth configured on the registered webhook. The docs warn that the same
+    credentials (e.g. basic auth username/password) are passed to the override target.
+  source: https://developers.tackle.io/docs/test-a-webhook
+test_environment_only_operations:
+- operation: createinvitation
+  service: Co-Sell (AWS)
+  behavior: >-
+    Creates a simulated AWS-led co-sell invitation. Available only to vendor accounts
+    provisioned for a test environment; production vendor accounts receive 403 Forbidden.
+- operation: updateopportunity
+  service: Co-Sell (AWS)
+  sub_operations: [acceptOpportunity, rejectOpportunity]
+  behavior: >-
+    Simulate AWS-side responses to an incoming engagement invitation. Production vendor accounts
+    that send one of these tackle-operation-id values receive 400 Bad Request with the message
+    "the requested operation is only supported in test or demo environments."
+- operation: updateopportunity-1
+  service: Co-Sell (Google Cloud)
+  sub_operations: [acceptOpportunity, rejectOpportunity, closeByAdminOpportunity, confirmCloseWonOpportunity, confirmCloseLostOpportunity]
+  behavior: >-
+    Simulate Google-side actions; the resulting history event is attributed to Google.
+fixtures:
+- name: co-sell solutions fixture
+  operation: listsolutions
+  behavior: >-
+    For test-environment vendor accounts this endpoint returns a FIXED three-solution fixture and
+    ignores the q, from, pageSize and all query parameters entirely — the response body is the
+    same regardless of what the client sends. Production vendors get vendor-specific results that
+    honor every parameter. An integration test written against the fixture will not exercise the
+    production query path.
+  source: https://developers.tackle.io/reference/listsolutions
+- name: Microsoft demo product details
+  operation: getproductdetails
+  behavior: >-
+    Demo vendors receive static demo product details; sandbox vendors fall back to their
+    production parent vendor's Microsoft Partner Center credentials.
+  source: https://developers.tackle.io/reference/getproductdetails
+- name: private-offer dry run
+  operation: createprivateoffer-1
+  behavior: >-
+    `dry_run: true` on the AWS private-offer create validates the payload without persisting the
+    offer; a successful dry run returns 200 OK instead of 201 Created.
+  source: https://developers.tackle.io/reference/createprivateoffer-1
+- name: draft-then-push
+  operations: [createprivateoffer-1, marketplacecreateprivateoffer]
+  behavior: >-
+    `create_in_marketplace: false` keeps a private offer as a Tackle-side draft that never
+    reaches AWS Marketplace until POST /private-offers/{id}/marketplace-create is called — the
+    safest staging path for an agent building offers.
+test_clocks: none
+test_credentials_published: false
+note: >-
+  No test card numbers, magic identifiers or shareable test credentials are published; every
+  example ID in the docs (product_id, customer_id) is illustrative. Nothing in this file was
+  invented — each value above is quoted from the Tackle docs page cited on it.

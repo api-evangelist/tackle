@@ -1,0 +1,486 @@
+{
+  "item": [
+    {
+      "id": "1dcbc4eb-d606-4363-84ae-9f4cffc81b19",
+      "name": "Contracts",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b3ac806a-c2c7-471e-9b6c-cb03df93fc9f",
+          "name": "List contracts",
+          "request": {
+            "name": "List contracts",
+            "description": {
+              "content": "Returns a paginated list of contracts available to your account.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "contracts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Opaque pagination cursor returned as `next` from a previous call."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "25",
+                  "description": "Maximum number of contracts to return per page. Defaults to 25, capped at 100."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f916f80d-b691-43b8-82a4-ad7a6996f84c",
+              "name": "Page of contracts.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"contracts\": [\n    {\n      \"id\": \"string\",\n      \"vendorId\": \"string\",\n      \"cloudMarketplace\": \"gcp\",\n      \"buyerId\": \"string\",\n      \"listingType\": \"string\",\n      \"contractStatus\": \"Active\",\n      \"lastModified\": \"2019-09-13T21:17:45.732Z\",\n      \"channel\": \"partner\",\n      \"companyName\": \"string\",\n      \"productId\": \"string\",\n      \"listingName\": \"string\",\n      \"pricingModel\": \"Contract + usage\",\n      \"offerId\": \"string\",\n      \"offerType\": \"private\",\n      \"offerName\": \"string\",\n      \"tackleOfferId\": \"string\",\n      \"cloudContractStatus\": \"string\",\n      \"acceptedDate\": \"1953-08-18T03:27:15.091Z\",\n      \"startDate\": \"1954-06-21T01:16:40.578Z\",\n      \"endDate\": \"1977-09-01T23:47:22.488Z\",\n      \"contractDuration\": \"string\",\n      \"autoRenew\": false,\n      \"totalContractValue\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"totalContractNetValue\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"grossDisbursed\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"netDisbursed\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"marketplaceFeeRate\": 9084.90851979258,\n      \"cloudData\": {\n        \"agreement\": {}\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"vendorId\": \"string\",\n      \"cloudMarketplace\": \"aws\",\n      \"buyerId\": \"string\",\n      \"listingType\": \"string\",\n      \"contractStatus\": \"Unknown\",\n      \"lastModified\": \"1962-09-13T07:48:35.468Z\",\n      \"channel\": \"direct\",\n      \"companyName\": \"string\",\n      \"productId\": \"string\",\n      \"listingName\": \"string\",\n      \"pricingModel\": \"Contract + usage\",\n      \"offerId\": \"string\",\n      \"offerType\": \"public\",\n      \"offerName\": \"string\",\n      \"tackleOfferId\": \"string\",\n      \"cloudContractStatus\": \"string\",\n      \"acceptedDate\": \"1989-06-27T10:43:13.904Z\",\n      \"startDate\": \"1968-01-07T18:46:14.321Z\",\n      \"endDate\": \"1960-03-27T11:40:41.436Z\",\n      \"contractDuration\": \"string\",\n      \"autoRenew\": true,\n      \"totalContractValue\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"totalContractNetValue\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"grossDisbursed\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"netDisbursed\": {\n        \"amount\": 120000,\n        \"currencyCode\": \"USD\"\n      },\n      \"marketplaceFeeRate\": 543.1839585850962,\n      \"cloudData\": {\n        \"agreement\": {}\n      }\n    }\n  ],\n  \"next\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "692fb093-8176-4841-8cb5-1bc1de275817",
+              "name": "Malformed cursor or query parameter.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b2da764-d562-4769-96a4-5b4a553f2cf2",
+              "name": "Missing or invalid authentication.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85090fc7-5323-43bf-9b26-494f6153054f",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b4b58886-edfe-4203-93c2-49c6809d2a58",
+          "name": "Describe contract",
+          "request": {
+            "name": "Describe contract",
+            "description": {
+              "content": "Returns details for the contract identified by `contractId`. Returns\n`404` when no contract is found for that id.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "contracts",
+                ":contractId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "contractId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6a49fe69-e0c6-4d03-a703-eba0321c13fb",
+              "name": "The contract.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contractId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"vendorId\": \"string\",\n  \"cloudMarketplace\": \"azure\",\n  \"buyerId\": \"string\",\n  \"listingType\": \"string\",\n  \"contractStatus\": \"Amended\",\n  \"lastModified\": \"2012-04-05T21:18:18.461Z\",\n  \"channel\": \"partner\",\n  \"companyName\": \"string\",\n  \"productId\": \"string\",\n  \"listingName\": \"string\",\n  \"pricingModel\": \"BYOL\",\n  \"offerId\": \"string\",\n  \"offerType\": \"private\",\n  \"offerName\": \"string\",\n  \"tackleOfferId\": \"string\",\n  \"cloudContractStatus\": \"string\",\n  \"acceptedDate\": \"1968-08-04T08:10:14.137Z\",\n  \"startDate\": \"1986-03-02T22:49:15.970Z\",\n  \"endDate\": \"1966-07-10T13:47:09.964Z\",\n  \"contractDuration\": \"string\",\n  \"autoRenew\": false,\n  \"totalContractValue\": {\n    \"amount\": 120000,\n    \"currencyCode\": \"USD\"\n  },\n  \"totalContractNetValue\": {\n    \"amount\": 120000,\n    \"currencyCode\": \"USD\"\n  },\n  \"grossDisbursed\": {\n    \"amount\": 120000,\n    \"currencyCode\": \"USD\"\n  },\n  \"netDisbursed\": {\n    \"amount\": 120000,\n    \"currencyCode\": \"USD\"\n  },\n  \"marketplaceFeeRate\": 2773.746189745896,\n  \"cloudData\": {\n    \"agreement\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ca3a78e2-6719-4d49-b72b-7d4f5da33797",
+              "name": "Missing or invalid authentication.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contractId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56e7b373-fad0-40d1-8e9d-d57fe9f399c2",
+              "name": "No contract was found for that id.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contractId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ce09a41-72c5-4316-b712-1e59e83520a2",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "contracts",
+                    ":contractId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "contractId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "19e5b99d-d2cb-4322-b01d-b36d41b02413",
+    "name": "Tackle Authentication Contracts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

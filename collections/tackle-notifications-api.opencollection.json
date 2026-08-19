@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Notifications API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Notifications",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an offer notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/notifications",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an offer notification. Currently only buyer instruction emails\nare supported. To send buyer instructions, use `type:\nbuyer_instructions` and `channel: email`. The handler publishes through\nTackle Notification Service and marks the offer as email sent.\n\nRequired RBAC action: `offers:SendOfferInstructions`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

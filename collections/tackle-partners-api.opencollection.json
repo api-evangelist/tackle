@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Partners API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Partners",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List AWS Marketplace Partners",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/partners"
+          },
+          "docs": "Returns a curated list of AWS Marketplace resale partners with their\ncompany names and AWS account IDs. Use this list to populate a\npartner picker when creating a partner (resale) private offer.\n\n**Required RBAC permission:** `offers:CreateDraftOffer`\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,197 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Metering API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Metering",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Usage Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/metering/usage-records",
+            "params": [
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of records returned in paged responses."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the page of results to fetch.  Use the value from `next_page_token` in paged responses."
+              },
+              {
+                "name": "quantity",
+                "value": "",
+                "type": "query",
+                "description": "Filter by quantity."
+              },
+              {
+                "name": "scheduled_before",
+                "value": "",
+                "type": "query",
+                "description": "Filter by items scheduled before a given date (in UTC)."
+              },
+              {
+                "name": "scheduled_after",
+                "value": "",
+                "type": "query",
+                "description": "Filter by items scheduled after a given date (in UTC)."
+              },
+              {
+                "name": "include_zeros",
+                "value": "",
+                "type": "query",
+                "description": "Filter out zero-quantity usage records."
+              },
+              {
+                "name": "product_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by product_id. Reuse multiple times to filter by multiple products."
+              },
+              {
+                "name": "customer_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by customer_id. Reuse multiple times to filter by multiple customers."
+              },
+              {
+                "name": "dimension",
+                "value": "",
+                "type": "query",
+                "description": "Filter by dimension name. Reuse multiple times to filter by multiple dimension names."
+              },
+              {
+                "name": "subscription_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by subscription_id. Reuse multiple times to filter by multiple subscriptions."
+              },
+              {
+                "name": "start_after",
+                "value": "",
+                "type": "query",
+                "description": "Filter by items starting after a given date (in UTC)."
+              },
+              {
+                "name": "start_before",
+                "value": "",
+                "type": "query",
+                "description": "Filter by items starting before a given date (in UTC)."
+              },
+              {
+                "name": "include_tests",
+                "value": "",
+                "type": "query",
+                "description": "Filters out test records (records not sent to the marketplace)."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lists all usage records"
+        },
+        {
+          "info": {
+            "name": "Create Usage Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/v1/metering/usage-records",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Issue usage-based charges to customers\n\nWe highly recommend using the PUT method to prevent creation of duplicate usage records\n\nThe POST method creates new usage records and allows creation of duplicates. For example: if you submit a usage record with start_time 12:15 UTC and 12:30 UTC for the same customer, product and dimension, two usage records will be created for that hour. We do not aggregate the submitted quantities. Be aware that marketplaces don't allow the submission of duplicates by "
+        },
+        {
+          "info": {
+            "name": "Create or Update Usage Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.tackle.io/v1/metering/usage-records",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Issues or updates usage-based charges to customers\n\nIf a usage record doesn't already exist for the submitted customer, product, dimension and start_time hour, a new record will be created. If there is an existing record, the quantity will be updated if the record hasn't already been submitted to the marketplace. However, if the record has already been submitted to the marketplace, a 409 - Conflict error will be returned\n\nCustomers can be identified in two different ways: by either providing `cu"
+        },
+        {
+          "info": {
+            "name": "Get a Usage Record",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/metering/usage-records/:usage_record_id",
+            "params": [
+              {
+                "name": "usage_record_id",
+                "value": "",
+                "type": "path",
+                "description": "Usage Record Id"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a specific usage record"
+        },
+        {
+          "info": {
+            "name": "Delete a Usage Record",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/v1/metering/usage-records/:usage_record_id",
+            "params": [
+              {
+                "name": "usage_record_id",
+                "value": "",
+                "type": "path",
+                "description": "Usage Record Id"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a usage record"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

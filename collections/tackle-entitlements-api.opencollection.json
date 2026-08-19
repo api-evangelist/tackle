@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Entitlements API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Entitlements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Entitlements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/scim/v2/Entitlements"
+          },
+          "docs": "Returns available roles as flat entitlement objects.\nThis is a legacy endpoint; prefer /scim/v2/Groups which returns\nfull SCIM Group resources as required by identity providers.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

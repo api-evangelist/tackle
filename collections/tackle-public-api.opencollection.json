@@ -1,0 +1,233 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication public API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "public",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get an offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/private-offers/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ]
+          },
+          "docs": "Returns one private offer by Tackle offer ID after checking that the\ncaller can access the offer's vendor.\n\nRequired RBAC action: `offers:GetOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Update a Microsoft offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing Microsoft private offer. If `status` is\n`submit_to_cloud`, the handler merges EULA documents when present,\nvalidates the request, and stores the Microsoft submission payload.\n\nRequired RBAC action: `offers:UpdateOffer`. Submitting to Microsoft also\nrequires `offers:CreateOfferOnMarketplace`.\n"
+        },
+        {
+          "info": {
+            "name": "List offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/private-offers",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "offer_ref",
+                "value": "ms-offer-123",
+                "type": "query",
+                "description": "Filter offers by Microsoft offer reference."
+              },
+              {
+                "name": "plan_ref",
+                "value": "plan-123",
+                "type": "query",
+                "description": "Filter offers by Microsoft plan reference."
+              }
+            ]
+          },
+          "docs": "Finds the authenticated seller's offers, optionally filtered by Microsoft\noffer reference or Microsoft plan reference. Vendor scope is derived\nfrom the bearer token; no vendor identifier is accepted from the caller.\n\nRequired RBAC action: `offers:ListOffers`.\n"
+        },
+        {
+          "info": {
+            "name": "Create or import a Microsoft offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Microsoft private offer from a full offer payload, or\nimports an existing live Microsoft private offer when the body contains\n`microsoftOfferId` and `buyer_company_name`.\n\nFor full create payloads, if `status` is `submit_to_cloud`, the handler\nvalidates and transforms the request for Microsoft submission before\nsaving the offer. For import payloads, the vendor context is derived\nfrom the authenticated principal; sandbox vendors use their production\nparent vendor's Microsoft credent"
+        },
+        {
+          "info": {
+            "name": "List Microsoft products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/products",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ]
+          },
+          "docs": "Returns the Microsoft Marketplace product listings owned by the\nauthenticated seller. Use this to populate a product picker before\ncreating a private offer. The seller is identified by the vendor in\nthe bearer token; no path or query parameter is required.\n\nEach product object includes the Tackle product identifier\n(`productid`), the listing type (`listing_type`), and human-readable\n`name` and `status` fields. Pass `productid` as the `id` path\nparameter to `GET /api/products/{id}` to fetch plan "
+        },
+        {
+          "info": {
+            "name": "Get Microsoft product details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/products/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "product/123",
+                "type": "path",
+                "description": "Microsoft product ID."
+              }
+            ]
+          },
+          "docs": "Preferred route for retrieving Microsoft product plan and pricing details.\nThe vendor context is derived from the authenticated principal; sandbox\nvendors use their production parent vendor's Microsoft credentials.\nDemo vendors receive static demo product details; other vendors retrieve\nproduct details from Microsoft Partner Center.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Create an offer notification",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/notifications",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an offer notification. Currently only buyer instruction emails\nare supported. To send buyer instructions, use `type:\nbuyer_instructions` and `channel: email`. The handler publishes through\nTackle Notification Service and marks the offer as email sent.\n\nRequired RBAC action: `offers:SendOfferInstructions`.\n"
+        },
+        {
+          "info": {
+            "name": "Get Microsoft market currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/currencies",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ]
+          },
+          "docs": "Returns accepted currencies and the Microsoft marketplace countries\ngrouped by accepted currency.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Convert currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/currencies/convert",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Converts one or more amounts from a base currency to a target currency\nusing cached Microsoft foreign exchange rates. Row-level conversion\nerrors are returned in `results[].error` without failing the entire\nrequest.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

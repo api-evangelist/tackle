@@ -1,0 +1,1485 @@
+{
+  "item": [
+    {
+      "id": "2e95994c-b7e4-49cb-b928-1d9327d3afbc",
+      "name": "Metering",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "90a768f3-efa1-4490-8b1d-b7be6a62a0cc",
+          "name": "Create Usage Records",
+          "request": {
+            "name": "Create Usage Records",
+            "description": {
+              "content": "Issue usage-based charges to customers\n\nWe highly recommend using the PUT method to prevent creation of duplicate usage records\n\nThe POST method creates new usage records and allows creation of duplicates. For example: if you submit a usage record with start_time 12:15 UTC and 12:30 UTC for the same customer, product and dimension, two usage records will be created for that hour. We do not aggregate the submitted quantities. Be aware that marketplaces don't allow the submission of duplicates by default, it's usually only allowed for special reconciliation scenarios.\n\nCustomers can be identified in two different ways: by either providing `customer_id` and `product_id`, or by providing `subscription_id`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metering",
+                "usage-records"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"<string>\",\n    \"customer_id\": \"<string>\",\n    \"dimension\": {\n      \"name\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"usage_allocations\": [\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"dry_run\": \"<boolean>\"\n    },\n    \"start_time\": \"<dateTime>\",\n    \"scheduled_at\": \"<dateTime>\",\n    \"test\": null\n  },\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"<string>\",\n    \"customer_id\": \"<string>\",\n    \"dimension\": {\n      \"name\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"usage_allocations\": [\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"dry_run\": \"<boolean>\"\n    },\n    \"start_time\": \"<dateTime>\",\n    \"scheduled_at\": \"<dateTime>\",\n    \"test\": null\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f9932699-71ba-45e4-b2d1-b1b77fc3632c",
+              "name": "Response after successfully submitting usage records",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"fe65c5a9-8d4c-4686-ae2d-c1f7804f4a62\",\n      \"vendor_id\": \"DEMOVENDOR1\",\n      \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n      \"customer_id\": \"615334387543ac63d55cc4dc\",\n      \"subscription_id\": null,\n      \"cloud\": \"aws\",\n      \"dimension\": {\n        \"name\": \"metering-test-sku-from-isv-123\",\n        \"quantity\": 1\n      },\n      \"start_time\": \"2021-11-15T18:31:12.789942Z\",\n      \"end_time\": null,\n      \"created_at\": \"2021-12-09T21:39:09.048941Z\",\n      \"updated_at\": \"2021-12-09T21:39:09.048941Z\",\n      \"deleted_at\": null,\n      \"status\": \"idle\",\n      \"link\": \"https://api.tackle.io/v1/metering/usage-records/fe65c5a9-8d4c-4686-ae2d-c1f7804f4a62\"\n    }\n  ],\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/metering/usage-records\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb263c8c-7132-478f-8b1d-cf19541e99fe",
+              "name": "Invalid Payload or a Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_body\",\n  \"error\": \"jsonschema: '/dimension' does not validate with https://metering-api.tackle.io/jsonschema/metering/usage-record-requests/0/0.4.0.json/aws-usage-record-request#/$ref/properties/dimension/$ref/required: missing properties: 'name'\",\n  \"error_type\": \"service_exception\",\n  \"errors\": [\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \" doesn't validate with https://metering-api.tackle.io/jsonschema/metering/usage-record-requests/0/0.4.0.json/aws-usage-record-request# \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref doesn't validate with '/$defs/AWSUsageRecordRequest' \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref/properties/dimension/$ref doesn't validate with '/$defs/AWSDimension' \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref/properties/dimension/$ref/required missing properties: 'name' \",\n      \"error_type\": \"client_exception\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f817db5-fc54-4180-8733-09aacb89dd15",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "086326d4-db6b-4879-b1b3-2b3a727b0f3e",
+              "name": "Response if metering usage record was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"not_found\",\n  \"error\": \"unable to find order or subscription\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a6759e33-f22f-4d14-852e-c0f55f67938e",
+          "name": "Create or Update Usage Records",
+          "request": {
+            "name": "Create or Update Usage Records",
+            "description": {
+              "content": "Issues or updates usage-based charges to customers\n\nIf a usage record doesn't already exist for the submitted customer, product, dimension and start_time hour, a new record will be created. If there is an existing record, the quantity will be updated if the record hasn't already been submitted to the marketplace. However, if the record has already been submitted to the marketplace, a 409 - Conflict error will be returned\n\nCustomers can be identified in two different ways: by either providing `customer_id` and `product_id`, or by providing `subscription_id`",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metering",
+                "usage-records"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"<string>\",\n    \"customer_id\": \"<string>\",\n    \"dimension\": {\n      \"name\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"usage_allocations\": [\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"dry_run\": \"<boolean>\"\n    },\n    \"start_time\": \"<dateTime>\",\n    \"scheduled_at\": \"<dateTime>\",\n    \"test\": null\n  },\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"<string>\",\n    \"customer_id\": \"<string>\",\n    \"dimension\": {\n      \"name\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"usage_allocations\": [\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"allocated_usage_quantity\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"tags\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"dry_run\": \"<boolean>\"\n    },\n    \"start_time\": \"<dateTime>\",\n    \"scheduled_at\": \"<dateTime>\",\n    \"test\": null\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f366940c-73ff-49f3-8edd-3030111ec593",
+              "name": "Response after successfully creating or updating usage records",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"fe65c5a9-8d4c-4686-ae2d-c1f7804f4a62\",\n      \"vendor_id\": \"DEMOVENDOR1\",\n      \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n      \"customer_id\": \"615334387543ac63d55cc4dc\",\n      \"subscription_id\": null,\n      \"cloud\": \"aws\",\n      \"dimension\": {\n        \"name\": \"metering-test-sku-from-isv-123\",\n        \"quantity\": 1\n      },\n      \"start_time\": \"2021-11-15T18:31:12.789942Z\",\n      \"end_time\": null,\n      \"created_at\": \"2021-12-09T21:39:09.048941Z\",\n      \"updated_at\": \"2021-12-09T21:39:09.048941Z\",\n      \"deleted_at\": null,\n      \"status\": \"idle\",\n      \"link\": \"https://api.tackle.io/v1/metering/usage-records/fe65c5a9-8d4c-4686-ae2d-c1f7804f4a62\"\n    }\n  ],\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/metering/usage-records\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0153adba-ef6c-4849-bf9b-7a567ee0ed6c",
+              "name": "Invalid Payload or a Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_body\",\n  \"error\": \"jsonschema: '/dimension' does not validate with https://metering-api.tackle.io/jsonschema/metering/usage-record-requests/0/0.4.0.json/aws-usage-record-request#/$ref/properties/dimension/$ref/required: missing properties: 'name'\",\n  \"error_type\": \"service_exception\",\n  \"errors\": [\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \" doesn't validate with https://metering-api.tackle.io/jsonschema/metering/usage-record-requests/0/0.4.0.json/aws-usage-record-request# \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref doesn't validate with '/$defs/AWSUsageRecordRequest' \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref/properties/dimension/$ref doesn't validate with '/$defs/AWSDimension' \",\n      \"error_type\": \"client_exception\"\n    },\n    {\n      \"code\": \"invalid_body\",\n      \"error\": \"/$ref/properties/dimension/$ref/required missing properties: 'name' \",\n      \"error_type\": \"client_exception\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1db218f-9614-4449-941c-241386fac158",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2fc8c33-6a6f-4aa6-baa7-e38160282921",
+              "name": "Response if metering usage record was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"not_found\",\n  \"error\": \"unable to find order or subscription\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "57f05ae5-723e-4cd1-adeb-544f342fb382",
+              "name": "Response if a matching usage record exists that was already sent to the marketplace",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cloud\": \"aws\",\n    \"product_id\": \"1test1a2b3c4d5e6f7g8h9ijk\",\n    \"customer_id\": \"ij3sXMkN3or\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-vendor-123\",\n      \"quantity\": 1\n    },\n    \"start_time\": \"2019-07-15T15:00:00.000000+00:00\",\n    \"scheduled_at\": \"2019-07-15T15:00:00.000000+00:00\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"conflict\",\n  \"error\": \"a usage record has already been processed for the following request: product=pid, customer=cid, dimension=dim\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "492b5b23-6aa2-4445-bf6f-14b045fce877",
+          "name": "List Usage Records",
+          "request": {
+            "name": "List Usage Records",
+            "description": {
+              "content": "Lists all usage records",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metering",
+                "usage-records"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "size",
+                  "value": "<string>",
+                  "description": "Specifies the number of records returned in paged responses."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "Specifies the page of results to fetch.  Use the value from `next_page_token` in paged responses."
+                },
+                {
+                  "disabled": false,
+                  "key": "quantity",
+                  "value": "<string>",
+                  "description": "Filter by quantity."
+                },
+                {
+                  "disabled": false,
+                  "key": "scheduled_before",
+                  "value": "<string>",
+                  "description": "Filter by items scheduled before a given date (in UTC)."
+                },
+                {
+                  "disabled": false,
+                  "key": "scheduled_after",
+                  "value": "<string>",
+                  "description": "Filter by items scheduled after a given date (in UTC)."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_zeros",
+                  "value": "false",
+                  "description": "Filter out zero-quantity usage records."
+                },
+                {
+                  "disabled": false,
+                  "key": "product_id",
+                  "value": "<string>",
+                  "description": "Filter by product_id. Reuse multiple times to filter by multiple products."
+                },
+                {
+                  "disabled": false,
+                  "key": "customer_id",
+                  "value": "<string>",
+                  "description": "Filter by customer_id. Reuse multiple times to filter by multiple customers."
+                },
+                {
+                  "disabled": false,
+                  "key": "dimension",
+                  "value": "<string>",
+                  "description": "Filter by dimension name. Reuse multiple times to filter by multiple dimension names."
+                },
+                {
+                  "disabled": false,
+                  "key": "subscription_id",
+                  "value": "<string>",
+                  "description": "Filter by subscription_id. Reuse multiple times to filter by multiple subscriptions."
+                },
+                {
+                  "disabled": false,
+                  "key": "start_after",
+                  "value": "<string>",
+                  "description": "Filter by items starting after a given date (in UTC)."
+                },
+                {
+                  "disabled": false,
+                  "key": "start_before",
+                  "value": "<string>",
+                  "description": "Filter by items starting before a given date (in UTC)."
+                },
+                {
+                  "disabled": false,
+                  "key": "include_tests",
+                  "value": "true",
+                  "description": "Filters out test records (records not sent to the marketplace)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fffce071-d719-4cc8-86d2-5fa76f7eb3a4",
+              "name": "Response after successfully fetching usage records",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scheduled_before",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "scheduled_after",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "include_zeros",
+                      "value": "false"
+                    },
+                    {
+                      "key": "product_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "customer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dimension",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "subscription_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "start_after",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "start_before",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "include_tests",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"12bd7418-1c88-4756-b1e7-5ba4a025da31\",\n      \"vendor_id\": \"DEMOVENDOR1\",\n      \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n      \"customer_id\": \"615334387543ac63d55cc4dc\",\n      \"subscription_id\": null,\n      \"cloud\": \"redhat\",\n      \"dimension\": {\n        \"name\": \"metering-test-sku-from-isv-123\",\n        \"quantity\": 10\n      },\n      \"start_time\": \"2021-01-22T17:31:12.789942Z\",\n      \"end_time\": \"2021-01-22T17:35:12.789942Z\",\n      \"created_at\": \"2021-12-01T18:48:05.515377Z\",\n      \"updated_at\": \"2021-12-01T18:48:05.515377Z\",\n      \"deleted_at\": null,\n      \"status\": \"idle\",\n      \"link\": \"https://api.tackle.io/v1/metering/usage-records/12bd7418-1c88-4756-b1e7-5ba4a025da31\"\n    },\n    {\n      \"id\": \"d88ae723-6b06-42c2-8232-6477c7bdb229\",\n      \"vendor_id\": \"DEMOVENDOR1\",\n      \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n      \"customer_id\": \"615334387543ac63d55cc4dc\",\n      \"subscription_id\": null,\n      \"cloud\": \"redhat\",\n      \"dimension\": {\n        \"name\": \"metering-test-sku-from-isv-123\",\n        \"quantity\": 2\n      },\n      \"start_time\": \"2021-11-20T17:31:12.789942Z\",\n      \"end_time\": \"2021-11-20T17:35:12.789942Z\",\n      \"created_at\": \"2021-11-22T21:37:06.717917Z\",\n      \"updated_at\": \"2021-11-22T21:37:06.717917Z\",\n      \"deleted_at\": null,\n      \"status\": \"idle\",\n      \"link\": \"https://api.tackle.io/v1/metering/usage-records/d88ae723-6b06-42c2-8232-6477c7bdb229\"\n    }\n  ],\n  \"metadata\": {\n    \"next_page_token\": null,\n    \"link\": \"https://api.tackle.io/v1/metering/usage-records\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a8e3c0dc-ba4e-4907-863c-3c07525e7d25",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "scheduled_before",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "scheduled_after",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "include_zeros",
+                      "value": "false"
+                    },
+                    {
+                      "key": "product_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "customer_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dimension",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "subscription_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "start_after",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "start_before",
+                      "value": "2023-01-01T15:31:12Z"
+                    },
+                    {
+                      "key": "include_tests",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fd1bdb08-1eeb-405a-913a-49a987c04436",
+          "name": "Get a Usage Record",
+          "request": {
+            "name": "Get a Usage Record",
+            "description": {
+              "content": "Get a specific usage record",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metering",
+                "usage-records",
+                ":usage_record_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "",
+                  "key": "usage_record_id",
+                  "description": "(Required) Usage Record Id"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "55b7add9-204f-406a-a5c5-a825336ce008",
+              "name": "Response after successfully fetching a usage record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"bd577c26-8a3e-42d2-8efc-4c0defaa758c\",\n      \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n      \"customer_id\": \"615334387543ac63d55cc4dc\",\n      \"subscription_id\": null,\n      \"cloud\": \"redhat\",\n      \"dimension\": {\n        \"name\": \"metering-test-sku-from-vendor-123\",\n        \"quantity\": 1\n      },\n      \"start_time\": \"2021-10-25T21:38:20.865Z\",\n      \"end_time\": \"2021-10-25T21:38:20.865Z\",\n      \"created_at\": \"2021-10-25T21:38:20.865Z\",\n      \"updated_at\": \"2021-10-25T21:38:20.865Z\",\n      \"deleted_at\": null,\n      \"status\": \"idle\"\n    }\n  ],\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/metering/usage-records\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ab0f58cc-13bd-451b-a73a-fe899447d5d0",
+              "name": "Response if bad request made for usage record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"error\": \"string\",\n  \"errors\": [],\n  \"error_type\": \"service_exception\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c475b3e-c0ca-484d-a4e3-57c741b59594",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "913fd54d-626f-4413-a363-e09006a1ed81",
+              "name": "Response if metering usage record was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"not_found\",\n  \"error\": \"Unable to locate resource db91d114-0231-4281-97fc-5b8a11b7ef0c\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7e4c5418-bf89-4ba7-9241-166d904c076a",
+          "name": "Delete a Usage Record",
+          "request": {
+            "name": "Delete a Usage Record",
+            "description": {
+              "content": "Delete a usage record",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "metering",
+                "usage-records",
+                ":usage_record_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "",
+                  "key": "usage_record_id",
+                  "description": "(Required) Usage Record Id"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "29965352-29c3-4762-9702-8898db35eac5",
+              "name": "Response after successfully deleting usage record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"12bd7418-1c88-4756-b1e7-5ba4a025da31\",\n    \"vendor_id\": \"DEMOVENDOR1\",\n    \"product_id\": \"e2fc31adc8dc32e281e3a6c27d003d7c\",\n    \"customer_id\": \"615334387543ac63d55cc4dc\",\n    \"subscription_id\": null,\n    \"cloud\": \"redhat\",\n    \"dimension\": {\n      \"name\": \"metering-test-sku-from-isv-123\",\n      \"quantity\": 10\n    },\n    \"start_time\": \"2021-01-22T17:31:12.789942Z\",\n    \"end_time\": \"2021-01-22T17:35:12.789942Z\",\n    \"created_at\": \"2021-12-01T18:48:05.515377Z\",\n    \"updated_at\": \"2021-12-09T21:39:30.513403Z\",\n    \"deleted_at\": \"2021-12-09T21:39:30.513403Z\",\n    \"status\": \"idle\"\n  },\n  \"metadata\": {\n    \"link\": \"https://api.tackle.io/v1/metering/usage-records/12bd7418-1c88-4756-b1e7-5ba4a025da31\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "75482f74-9d65-4078-bcac-55cac461bcc8",
+              "name": "Response if bad request made for usage record",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"string\",\n  \"error\": \"string\",\n  \"errors\": [],\n  \"error_type\": \"client_exception\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9d88ffc5-94db-4d09-9e77-6898b18ffce3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d32cc789-d0ba-451a-bcd1-9ade76a0178e",
+              "name": "Response if metering usage record was not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "metering",
+                    "usage-records",
+                    ":usage_record_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "",
+                      "key": "usage_record_id",
+                      "description": "(Required) Usage Record Id"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"not_found\",\n  \"error\": \"Unable to locate resource db91d114-0231-4281-97fc-5b8a11b7ef0c\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "10d21829-e32d-4684-93dd-dd87647633c3",
+    "name": "Tackle Authentication Metering API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

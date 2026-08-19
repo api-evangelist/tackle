@@ -1,0 +1,576 @@
+{
+  "item": [
+    {
+      "id": "662f6bf3-9a50-4007-9d41-4b3135402574",
+      "name": "Scores",
+      "description": {
+        "content": "Score domains and search scored accounts.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ebccfef1-92dc-4ca2-b1c1-2b127bb91120",
+          "name": "Score domains",
+          "request": {
+            "name": "Score domains",
+            "description": {
+              "content": "Scores a batch of domains for buyer-signal propensity.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "scores"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domains\": [\n    \"<string>\"\n  ],\n  \"signalType\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "84f475e2-d63b-46aa-92db-0c1e2e0b8c52",
+              "name": "Scores for the requested domains.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"acme-corp.com\"\n  ],\n  \"signalType\": \"PropensityToBuy-aws\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"domain\": \"example.com\",\n    \"signalType\": \"PropensityToBuy-aws\",\n    \"displayScore\": \"High\",\n    \"demographics\": {\n      \"country\": \"US\",\n      \"state\": \"California\",\n      \"employeeRange\": \"1001-5000\",\n      \"primaryIndustry\": \"Software\",\n      \"revenueRange\": \"$100M-$500M\",\n      \"region\": \"AMER\",\n      \"companyName\": \"Example Co\"\n    }\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d23dec87-7431-461f-b274-60be6e11edab",
+              "name": "The request body is missing required fields or contains invalid values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"acme-corp.com\"\n  ],\n  \"signalType\": \"PropensityToBuy-aws\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid request body\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7a98efbd-f81d-44d9-800f-4ae26e6a6d81",
+              "name": "The access token is missing, malformed, or expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"acme-corp.com\"\n  ],\n  \"signalType\": \"PropensityToBuy-aws\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a5b8a021-e4d5-4b46-98f5-84e0aa6bd705",
+              "name": "The access token is not authorized for this operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"acme-corp.com\"\n  ],\n  \"signalType\": \"PropensityToBuy-aws\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7cb2555a-c538-4827-a611-6a7c0bdaedce",
+              "name": "The request could not be completed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"domains\": [\n    \"example.com\",\n    \"acme-corp.com\"\n  ],\n  \"signalType\": \"PropensityToBuy-aws\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3db13c8b-94c4-4f59-a960-da7b3c23990e",
+          "name": "Search scored domains",
+          "request": {
+            "name": "Search scored domains",
+            "description": {
+              "content": "Searches scored domains using filters and pagination. When no\nfilters are supplied, the response contains all scored domains\navailable to the calling account, limited by pagination.\n\nPagination uses `page_number` and `records_per_page`. For large\nresult sets, use `metadata.search_after` from one response as the\nnext request's `search_after` value to continue forward.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "scores",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"search_after\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"domain_search_string\": \"<string>\",\n  \"domains\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"filtering_clouds\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"filtering_scores\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"revenue_band\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"industries\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"new_high_scores\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9104a0ab-da29-4e86-b536-3709fe3df534",
+              "name": "Paginated scored domains and pagination metadata.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"filtering_clouds\": [\n    \"aws\"\n  ],\n  \"filtering_scores\": [\n    \"High\"\n  ],\n  \"domain_search_string\": \"acme\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"domain\": \"example.com\",\n      \"score_aws\": \"High\",\n      \"score_azure\": \"Medium\",\n      \"score_gcp\": \"Low\",\n      \"score_channel_partner\": \"\",\n      \"demographics\": {\n        \"country\": \"US\",\n        \"state\": \"California\",\n        \"employeeRange\": \"1001-5000\",\n        \"primaryIndustry\": \"Software\",\n        \"revenueRange\": \"$100M-$500M\",\n        \"region\": \"AMER\",\n        \"companyName\": \"Example Co\"\n      }\n    }\n  ],\n  \"metadata\": {\n    \"next_page\": \"1\",\n    \"previous_page\": \"\",\n    \"current_page_number\": 0,\n    \"current_page_record_count\": 1,\n    \"total_record_count\": 25,\n    \"search_after\": [\n      \"example.com\"\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ee4ac878-79ef-4d73-a544-9444d1626991",
+              "name": "The request body is missing or contains invalid values.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"filtering_clouds\": [\n    \"aws\"\n  ],\n  \"filtering_scores\": [\n    \"High\"\n  ],\n  \"domain_search_string\": \"acme\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Invalid request body\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3b7405c-0f8a-4ff7-a642-1ed8b92a849a",
+              "name": "The access token is missing, malformed, or expired.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"filtering_clouds\": [\n    \"aws\"\n  ],\n  \"filtering_scores\": [\n    \"High\"\n  ],\n  \"domain_search_string\": \"acme\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38d13e95-826d-4ead-96fb-330464d6cba4",
+              "name": "The access token is not authorized for this operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"filtering_clouds\": [\n    \"aws\"\n  ],\n  \"filtering_scores\": [\n    \"High\"\n  ],\n  \"domain_search_string\": \"acme\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c97f583f-e087-40ba-838d-ea8233eea93e",
+              "name": "The request could not be completed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "scores",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"page_number\": 0,\n  \"records_per_page\": 50,\n  \"filtering_clouds\": [\n    \"aws\"\n  ],\n  \"filtering_scores\": [\n    \"High\"\n  ],\n  \"domain_search_string\": \"acme\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a73932df-ffdf-48d3-a7ee-5e9c200185a2",
+    "name": "Tackle Authentication Scores API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

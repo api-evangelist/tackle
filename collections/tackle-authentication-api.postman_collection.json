@@ -1,0 +1,213 @@
+{
+  "item": [
+    {
+      "id": "09025be5-8cc1-4efe-99fe-3c4eb5d60748",
+      "name": "Authentication",
+      "description": {
+        "content": "Operations for API Authentication",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9e600499-4faa-4cb8-b0fc-77861e4839b5",
+          "name": "Retrieve an Access Token",
+          "request": {
+            "name": "Retrieve an Access Token",
+            "description": {
+              "content": "Retrieve an Access Token using your API Credentials",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "authenticate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": \"<string>\",\n  \"client_secret\": \"<string>\",\n  \"grant_type\": \"client_credentials\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f953a13a-d690-4508-8ee2-655e26e5fc9b",
+              "name": "Example response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "authenticate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"demo-wvx5GMNd4tQ6yOCJdYbv0lJCzJZSmJVi\",\n  \"client_secret\": \"demo-OrSS6Ybjp97t1DTBHwP7r9DwhhpXKoswWRygthudAtKzholNlJ4SnhfybZGoaV5YXVvWKL6fZtAYDVnnhZQDjIjyABVF8oAyoemUWoeP41wrXa08Ds6DbOBe830SMyYtu4LcdkeEs71qkcRx1rRUdM3gYukBaMbNoHfOz3U50EZgS6Q6sEPL0TWZDQhMr5mAdzaurWPtwFNnMlMIYwyHjIjxB4WdQLNAhoP5Bs7CiqdPZbSaAaVPBNl2zV2HAfdp\",\n  \"grant_type\": \"client_credentials\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"eyJhbGciOiJSU0ExXzUdLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIn0.BvO5gQVqA847uxphqcUtSkDFh-3MLI1rrvVmkBWGpvqIUwA78lyUHQVPNEUHyZkq9sDsxpJa0POaW9qIset9GTUJNgegwK5RzniLOc8bRl6LUu6bLJswBO7x0ARUiH7tcLHEOWRLkhHSN4smtfilwrWkSXgAz7oAUQsMgXDwWk5jv-zh0Nk9NPVcZHArgia7e4TQvTxO4rJZsWtzuAOdgEw5yzUCqHrO-PIRExLQRgsezxbCdGjYfwN-GWpBJB_wT8gmrx8HIz031Jm4zVEhCUJnZLM1prWSlHR3EEbjyg3FpUqfMmpjwiQhateSyp4OoHG0mhQWI2SozwNXZVPlGA.JAK468G1tacxPcKK68-6kg.hLODb2lyxNvDu1WD1IoL3q0wJsiwPnVASiy-xdchQApeEGiQKvq58zfpqMTkxJE_pd00vQuRgB3yem7sfyx6Ry4aQe2TmORytYGoRb4QBf5ni-UhLy1qZTGvJPLbE9pOtLl6Ko34qMv18zpXoFWHS2Hm2arv7_nhBV2xs9ACxnyukVlsTR04Iw_mz0ZL_W6KzoWBHkVORPwlKWcL6s3hhC90EpsAC9zrj3OV09YGYM-EzEB4XiBjvQGOEzLBQHJxALJzLn2IdAEqnNLRo4_xaPKzksWnIn0B6JckktlzaD3VsI9RtNFvyB6umHU0mCNSyAXaJrZh7g-AvmB6JVs113uyZqggMqbsE3KsDOr64RIJOnQYldFAsPl65hP3YcsfIF1j9jZBwJ03V7_c_PvrK4RTi9D2la9Imw9KkjjksDOeqxhkulvm4rQqdivwkjjsOQMEAgNDMjuQvWoTCUpbl6H_82uOGOFMKo4ARgaTIRoDDn39kLQDlDQyY0tN6bjiFOi6i3VkcmmfMFfYNEycD9cXdM4avMs_xJM3nQXX_fXbfMNjELuu6bIZco_asCxWV_9OSTiG47NsLEqxnSSUdw_pUqw8SIzGnIWrMzSeUYcrudZTG2TujFpD6zt7OVxT1y20YBwPoAtUFZ3n6HyymtGIk6HXecWyYOGJPlxb25shvCefG_6aMH7ia81CGwoJRml3ZARuURyeEQ1jAn6qKHeRpsNSR1JZFn2nBTgz5VYAt1xEWSM_hj6cMgcpKixdx2D6ay4AioRTtxTzft3DPA.f4bL_fjAwupn-cGpLY2-7DVZ-0YDPsG34xbwIJhetj2\",\n  \"token_type\": \"bearer\",\n  \"expires_in\": 5400\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f304c60-15a9-4353-84bb-8d06d0928bfd",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "authenticate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"demo-wvx5GMNd4tQ6yOCJdYbv0lJCzJZSmJVi\",\n  \"client_secret\": \"demo-OrSS6Ybjp97t1DTBHwP7r9DwhhpXKoswWRygthudAtKzholNlJ4SnhfybZGoaV5YXVvWKL6fZtAYDVnnhZQDjIjyABVF8oAyoemUWoeP41wrXa08Ds6DbOBe830SMyYtu4LcdkeEs71qkcRx1rRUdM3gYukBaMbNoHfOz3U50EZgS6Q6sEPL0TWZDQhMr5mAdzaurWPtwFNnMlMIYwyHjIjxB4WdQLNAhoP5Bs7CiqdPZbSaAaVPBNl2zV2HAfdp\",\n  \"grant_type\": \"client_credentials\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_fields\",\n  \"error\": \"Validation Error\",\n  \"errors\": [\n    {\n      \"client_id\": [\n        \"Missing data for required field.\"\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "efb3a554-efa5-4ff9-88cc-f46a7ed1c7f7",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "authenticate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"client_id\": \"demo-wvx5GMNd4tQ6yOCJdYbv0lJCzJZSmJVi\",\n  \"client_secret\": \"demo-OrSS6Ybjp97t1DTBHwP7r9DwhhpXKoswWRygthudAtKzholNlJ4SnhfybZGoaV5YXVvWKL6fZtAYDVnnhZQDjIjyABVF8oAyoemUWoeP41wrXa08Ds6DbOBe830SMyYtu4LcdkeEs71qkcRx1rRUdM3gYukBaMbNoHfOz3U50EZgS6Q6sEPL0TWZDQhMr5mAdzaurWPtwFNnMlMIYwyHjIjxB4WdQLNAhoP5Bs7CiqdPZbSaAaVPBNl2zV2HAfdp\",\n  \"grant_type\": \"client_credentials\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"missing_entitlements\",\n  \"error\": \"Entitlements are missing from AWS. This can be caused by attempting a purchase with a rejected payment method.\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "bdf11b6a-6b24-4669-9b32-618583073ee4",
+    "name": "Tackle Authentication API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

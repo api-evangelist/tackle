@@ -1,0 +1,1739 @@
+{
+  "item": [
+    {
+      "id": "f44b36c9-d249-40e0-b9ab-a680c87eefbc",
+      "name": "Opportunities",
+      "description": {
+        "content": "Create, read, update, and list co-sell opportunities — the partner-\noriginated (Outbound / Partner Referral) and AWS-originated (Inbound\n/ AWS Referral) deals tracked in AWS Partner Central. Includes the\nopportunity history endpoint for inspecting cloud-side request and\nresponse detail.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2b14e1b4-3088-48f4-b045-200e4e6a5e79",
+          "name": "List co-sell opportunities",
+          "request": {
+            "name": "List co-sell opportunities",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "opportunities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "A search query to filter the opportunities."
+                },
+                {
+                  "disabled": false,
+                  "key": "from",
+                  "value": "<integer>",
+                  "description": "The starting index of the opportunities to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "The number of opportunities to return per page (minimum 1, maximum 100, default 10)."
+                },
+                {
+                  "disabled": false,
+                  "key": "cloudStatus",
+                  "value": "<string>",
+                  "description": "Filter opportunities by their AWS Partner Central review status. Accepts\nmultiple values; results match any of the supplied statuses.\n\nStatus values:\n\n- `Pending Submission` — opportunity is drafted but has not yet been\n  submitted to AWS Partner Central for review.\n- `Submitted` — opportunity has been submitted and is awaiting AWS triage.\n- `In review` — AWS is actively reviewing the opportunity.\n- `Approved` — AWS has approved the opportunity.\n- `Rejected` — AWS has rejected the opportunity. See `cloudResponses` on\n  the matching opportunity event for the rejection reason.\n- `Action Required` — AWS requires updates before the review can proceed.\n  See `cloudResponses` on the matching opportunity event for the requested\n  changes."
+                },
+                {
+                  "disabled": false,
+                  "key": "source",
+                  "value": "<string>",
+                  "description": "Filter opportunities by their Tackle source. `Inbound` corresponds to\nopportunities originated by AWS (AWS Referral); `Outbound` corresponds\nto opportunities originated by the partner (Partner Referral). Accepts\nmultiple values; results match any of the supplied sources."
+                },
+                {
+                  "disabled": false,
+                  "key": "cloudSalesStage",
+                  "value": "<string>",
+                  "description": "Filter opportunities by the AWS Partner Central sales-stage value.\nAccepts multiple values; results match any of the supplied stages.\nSee `lifeCycle.stage` on `Opportunity` for the documented stage values\n(for example, `Prospect`, `Qualified`, `Technical Validation`,\n`Business Validation`, `Committed`, `Launched`, `Closed Lost`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "startTargetCloseDate",
+                  "value": "<date>",
+                  "description": "Used to filter opportunities by their target close date. Only opportunities with a target close date on or after this specified date will be retrieved."
+                },
+                {
+                  "disabled": false,
+                  "key": "endTargetCloseDate",
+                  "value": "<date>",
+                  "description": "Used to filter opportunities based on their target close date. Only opportunities with a target close date on or before this specified date will be retrieved."
+                },
+                {
+                  "disabled": false,
+                  "key": "startCloudCreated",
+                  "value": "<date>",
+                  "description": "Used to filter opportunities by specifying the earliest creation date. Opportunities created on or after this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "endCloudCreated",
+                  "value": "<date>",
+                  "description": "Used to filter opportunities by specifying the latest creation date. Opportunities created on or before this date will be included in the results."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortField",
+                  "value": "<string>",
+                  "description": "The field to sort the opportunities by. Only takes effect when `sortOrder`\nis also supplied; both query parameters must be present together for sorting\nto apply. If only `sortField` is provided, the response uses the default\nordering instead. Note that `cloudProviderID` is case-sensitive: the trailing\n`ID` is uppercase, and sending `cloudProviderId` (lowercase `d`) returns\n`400 Bad Request: Invalid sortField`."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction. Only takes effect when `sortField` is also supplied — both\nquery parameters must be present together. If only `sortOrder` is provided\n(without `sortField`), the response uses the underlying default ordering\ninstead of any sort. There is no implicit ascending default applied when\nonly one of the two parameters is sent."
+                },
+                {
+                  "disabled": false,
+                  "key": "crmId",
+                  "value": "<string>",
+                  "description": "Filter by the Salesforce CRM identifier of the linked opportunity record.\nFor Salesforce, both 15- and 18-character IDs are accepted. To filter by\na HubSpot Deal ID instead, see the `hubspotCrmId` field on\n`OpportunityMetadata`."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasCloudErrors",
+                  "value": "<boolean>",
+                  "description": "Filter opportunities by their AWS Partner Central error state. Set to\n`true` to return only opportunities whose most recent AWS Partner Central\nrequest failed; set to `false` to return only opportunities with no\ncloud-side errors. Omit to disable the filter. Inspect\n`listOpportunityEvents` for the matching opportunity to see the error\ndetail."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasCrmId",
+                  "value": "<boolean>",
+                  "description": "Filter opportunities by whether a CRM identifier is linked. Set to `true`\nto return only opportunities that have a `crmId` (Salesforce) or\n`hubspotCrmId` value populated; set to `false` to return only\nopportunities with no CRM identifier linked. Omit to disable the filter."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasSalesforceErrors",
+                  "value": "<boolean>",
+                  "description": "Filter opportunities by their Salesforce sync state. Set to `true` to\nreturn only opportunities whose most recent Salesforce sync attempt\nfailed; set to `false` to return only opportunities with no Salesforce\nsync errors. Omit to disable the filter. The error message itself is\navailable on the matching opportunity in the `salesforceSyncError` field."
+                },
+                {
+                  "disabled": false,
+                  "key": "hasAnyError",
+                  "value": "<boolean>",
+                  "description": "Filters opportunities by their error state.\n\n- `true` returns only opportunities that currently have at least one\n  cloud-side error or Salesforce-sync error.\n- `false` returns only opportunities that have no cloud-side or\n  Salesforce-sync errors.\n- Omit the parameter to disable this filter entirely.\n\nSee `hasCloudErrors` and `hasSalesforceErrors` to filter on each error\nsource independently."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d8dea56e-0df2-4fbd-bb4c-bc8da2836ff7",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "5"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "Approved"
+                    },
+                    {
+                      "key": "source",
+                      "value": "Inbound"
+                    },
+                    {
+                      "key": "cloudSalesStage",
+                      "value": "Prospect"
+                    },
+                    {
+                      "key": "startTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"opportunities\": [\n    {\n      \"id\": \"tackle-cosell-2lFCqCaslodkeuysLfBp1ddo30\",\n      \"cloudProviderId\": \"O123456\",\n      \"cloudStatus\": \"Approved\",\n      \"cloudSalesStage\": \"Closed Lost\",\n      \"companyName\": \"Acme Corp\",\n      \"created\": \"2024-08-27T13:50:25Z\",\n      \"pendingRequestIds\": [],\n      \"title\": \"An opportunity title\",\n      \"opportunityType\": \"Expansion\",\n      \"source\": \"Inbound\",\n      \"cloudCreated\": \"2024-08-28T00:03:40Z\",\n      \"cloudLastModified\": \"2024-08-28T00:04:10Z\",\n      \"unifiedCreatedDate\": \"2024-08-28T00:03:40Z\"\n    },\n    {\n      \"id\": \"tackle-cosell-2lGPOvybT28ieur76jJwkkz7Of6\",\n      \"cloudProviderId\": \"O234567\",\n      \"cloudStatus\": \"Approved\",\n      \"cloudSalesStage\": \"Closed Lost\",\n      \"companyName\": \"Globex Industries\",\n      \"created\": \"2024-08-28T00:03:31Z\",\n      \"pendingRequestIds\": [\n        \"example-00123456789ABCDEFGHIJKL\"\n      ],\n      \"title\": \"Tackle - Marketplace Listing\",\n      \"opportunityType\": \"Net New Business\",\n      \"crmId\": \"006QL00000BahjGYAR\",\n      \"source\": \"Inbound\",\n      \"cloudCreated\": \"2024-08-28T00:03:40Z\",\n      \"cloudLastModified\": \"2024-08-28T00:04:10Z\",\n      \"unifiedCreatedDate\": \"2024-08-28T00:03:40Z\"\n    }\n  ],\n  \"total\": 2,\n  \"currentPageCount\": 2,\n  \"isNextPage\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e94381d-096c-42a0-9023-98e76128d5c3",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "5"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "Approved"
+                    },
+                    {
+                      "key": "source",
+                      "value": "Inbound"
+                    },
+                    {
+                      "key": "cloudSalesStage",
+                      "value": "Prospect"
+                    },
+                    {
+                      "key": "startTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9a11f050-9cbe-4502-9e82-ed09f3b8b363",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "5"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "Approved"
+                    },
+                    {
+                      "key": "source",
+                      "value": "Inbound"
+                    },
+                    {
+                      "key": "cloudSalesStage",
+                      "value": "Prospect"
+                    },
+                    {
+                      "key": "startTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7ab24fa3-1f66-4141-b091-07504d796832",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "Example"
+                    },
+                    {
+                      "key": "from",
+                      "value": "5"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "cloudStatus",
+                      "value": "Approved"
+                    },
+                    {
+                      "key": "source",
+                      "value": "Inbound"
+                    },
+                    {
+                      "key": "cloudSalesStage",
+                      "value": "Prospect"
+                    },
+                    {
+                      "key": "startTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endTargetCloseDate",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "startCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "endCloudCreated",
+                      "value": "2024-08-01"
+                    },
+                    {
+                      "key": "sortField",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "crmId",
+                      "value": "006QL00000BahjGYAR"
+                    },
+                    {
+                      "key": "hasCloudErrors",
+                      "value": "false"
+                    },
+                    {
+                      "key": "hasCrmId",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasSalesforceErrors",
+                      "value": "true"
+                    },
+                    {
+                      "key": "hasAnyError",
+                      "value": "true"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f34d383-6b8f-48f6-9afe-8d2cb7c7a201",
+          "name": "Create a co-sell opportunity",
+          "request": {
+            "name": "Create a co-sell opportunity",
+            "description": {
+              "content": "Queues a create request against AWS Partner Central. The success response is `202 Accepted`\nwith the Tackle identifier; poll `getOpportunity` to observe the cloud-side outcome.\n\nIf a `crmId` is supplied and your vendor account enforces a one-opportunity-per-CRM-ID\nconstraint, the request is rejected with `409 Conflict` when an existing co-sell\nopportunity already maps to the same CRM identifier. Whether this constraint is enforced\nis configured per vendor; contact your Tackle account team if you need to change the\nbehavior.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "opportunities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "tackle-operation-id",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"crmId\": \"<string>\",\n  \"hubspotCrmId\": \"<string>\",\n  \"awsSubmission\": {\n    \"visibility\": \"<string>\",\n    \"involvementType\": \"<string>\"\n  },\n  \"opportunityTeam\": [\n    {\n      \"email\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"businessTitle\": \"<string>\"\n    },\n    {\n      \"email\": \"<string>\",\n      \"firstName\": \"<string>\",\n      \"lastName\": \"<string>\",\n      \"phone\": \"<string>\",\n      \"businessTitle\": \"<string>\"\n    }\n  ],\n  \"nationalSecurity\": \"<string>\",\n  \"customer\": {\n    \"account\": {\n      \"awsAccountId\": \"<string>\",\n      \"companyName\": \"<string>\",\n      \"duns\": \"<string>\",\n      \"industry\": \"<string>\",\n      \"otherIndustry\": \"<string>\",\n      \"websiteUrl\": \"<string>\",\n      \"address\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    \"contacts\": [\n      {\n        \"email\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"firstName\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"lastName\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"phone\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"businessTitle\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      },\n      {\n        \"email\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"firstName\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"lastName\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"phone\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"businessTitle\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      }\n    ]\n  },\n  \"lifeCycle\": {\n    \"closedLostReason\": \"<string>\",\n    \"nextSteps\": \"<string>\",\n    \"nextStepsHistory\": [\n      {\n        \"time\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      {\n        \"time\": \"<string>\",\n        \"value\": \"<string>\"\n      }\n    ],\n    \"reviewComments\": \"<string>\",\n    \"reviewStatusReason\": \"<string>\",\n    \"stage\": \"<string>\",\n    \"targetCloseDate\": \"<string>\"\n  },\n  \"marketing\": {\n    \"awsFundingUsed\": \"<string>\",\n    \"campaignName\": \"<string>\",\n    \"channels\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"source\": \"<string>\",\n    \"useCases\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"opportunityType\": \"<string>\",\n  \"primaryNeedsFromAws\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"<string>\",\n    \"customerBusinessProblem\": \"<string>\",\n    \"apnPrograms\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"competitorName\": \"<string>\",\n    \"customerUseCase\": \"<string>\",\n    \"deliveryModels\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"frequency\": \"<string>\",\n        \"targetCompany\": \"<string>\"\n      },\n      {\n        \"currencyCode\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"frequency\": \"<string>\",\n        \"targetCompany\": \"<string>\"\n      }\n    ],\n    \"otherCompetitorNames\": \"<string>\",\n    \"otherSolutionDescription\": \"<string>\",\n    \"relatedOpportunityIdentifier\": \"<string>\",\n    \"title\": \"<string>\",\n    \"salesActivities\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"softwareRevenue\": {\n    \"deliveryModel\": \"<string>\",\n    \"effectiveDate\": \"<string>\",\n    \"expirationDate\": \"<string>\",\n    \"value\": {\n      \"currencyCode\": \"<string>\",\n      \"amount\": \"<string>\"\n    }\n  },\n  \"solutions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"awsMarketplaceOffers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"awsProducts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"dataMapper\": {\n    \"$tkl-metadata\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2928d994-1079-41aa-8084-020be3a5c301",
+              "name": "Accepted. The create-opportunity request has been queued for asynchronous processing\nin AWS Partner Central. The returned `id` is the Tackle identifier that can be used\nimmediately with `getOpportunity` and `updateOpportunity`; the cloud-side identifier\n(`cloudProviderId`) becomes available once the request reaches AWS.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer\": {\n    \"account\": {\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      },\n      \"companyName\": \"Test INC.\",\n      \"industry\": \"Computers and Electronics\",\n      \"websiteUrl\": \"https://www.tackle.com\"\n    }\n  },\n  \"lifeCycle\": {\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"opportunityType\": \"Net New Business\",\n  \"opportunityTeam\": [\n    {\n      \"email\": \"tc@tackle.io\",\n      \"firstName\": \"Timothy\",\n      \"lastName\": \"Cazu\",\n      \"businessTitle\": \"PartnerAccountManager\"\n    }\n  ],\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Deal Support\",\n    \"Co-Sell - Pricing Assistance\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"competitorName\": \"\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"25000\",\n        \"currencyCode\": \"USD\",\n        \"targetCompany\": \"Example INC.\",\n        \"frequency\": \"Monthly\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"softwareRevenue\": {},\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsMarketplaceOffers\": [],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"awsSubmission\": {\n    \"involvementType\": \"Co-Sell\",\n    \"visibility\": \"Full\"\n  },\n  \"crmId\": \"006QL00000BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf884f91-3a09-4b5a-9349-bc23a1e0aeb7",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer\": {\n    \"account\": {\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      },\n      \"companyName\": \"Test INC.\",\n      \"industry\": \"Computers and Electronics\",\n      \"websiteUrl\": \"https://www.tackle.com\"\n    }\n  },\n  \"lifeCycle\": {\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"opportunityType\": \"Net New Business\",\n  \"opportunityTeam\": [\n    {\n      \"email\": \"tc@tackle.io\",\n      \"firstName\": \"Timothy\",\n      \"lastName\": \"Cazu\",\n      \"businessTitle\": \"PartnerAccountManager\"\n    }\n  ],\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Deal Support\",\n    \"Co-Sell - Pricing Assistance\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"competitorName\": \"\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"25000\",\n        \"currencyCode\": \"USD\",\n        \"targetCompany\": \"Example INC.\",\n        \"frequency\": \"Monthly\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"softwareRevenue\": {},\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsMarketplaceOffers\": [],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"awsSubmission\": {\n    \"involvementType\": \"Co-Sell\",\n    \"visibility\": \"Full\"\n  },\n  \"crmId\": \"006QL00000BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1220ef25-28f7-4c57-b1ac-e33f1756d279",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer\": {\n    \"account\": {\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      },\n      \"companyName\": \"Test INC.\",\n      \"industry\": \"Computers and Electronics\",\n      \"websiteUrl\": \"https://www.tackle.com\"\n    }\n  },\n  \"lifeCycle\": {\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"opportunityType\": \"Net New Business\",\n  \"opportunityTeam\": [\n    {\n      \"email\": \"tc@tackle.io\",\n      \"firstName\": \"Timothy\",\n      \"lastName\": \"Cazu\",\n      \"businessTitle\": \"PartnerAccountManager\"\n    }\n  ],\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Deal Support\",\n    \"Co-Sell - Pricing Assistance\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"competitorName\": \"\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"25000\",\n        \"currencyCode\": \"USD\",\n        \"targetCompany\": \"Example INC.\",\n        \"frequency\": \"Monthly\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"softwareRevenue\": {},\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsMarketplaceOffers\": [],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"awsSubmission\": {\n    \"involvementType\": \"Co-Sell\",\n    \"visibility\": \"Full\"\n  },\n  \"crmId\": \"006QL00000BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "be1f6a6f-2332-440a-8d51-a1d7ff722cb7",
+              "name": "Conflict. The request cannot be applied to the resource in its current state (for example,\nattempting `updateDraftOpportunity` on an opportunity that is no longer in draft state, or\n`createOpportunity` with a `crmId` that already maps to an existing co-sell opportunity).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer\": {\n    \"account\": {\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      },\n      \"companyName\": \"Test INC.\",\n      \"industry\": \"Computers and Electronics\",\n      \"websiteUrl\": \"https://www.tackle.com\"\n    }\n  },\n  \"lifeCycle\": {\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"opportunityType\": \"Net New Business\",\n  \"opportunityTeam\": [\n    {\n      \"email\": \"tc@tackle.io\",\n      \"firstName\": \"Timothy\",\n      \"lastName\": \"Cazu\",\n      \"businessTitle\": \"PartnerAccountManager\"\n    }\n  ],\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Deal Support\",\n    \"Co-Sell - Pricing Assistance\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"competitorName\": \"\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"25000\",\n        \"currencyCode\": \"USD\",\n        \"targetCompany\": \"Example INC.\",\n        \"frequency\": \"Monthly\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"softwareRevenue\": {},\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsMarketplaceOffers\": [],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"awsSubmission\": {\n    \"involvementType\": \"Co-Sell\",\n    \"visibility\": \"Full\"\n  },\n  \"crmId\": \"006QL00000BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Draft opportunity cannot be updated as it is not in draft state.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28bc04c6-1386-4224-b24f-32617f93b5a1",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "tackle-operation-id",
+                    "value": "<string>",
+                    "description": ""
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer\": {\n    \"account\": {\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      },\n      \"companyName\": \"Test INC.\",\n      \"industry\": \"Computers and Electronics\",\n      \"websiteUrl\": \"https://www.tackle.com\"\n    }\n  },\n  \"lifeCycle\": {\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"opportunityType\": \"Net New Business\",\n  \"opportunityTeam\": [\n    {\n      \"email\": \"tc@tackle.io\",\n      \"firstName\": \"Timothy\",\n      \"lastName\": \"Cazu\",\n      \"businessTitle\": \"PartnerAccountManager\"\n    }\n  ],\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Deal Support\",\n    \"Co-Sell - Pricing Assistance\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"competitorName\": \"\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"25000\",\n        \"currencyCode\": \"USD\",\n        \"targetCompany\": \"Example INC.\",\n        \"frequency\": \"Monthly\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"softwareRevenue\": {},\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsMarketplaceOffers\": [],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"awsSubmission\": {\n    \"involvementType\": \"Co-Sell\",\n    \"visibility\": \"Full\"\n  },\n  \"crmId\": \"006QL00000BahjGYAR\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b16102ba-0f1f-4fc0-809b-12139ab2fb68",
+          "name": "Get a co-sell opportunity",
+          "request": {
+            "name": "Get a co-sell opportunity",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "opportunities",
+                ":opportunity_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "opportunity_id",
+                  "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "93ee491e-a381-40c2-8c22-c8cd0d07f897",
+              "name": "OK. When the cloud-side payload is unavailable for the opportunity (for example,\nimmediately after `createOpportunity` returns 202 but before AWS Partner Central\nhas populated the cloud-side record), the response may contain only `metadata` and\nomit `awsOpportunitySummary`, `customer`, `lifeCycle`, and the other AWS-derived\nfields. Clients should treat fields outside `metadata` as optional.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"nationalSecurity\": \"No\",\n  \"catalog\": \"Sandbox\",\n  \"createdDate\": \"2024-08-19T15:30:20Z\",\n  \"id\": \"O1234567\",\n  \"customer\": {\n    \"account\": {\n      \"companyName\": \"Test INC.\",\n      \"websiteUrl\": \"https://www.tackle.com\",\n      \"industry\": \"Computers and Electronics\",\n      \"address\": {\n        \"countryCode\": \"US\",\n        \"postalCode\": \"33351\",\n        \"stateOrRegion\": \"Florida\"\n      }\n    },\n    \"contacts\": [\n      {\n        \"email\": \"ll@example.com\",\n        \"firstName\": \"Luis\",\n        \"lastName\": \"Lora\",\n        \"businessTitle\": \"CEO\"\n      }\n    ]\n  },\n  \"opportunityTeam\": [\n    {\n      \"email\": \"vv@example.com\",\n      \"firstName\": \"Victor\",\n      \"lastName\": \"Vargas\",\n      \"businessTitle\": \"Alliance Leader\"\n    }\n  ],\n  \"lastModifiedDate\": \"2024-08-19T16:00:08Z\",\n  \"opportunityType\": \"Net New Business\",\n  \"source\": \"Outbound\",\n  \"lifeCycle\": {\n    \"reviewStatus\": \"Submitted\",\n    \"stage\": \"Prospect\",\n    \"targetCloseDate\": \"2024-09-18\"\n  },\n  \"marketing\": {\n    \"source\": \"None\"\n  },\n  \"partnerOpportunityIdentifier\": \"tackle-cosell-2ksnzr4Dy2NuUubXB1XyVigr2ut\",\n  \"primaryNeedsFromAws\": [\n    \"Co-Sell - Pricing Assistance\",\n    \"Co-Sell - Deal Support\"\n  ],\n  \"solutions\": [\n    \"S-0014870\"\n  ],\n  \"awsProducts\": [\n    \"AmazonBedrock\",\n    \"AmazonS3\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"a random text\",\n    \"customerBusinessProblem\": \"An example business problem that needs solving\",\n    \"customerUseCase\": \"AI Machine Learning and Analytics\",\n    \"deliveryModels\": [\n      \"SaaS or PaaS\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"amount\": \"98765\",\n        \"currencyCode\": \"USD\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ],\n    \"salesActivities\": [\n      \"Initialized discussions with customer\",\n      \"Customer has shown interest in solution\"\n    ],\n    \"title\": \"Test opportunity\"\n  },\n  \"awsOpportunitySummary\": {\n    \"catalog\": \"Sandbox\",\n    \"customer\": {\n      \"contacts\": [\n        {\n          \"email\": \"xyz@example.com\",\n          \"firstName\": \"John\",\n          \"lastName\": \"Doe\"\n        }\n      ]\n    },\n    \"insights\": {\n      \"engagementScore\": \"High\"\n    },\n    \"involvementType\": \"Co-Sell\",\n    \"involvementTypeChangeReason\": \"Expansion Opportunity\",\n    \"lifeCycle\": {\n      \"stage\": \"Prospect\",\n      \"targetCloseDate\": \"2024-09-18\"\n    },\n    \"opportunityTeam\": [\n      {\n        \"email\": \"aa@aws.com\",\n        \"firstName\": \"Aaron\",\n        \"lastName\": \"Arc\",\n        \"businessTitle\": \"PSM\"\n      }\n    ],\n    \"origin\": \"Partner Referral\",\n    \"project\": {\n      \"expectedCustomerSpend\": [\n        {\n          \"amount\": \"98765\",\n          \"currencyCode\": \"USD\",\n          \"frequency\": \"Monthly\",\n          \"targetCompany\": \"Example INC.\"\n        }\n      ]\n    },\n    \"relatedEntityIds\": {\n      \"awsProducts\": [\n        \"AmazonBedrock\",\n        \"AmazonS3\"\n      ],\n      \"solutions\": [\n        \"S-0014870\"\n      ]\n    },\n    \"visibility\": \"Full\"\n  },\n  \"metadata\": {\n    \"id\": \"tackle-cosell-2ksnzr4Dy2NuUubXB1XyVigr2ut\",\n    \"companyName\": \"Test INC.\",\n    \"createdDate\": \"2024-08-19T15:30:20Z\",\n    \"lastModifiedDate\": \"2024-08-19T15:30:20Z\",\n    \"crmId\": \"006QL00000BahjGYAR\",\n    \"crmOrgId\": \"00D5g000004uvWXYZ\",\n    \"hasCloudErrors\": false,\n    \"hasSalesforceErrors\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0a2dbfb2-e263-4c1f-a5ba-657989a2eff1",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3d306135-5758-4b97-82bb-94df99f09bde",
+              "name": "Not Found. No resource exists at the requested path for the authenticated vendor.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Opportunity not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9b9e5d5d-e6d9-4673-b6bf-dd9c6e367a6c",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "625ac070-fae9-45a4-a2a8-b064f40e2591",
+          "name": "Update a co-sell opportunity",
+          "request": {
+            "name": "Update a co-sell opportunity",
+            "description": {
+              "content": "Queues a partial update against AWS Partner Central. The exact behavior depends on\nthe value of the `tackle-operation-id` header.\n\n- Production cloud operations: `updateOpportunity` (default), `updateDraftOpportunity`,\n  `updateStartEngagementOpportunity`, `startEngagement`, `closeLostOpportunity`,\n  `launchOpportunity`, `updateOpportunityCRMID`.\n- Test-environment-only: `acceptOpportunity`, `rejectOpportunity`. These simulate\n  AWS-side responses to an incoming engagement invitation/opportunity and are routable\n  only for vendor accounts provisioned for use in a test environment. Production vendor\n  accounts that send one of these operation IDs receive `400 Bad Request` with the\n  message `the requested operation is only supported in test or demo environments.`\n\nThe success response is `202 Accepted` with an empty body; poll `getOpportunity` or\n`listOpportunityEvents` to observe the outcome of the queued request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "opportunities",
+                ":opportunity_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "opportunity_id",
+                  "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) ",
+                "key": "tackle-operation-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"awsSubmission\": {\n    \"visibility\": \"<string>\",\n    \"involvementType\": \"<string>\"\n  },\n  \"nationalSecurity\": \"<string>\",\n  \"customer\": {\n    \"account\": {\n      \"awsAccountId\": \"<string>\",\n      \"companyName\": \"<string>\",\n      \"duns\": \"<string>\",\n      \"industry\": \"<string>\",\n      \"otherIndustry\": \"<string>\",\n      \"websiteUrl\": \"<string>\",\n      \"address\": {\n        \"city\": \"<string>\",\n        \"countryCode\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"stateOrRegion\": \"<string>\",\n        \"streetAddress\": \"<string>\"\n      }\n    },\n    \"contacts\": [\n      {\n        \"email\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"phone\": \"<string>\",\n        \"businessTitle\": \"<string>\"\n      },\n      {\n        \"email\": \"<string>\",\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"phone\": \"<string>\",\n        \"businessTitle\": \"<string>\"\n      }\n    ]\n  },\n  \"lifeCycle\": {\n    \"closedLostReason\": \"<string>\",\n    \"nextSteps\": \"<string>\",\n    \"nextStepsHistory\": [\n      {\n        \"time\": \"<string>\",\n        \"value\": \"<string>\"\n      },\n      {\n        \"time\": \"<string>\",\n        \"value\": \"<string>\"\n      }\n    ],\n    \"reviewComments\": \"<string>\",\n    \"reviewStatusReason\": \"<string>\",\n    \"stage\": \"<string>\",\n    \"targetCloseDate\": \"<string>\"\n  },\n  \"marketing\": {\n    \"awsFundingUsed\": \"<string>\",\n    \"campaignName\": \"<string>\",\n    \"channels\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"source\": \"<string>\",\n    \"useCases\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"opportunityType\": \"<string>\",\n  \"primaryNeedsFromAws\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"project\": {\n    \"additionalComments\": \"<string>\",\n    \"customerBusinessProblem\": \"<string>\",\n    \"apnPrograms\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"competitorName\": \"<string>\",\n    \"customerUseCase\": \"<string>\",\n    \"deliveryModels\": [\n      \"<string>\",\n      \"<string>\"\n    ],\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"frequency\": \"<string>\",\n        \"targetCompany\": \"<string>\"\n      },\n      {\n        \"currencyCode\": \"<string>\",\n        \"amount\": \"<string>\",\n        \"frequency\": \"<string>\",\n        \"targetCompany\": \"<string>\"\n      }\n    ],\n    \"otherCompetitorNames\": \"<string>\",\n    \"otherSolutionDescription\": \"<string>\",\n    \"relatedOpportunityIdentifier\": \"<string>\",\n    \"title\": \"<string>\",\n    \"salesActivities\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"softwareRevenue\": {\n    \"deliveryModel\": \"<string>\",\n    \"effectiveDate\": \"<string>\",\n    \"expirationDate\": \"<string>\",\n    \"value\": {\n      \"currencyCode\": \"<string>\",\n      \"amount\": \"<string>\"\n    }\n  },\n  \"solutions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"awsMarketplaceOffers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"awsProducts\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"dataMapper\": {\n    \"$tkl-metadata\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "859ed7df-578d-4bc1-94fe-95c436dbba41",
+              "name": "Accepted. The update request has been queued for asynchronous processing in AWS\nPartner Central. The response body is empty; poll `getOpportunity` or\n`listOpportunityEvents` to observe the result of the queued request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "12d560ce-ff37-463c-b11c-e3d6fd3a3aa8",
+              "name": "Bad Request. The request was malformed or failed validation (for example, an invalid\n`sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that\nfails to parse as JSON).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid sortField\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1b5d58d2-3c9b-4d5b-955e-ca5aa0ea0e51",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "17d17ece-4eea-433d-9b0d-e0f67036cb02",
+              "name": "Not Found. No resource exists at the requested path for the authenticated vendor.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Opportunity not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c2c78c3e-e4ef-4062-9c75-89dc6995479f",
+              "name": "Conflict. The request cannot be applied to the resource in its current state (for example,\nattempting `updateDraftOpportunity` on an opportunity that is no longer in draft state, or\n`createOpportunity` with a `crmId` that already maps to an existing co-sell opportunity).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Draft opportunity cannot be updated as it is not in draft state.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ab5eba8-e685-4c9f-8f5d-ac4f1be9b632",
+              "name": "Locked. The request was rejected because the vendor is currently in a mid-reset state\n(for example, while the vendor's AWS Partner Central connection is being re-established).\nRetry the request once the vendor's reset has completed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Locked (WebDAV) (RFC 4918)",
+              "code": 423,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Locked\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a994aaa-f067-4c8f-b8cd-9c83de9f1631",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "(Required) ",
+                    "key": "tackle-operation-id",
+                    "value": "updateOpportunity"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project\": {\n    \"title\": \"New Title\",\n    \"expectedCustomerSpend\": [\n      {\n        \"currencyCode\": \"USD\",\n        \"amount\": \"9999.99\",\n        \"frequency\": \"Monthly\",\n        \"targetCompany\": \"Example INC.\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "759a6a34-6522-4cf9-9e70-d4ffc37c7b46",
+          "name": "List opportunity events",
+          "request": {
+            "name": "List opportunity events",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "opportunities",
+                ":opportunity_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "next",
+                  "value": "<string>",
+                  "description": "Cursor token used to resume a paginated history query. When supplied, the\nquery continues from where a previous request left off.\n\n**Note**: this endpoint does not currently emit `next` cursors on responses\n(see the `next` field of the response schema below), so in practice clients\nhave no way to obtain a cursor from the API itself today. This parameter is\ntherefore rarely useful unless a cursor value is already known from another\nsource."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "opportunity_id",
+                  "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2a7b44cd-e2ee-440a-8edc-c4e9f4764086",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oe#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"events\": [\n    {\n      \"operation\": \"cloudUpdateEvent\",\n      \"eventID\": \"2lsw8uaIoeMT72IRnlRz19gKxXY\",\n      \"timestamp\": \"2024-09-10T15:25:35Z\",\n      \"rawRequest\": {\n        \"AccessControls\": {\n          \"NationalSecurity\": \"No\",\n          \"Owner\": {\n            \"Email\": \"aws-partner@tackle.io.invalid\",\n            \"FirstName\": \"Tackle\",\n            \"LastName\": \"BD Team\"\n          },\n          \"Visibility\": \"\"\n        },\n        \"AwsOpportunityTeam\": [\n          {\n            \"BusinessTitle\": \"WWPSPDM\",\n            \"Email\": \"jane.doe@example.com\",\n            \"FirstName\": \"Jane\",\n            \"LastName\": \"Doe\"\n          },\n          {\n            \"BusinessTitle\": \"PDM\",\n            \"Email\": \"kress.franzen@example.com\",\n            \"FirstName\": \"Kress\",\n            \"LastName\": \"Franzen\"\n          }\n        ],\n        \"AwsSalesLifeCycle\": null,\n        \"Catalog\": \"Sandbox\",\n        \"CreatedDate\": \"2024-09-10T15:25:23Z\",\n        \"Customer\": {\n          \"Account\": {\n            \"Address\": {\n              \"City\": null,\n              \"CountryCode\": \"US\",\n              \"PostalCode\": \"33351\",\n              \"StateOrRegion\": \"Florida\",\n              \"StreetAddress\": null\n            },\n            \"AwsAccountId\": null,\n            \"CompanyName\": \"Example INC.\",\n            \"Duns\": null,\n            \"Industry\": \"Computers and Electronics\",\n            \"OtherIndustry\": null,\n            \"WebsiteUrl\": \"https://www.tackle.com\"\n          },\n          \"Contact\": null\n        },\n        \"Id\": \"O1234567\",\n        \"Insights\": null,\n        \"LastModifiedDate\": \"2024-09-10T15:25:29Z\",\n        \"LifeCycle\": {\n          \"ClosedLostReason\": \"\",\n          \"NextSteps\": null,\n          \"NextStepsHistory\": null,\n          \"ReviewComments\": null,\n          \"ReviewStatus\": \"Submitted\",\n          \"ReviewStatusReason\": null,\n          \"Stage\": \"Prospect\",\n          \"TargetCloseDate\": \"2024-09-18\"\n        },\n        \"Marketing\": {\n          \"AwsFundingUsed\": \"\",\n          \"CampaignName\": null,\n          \"Channels\": null,\n          \"Source\": \"None\",\n          \"UseCases\": null\n        },\n        \"OpportunityType\": \"Net New Business\",\n        \"Origin\": \"Partner Referral\",\n        \"PartnerOpportunityIdentifier\": \"tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J\",\n        \"OpportunityTeam\": [],\n        \"PrimaryNeedsFromAws\": [\n          \"Co-Sell - Deal Support\"\n        ],\n        \"Project\": {\n          \"AdditionalComments\": \"a random text\",\n          \"ApnPrograms\": null,\n          \"CompetitorName\": \"\",\n          \"CustomerBusinessProblem\": \"Trying to get a better solution\",\n          \"CustomerUseCase\": \"AI Machine Learning and Analytics\",\n          \"DeliveryModels\": [\n            \"SaaS or PaaS\"\n          ],\n          \"EngagementTypes\": null,\n          \"ExpectedCustomerSpend\": [\n            {\n              \"Amount\": \"25000\",\n              \"CurrencyCode\": \"USD\",\n              \"frequency\": \"Monthly\",\n              \"targetCompany\": \"example.com\"\n            }\n          ],\n          \"OtherCompetitorNames\": null,\n          \"OtherSolutionDescription\": null,\n          \"RelatedOpportunityIdentifier\": null,\n          \"SalesActivities\": [\n            \"Initialized discussions with customer\",\n            \"Customer has shown interest in solution\"\n          ],\n          \"Title\": \"Example Opportunity\"\n        },\n        \"RelatedEntityIdentifiers\": {\n          \"AwsMarketplaceOffers\": null,\n          \"AwsProducts\": [],\n          \"EngagementInvitations\": null,\n          \"Solutions\": [\n            \"S-0014870\"\n          ]\n        },\n        \"ResultMetadata\": {},\n        \"SoftwareRevenue\": null\n      }\n    },\n    {\n      \"operation\": \"createOpportunity\",\n      \"eventID\": \"2lsw6raV18Ymy8DBK0ExX5LBP21\",\n      \"timestamp\": \"2024-09-10T15:25:29Z\",\n      \"cloudResponses\": [\n        {\n          \"requestID\": \"example-00123456789ABCDEFGHIJKL\",\n          \"success\": true,\n          \"timestamp\": \"2024-09-10T15:25:24Z\",\n          \"response\": {\n            \"Identifier\": \"O1234567\",\n            \"LastModifiedDate\": \"2024-09-10T15:25:23Z\",\n            \"PartnerOpportunityIdentifier\": \"tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J\",\n            \"ResultMetadata\": {}\n          }\n        },\n        {\n          \"requestID\": \"example-01123456789ABCDEFGHIJKL\",\n          \"success\": true,\n          \"timestamp\": \"2024-09-10T15:25:26Z\",\n          \"response\": {\n            \"ResultMetadata\": {}\n          }\n        },\n        {\n          \"requestID\": \"example-02123456789ABCDEFGHIJKL\",\n          \"success\": true,\n          \"timestamp\": \"2024-09-10T15:25:29Z\",\n          \"response\": {\n            \"ResultMetadata\": {}\n          }\n        }\n      ],\n      \"cloudRequests\": [\n        {\n          \"requestID\": \"example-00123456789ABCDEFGHIJKL\",\n          \"operation\": \"createOpportunity\",\n          \"timestamp\": \"2024-09-10T15:25:20Z\",\n          \"request\": {\n            \"AccessControls\": null,\n            \"Catalog\": \"Sandbox\",\n            \"ClientToken\": null,\n            \"Customer\": {\n              \"Account\": {\n                \"Address\": {\n                  \"City\": null,\n                  \"CountryCode\": \"US\",\n                  \"PostalCode\": \"33351\",\n                  \"StateOrRegion\": \"Florida\",\n                  \"StreetAddress\": null\n                },\n                \"AwsAccountId\": null,\n                \"CompanyName\": \"Example INC.\",\n                \"Duns\": null,\n                \"Industry\": \"Computers and Electronics\",\n                \"OtherIndustry\": null,\n                \"WebsiteUrl\": \"https://www.tackle.com\"\n              },\n              \"Contact\": null\n            },\n            \"LifeCycle\": {\n              \"ClosedLostReason\": \"\",\n              \"NextSteps\": null,\n              \"NextStepsHistory\": null,\n              \"ReviewComments\": null,\n              \"ReviewStatus\": \"\",\n              \"ReviewStatusReason\": null,\n              \"Stage\": \"\",\n              \"TargetCloseDate\": \"2024-09-18\"\n            },\n            \"Marketing\": {\n              \"AwsFundingUsed\": \"\",\n              \"CampaignName\": null,\n              \"Channels\": null,\n              \"Source\": \"None\",\n              \"UseCases\": null\n            },\n            \"OpportunityType\": \"Net New Business\",\n            \"Origin\": \"\",\n            \"PartnerOpportunityIdentifier\": \"tackle-cosell-2lsw6vxN7rXsBer0wxyz12sW2J\",\n            \"OpportunityTeam\": null,\n            \"PrimaryNeedsFromAws\": [\n              \"Co-Sell - Deal Support\"\n            ],\n            \"Project\": {\n              \"AdditionalComments\": \"a random text\",\n              \"ApnPrograms\": null,\n              \"CompetitorName\": \"\",\n              \"CustomerBusinessProblem\": \"Trying to get a better solution\",\n              \"CustomerUseCase\": \"AI Machine Learning and Analytics\",\n              \"DeliveryModels\": [\n                \"SaaS or PaaS\"\n              ],\n              \"EngagementTypes\": null,\n              \"ExpectedCustomerSpend\": [\n                {\n                  \"Amount\": \"25000\",\n                  \"CurrencyCode\": \"USD\",\n                  \"frequency\": \"Monthly\",\n                  \"targetCompany\": \"example.com\"\n                }\n              ],\n              \"OtherCompetitorNames\": null,\n              \"OtherSolutionDescription\": null,\n              \"RelatedOpportunityIdentifier\": null,\n              \"SalesActivities\": [\n                \"Initialized discussions with customer\",\n                \"Customer has shown interest in solution\"\n              ],\n              \"Title\": \"Example Opportunity\"\n            },\n            \"SoftwareRevenue\": {\n              \"DeliveryModel\": \"\",\n              \"EffectiveDate\": null,\n              \"ExpirationDate\": null,\n              \"Value\": null\n            }\n          }\n        },\n        {\n          \"requestID\": \"example-01123456789ABCDEFGHIJKL\",\n          \"operation\": \"associateSolutions\",\n          \"timestamp\": \"2024-09-10T15:25:24Z\",\n          \"request\": {\n            \"Catalog\": \"Sandbox\",\n            \"OpportunityIdentifier\": \"O1234567\",\n            \"RelatedEntityIdentifier\": \"S-1234567\",\n            \"RelatedEntityType\": \"Solutions\"\n          }\n        },\n        {\n          \"requestID\": \"example-02123456789ABCDEFGHIJKL\",\n          \"operation\": \"startEngagement\",\n          \"timestamp\": \"2024-09-10T15:25:26Z\",\n          \"request\": {\n            \"AwsEngagement\": \"\",\n            \"Catalog\": \"Sandbox\",\n            \"Identifier\": \"O1234567\"\n          }\n        }\n      ],\n      \"rawRequest\": {\n        \"accessControls\": null,\n        \"awsMarketplaceOffers\": [],\n        \"awsProducts\": [],\n        \"customer\": {\n          \"account\": {\n            \"address\": {\n              \"countryCode\": \"US\",\n              \"postalCode\": \"33351\",\n              \"stateOrRegion\": \"Florida\"\n            },\n            \"awsAccountId\": null,\n            \"companyName\": \"Example INC.\",\n            \"industry\": \"Computers and Electronics\",\n            \"otherIndustry\": null,\n            \"websiteUrl\": \"https://www.tackle.com\"\n          },\n          \"contact\": null\n        },\n        \"lifeCycle\": {\n          \"targetCloseDate\": \"2024-09-18\"\n        },\n        \"marketing\": {\n          \"source\": \"None\"\n        },\n        \"opportunityType\": \"Net New Business\",\n        \"opportunityTeam\": [\n          {\n            \"businessTitle\": \"PartnerAccountManager\",\n            \"email\": \"tc@tackle.io\",\n            \"firstName\": \"Timothy\",\n            \"lastName\": \"Cazu\"\n          }\n        ],\n        \"primaryNeedsFromAws\": [\n          \"Co-Sell - Deal Support\"\n        ],\n        \"project\": {\n          \"additionalComments\": \"a random text\",\n          \"apnPrograms\": null,\n          \"competitorName\": \"\",\n          \"customerBusinessProblem\": \"Trying to get a better solution\",\n          \"customerUseCase\": \"AI Machine Learning and Analytics\",\n          \"deliveryModels\": [\n            \"SaaS or PaaS\"\n          ],\n          \"expectedCustomerSpend\": [\n            {\n              \"amount\": \"25000\",\n              \"currencyCode\": \"USD\",\n              \"frequency\": \"Monthly\",\n              \"targetCompany\": \"example.com\"\n            }\n          ],\n          \"otherCompetitorNames\": null,\n          \"otherSolutionDescription\": null,\n          \"relatedOpportunityIdentifier\": null,\n          \"salesActivities\": [\n            \"Initialized discussions with customer\",\n            \"Customer has shown interest in solution\"\n          ],\n          \"title\": \"Example opportunity\"\n        },\n        \"softwareRevenue\": {\n          \"deliveryModel\": null\n        },\n        \"solutions\": [\n          \"S-1234567\"\n        ]\n      },\n      \"activityDetails\": {\n        \"displayText\": \"Opportunity created\",\n        \"id\": \"usr-01HXY12345\",\n        \"type\": \"user\",\n        \"email\": \"john.doe@example.com\",\n        \"givenName\": \"John\",\n        \"familyName\": \"Doe\",\n        \"pictureUrl\": \"https://tackle.io/\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c37d519e-e7ce-4fae-83ba-ff7c358a40b9",
+              "name": "Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the\nauthenticated principal could not be resolved.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oe#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cbb4e4b3-d80d-4029-bdcd-fc18d528ad5e",
+              "name": "Internal Server Error. An unexpected error occurred while processing the request. Response\nbodies for 5xx errors may be empty.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "opportunities",
+                    ":opportunity_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "next",
+                      "value": "oe#tackle-cosell-2lsw6vxN7rXsBer0hXABCDEFGH#2lsw6vxN7rXsBer0hXABCDEFGH"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunity_id",
+                      "description": "(Required) The Tackle identifier for the opportunity (for example, `tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3`).\nThis is the value returned in the `id` field of `listOpportunities` rows and in `metadata.id` on\n`getOpportunity`. The cloud-provider identifier (for example, `O123456`, returned in the response\nbody's top-level `id` field) is **not** accepted here."
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "843a5022-aed7-45ff-8691-d3db976ebd5e",
+    "name": "Tackle Authentication Opportunities API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

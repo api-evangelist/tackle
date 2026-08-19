@@ -1,0 +1,38 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://github.com/tackle-io (org, verified) + npm registry search + PyPI + Terraform Registry.
+  Probed registry.npmjs.org (text=tackle.io -> 0 results), pypi.org/pypi/tackle-io/json (404),
+  registry.terraform.io/v1/modules/search?q=tackle (0 modules) and
+  registry.terraform.io/v1/modules/tackle-io/onboarding/aws (module not found).
+summary:
+  client_sdk_count: 0
+  note: >-
+    Tackle publishes NO first-party API client SDK in any language. The developer docs
+    (developers.tackle.io) teach the API with raw curl examples only; the ReadMe reference
+    renders per-language snippets, which are generated request samples, not a shipped library.
+    The one first-party package Tackle publishes is an infrastructure (Terraform) module for
+    onboarding an AWS account to the platform — it does not wrap the REST API. No `SDKs`
+    pointer is emitted in apis.yml for that reason.
+packages:
+- language: hcl
+  registry: github
+  name: tackle-io/terraform-aws-onboarding
+  url: https://github.com/tackle-io/terraform-aws-onboarding
+  install: 'module "tackle_onboarding" { source = "github.com/tackle-io/terraform-aws-onboarding?ref=1.1.0" }'
+  official: true
+  version: 1.1.0
+  published: '2026-04-13'
+  kind: infrastructure-module
+  description: >-
+    Terraform module for integrating your AWS account with Tackle's platform, enabling AWS
+    Marketplace and AWS Partner Central operations.
+  note: >-
+    Not published to the Terraform Registry (registry.terraform.io has no tackle-io namespace),
+    so it is consumed by git ref. Version read from the GitHub releases API (tag 1.1.0,
+    published 2026-04-13T16:11:55Z) rather than a package-registry metadata endpoint.
+registries_probed:
+- {registry: npm, query: 'tackle.io', result: no first-party package}
+- {registry: pypi, query: 'tackle-io', result: 404}
+- {registry: terraform, query: 'tackle', result: 0 modules}
+- {registry: github, org: tackle-io, result: 2 public repos (terraform-aws-onboarding; a Zappa fork, archived 2024)}

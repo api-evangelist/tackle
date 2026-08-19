@@ -1,0 +1,349 @@
+{
+  "item": [
+    {
+      "id": "63e1326f-7a77-4452-84f6-c2056136782a",
+      "name": "Registrations",
+      "description": {
+        "content": "Operations for Order Registrations",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b7e5efe3-2998-43b4-abfe-76eb787f5af0",
+          "name": "Register an Order",
+          "request": {
+            "name": "Register an Order",
+            "description": {
+              "content": "Notify Tackle of order modifications or registrations (like when a submission is made on your self-hosted registration page)",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "registrations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productid\": \"<string>\",\n  \"customerid\": \"<string>\",\n  \"details\": {\n    \"Company\": \"<string>\",\n    \"Email Address\": \"<email>\",\n    \"Full Name\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "98e364a1-098f-4f66-b307-5cf169e55ee4",
+              "name": "Example success response after creating or updating a registration.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "registrations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productid\": \"exampleproductid\",\n  \"customerid\": \"examplecustomerid\",\n  \"details\": {\n    \"Company\": \"Tackle\",\n    \"Email Address\": \"support@tackle.io\",\n    \"Full Name\": \"Jane Doe\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"entitlements\": [\n    {\n      \"dimension\": \"example_dimension_name\",\n      \"expiration\": \"2019-04-24T12:23:03.048000+00:00\",\n      \"skuid\": \"example_awsdimension_apiname_1\",\n      \"value\": 1\n    },\n    {\n      \"dimension\": \"example_dimension_name2\",\n      \"expiration\": \"2019-04-24T12:23:03.048000+00:00\",\n      \"value\": 5,\n      \"skuid\": \"example_awsdimension_apiname_1\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0fd6b12d-e2c1-4a38-9b4f-fa5affef6b3e",
+              "name": "Bad Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "registrations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productid\": \"exampleproductid\",\n  \"customerid\": \"examplecustomerid\",\n  \"details\": {\n    \"Company\": \"Tackle\",\n    \"Email Address\": \"support@tackle.io\",\n    \"Full Name\": \"Jane Doe\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_details\",\n  \"error\": \"Invalid registration details {'Company': 'Demo Company', 'Email Address': 'demo@example.com'} for product A0BCD23E.\",\n  \"error_type\": \"service_exception\",\n  \"errors\": [\n    \"Missing fields: Company Website (Website), Company Address, Phone Number\",\n    \"Invalid fields: Additional Note\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1adde5af-9794-438a-9e26-c1b9f349208f",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "registrations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productid\": \"exampleproductid\",\n  \"customerid\": \"examplecustomerid\",\n  \"details\": {\n    \"Company\": \"Tackle\",\n    \"Email Address\": \"support@tackle.io\",\n    \"Full Name\": \"Jane Doe\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"authorization_header_missing\",\n  \"error\": \"Authorization header is expected\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b8c0929-047a-4523-b6fd-907cb7aab334",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "registrations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productid\": \"exampleproductid\",\n  \"customerid\": \"examplecustomerid\",\n  \"details\": {\n    \"Company\": \"Tackle\",\n    \"Email Address\": \"support@tackle.io\",\n    \"Full Name\": \"Jane Doe\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"activation_failure\",\n  \"error\": \"Azure activation failure: 403\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc45ae2d-59b0-471c-8ea9-e306e13e2e23",
+              "name": "Not Found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "registrations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productid\": \"exampleproductid\",\n  \"customerid\": \"examplecustomerid\",\n  \"details\": {\n    \"Company\": \"Tackle\",\n    \"Email Address\": \"support@tackle.io\",\n    \"Full Name\": \"Jane Doe\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"vendor_not_found\",\n  \"error\": \"The vendor 'DEMOVENDOR1' was not found.\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "4d946342-3bca-4fb0-8ee6-6899f3494559",
+    "name": "Tackle Authentication Registrations API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

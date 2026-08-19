@@ -1,0 +1,321 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Private Offers API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Private Offers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Private Offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/private-offers",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by offer status (e.g. `draft`, `created`, `accepted`, `cancelled`)."
+              },
+              {
+                "name": "offer_ref",
+                "value": "",
+                "type": "query",
+                "description": "Filter by marketplace offer reference (e.g. AWS `offer-*` ID)."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by offer type."
+              },
+              {
+                "name": "product_ref",
+                "value": "",
+                "type": "query",
+                "description": "Filter by Tackle product ID."
+              },
+              {
+                "name": "created_at",
+                "value": "",
+                "type": "query",
+                "description": "Filter to offers created on the given `YYYY-MM-DD` date."
+              },
+              {
+                "name": "created_at_gt",
+                "value": "",
+                "type": "query",
+                "description": "Filter to offers created strictly after the given date."
+              },
+              {
+                "name": "created_at_lt",
+                "value": "",
+                "type": "query",
+                "description": "Filter to offers created strictly before the given date."
+              },
+              {
+                "name": "salesforce_opportunity_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter by associated Salesforce Opportunity ID."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Sort expression. Prefix a field name with `-` for descending order\n(e.g. `-created_at`).\n"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Zero-based offset for pagination."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Page size (1–100)."
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of private offers visible to the authenticated\nprincipal. Results may be filtered by status, marketplace, offer type,\nproduct reference, salesforce opportunity ID, and creation date.\n\n**Required RBAC permission:** `offers:ListOffers`\n"
+        },
+        {
+          "info": {
+            "name": "Create Private Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/private-offers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a draft private offer. Set `create_in_marketplace: true` in the\nrequest body to also push the offer to AWS Marketplace in the same\ncall; otherwise the offer is saved as a Tackle draft that can be\npushed later via `POST /private-offers/{id}/marketplace-create`.\n\nSet `dry_run: true` to validate the payload without persisting the\noffer; a successful dry run returns `200 OK` instead of `201 Created`.\n\n**Required RBAC permission:** `offers:CreateDraftOffer`\n"
+        },
+        {
+          "info": {
+            "name": "Get Private Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/private-offers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+                "type": "path",
+                "description": "The Tackle private-offer identifier (`po_*`)."
+              }
+            ]
+          },
+          "docs": "Returns a single private offer by its Tackle ID.\n\n**Required RBAC permission:** `offers:GetOffer`\n"
+        },
+        {
+          "info": {
+            "name": "Update Private Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.tackle.io/private-offers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+                "type": "path",
+                "description": "The Tackle private-offer identifier (`po_*`)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing draft private offer. The body has the same shape as\n`POST /private-offers` (`CreatePrivateOfferRequest`).\n\n**Required RBAC permission:** `offers:CreateDraftOffer` (the create\npermission also gates updates -- updating a draft is treated as the\nsame authorization concept as creating one).\n"
+        },
+        {
+          "info": {
+            "name": "Delete Private Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/private-offers/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+                "type": "path",
+                "description": "The Tackle private-offer identifier (`po_*`)."
+              }
+            ]
+          },
+          "docs": "Deletes a draft private offer.\n\n**Required RBAC permission:** `offers:UpdateOffer` (the update\npermission also gates deletes -- \"removing a draft\" is treated as a\nkind of update).\n"
+        },
+        {
+          "info": {
+            "name": "Cancel Private Offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/private-offers/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+                "type": "path",
+                "description": "The Tackle private-offer identifier (`po_*`)."
+              }
+            ]
+          },
+          "docs": "Cancels a private offer that has been pushed to AWS Marketplace but\nnot yet accepted by the buyer. The cancellation is performed\nasynchronously; the response indicates that the request has been\naccepted, not that the cancellation is complete. Track completion via\nthe offer's `status` and `activities` fields, or via webhooks.\n\n**Required RBAC permission:** `offers:CancelOffer`\n"
+        },
+        {
+          "info": {
+            "name": "Push Private Offer to AWS Marketplace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/private-offers/:id/marketplace-create",
+            "params": [
+              {
+                "name": "id",
+                "value": "po_01HXXXXXXXXXXXXXXXXXXXXXXX",
+                "type": "path",
+                "description": "The Tackle private-offer identifier (`po_*`)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Promotes a Tackle draft private offer (one created with\n`create_in_marketplace: false`) into AWS Marketplace. The push is\nasynchronous; this endpoint returns immediately once the request has\nbeen queued.\n\n**Required RBAC permission:** `offers:CreateOfferOnMarketplace`\n"
+        },
+        {
+          "info": {
+            "name": "Get an offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/private-offers/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ]
+          },
+          "docs": "Returns one private offer by Tackle offer ID after checking that the\ncaller can access the offer's vendor.\n\nRequired RBAC action: `offers:GetOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Update a Microsoft offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing Microsoft private offer. If `status` is\n`submit_to_cloud`, the handler merges EULA documents when present,\nvalidates the request, and stores the Microsoft submission payload.\n\nRequired RBAC action: `offers:UpdateOffer`. Submitting to Microsoft also\nrequires `offers:CreateOfferOnMarketplace`.\n"
+        },
+        {
+          "info": {
+            "name": "List offers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/private-offers",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "offer_ref",
+                "value": "ms-offer-123",
+                "type": "query",
+                "description": "Filter offers by Microsoft offer reference."
+              },
+              {
+                "name": "plan_ref",
+                "value": "plan-123",
+                "type": "query",
+                "description": "Filter offers by Microsoft plan reference."
+              }
+            ]
+          },
+          "docs": "Finds the authenticated seller's offers, optionally filtered by Microsoft\noffer reference or Microsoft plan reference. Vendor scope is derived\nfrom the bearer token; no vendor identifier is accepted from the caller.\n\nRequired RBAC action: `offers:ListOffers`.\n"
+        },
+        {
+          "info": {
+            "name": "Create or import a Microsoft offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Microsoft private offer from a full offer payload, or\nimports an existing live Microsoft private offer when the body contains\n`microsoftOfferId` and `buyer_company_name`.\n\nFor full create payloads, if `status` is `submit_to_cloud`, the handler\nvalidates and transforms the request for Microsoft submission before\nsaving the offer. For import payloads, the vendor context is derived\nfrom the authenticated principal; sandbox vendors use their production\nparent vendor's Microsoft credent"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

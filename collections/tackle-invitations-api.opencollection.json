@@ -1,0 +1,227 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Invitations API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Invitations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List invitation events",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/invitations/:invitation_id/events",
+            "params": [
+              {
+                "name": "invitation_id",
+                "value": "",
+                "type": "path",
+                "description": "The Tackle identifier for the invitation (for example,\n`tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`\nfield of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement\ninvitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here."
+              },
+              {
+                "name": "next",
+                "value": "",
+                "type": "query",
+                "description": "Cursor token used to resume a paginated history query. When supplied, the\nquery continues from where a previous request left off.\n\n**Note**: this endpoint does not currently emit `next` cursors on responses\n(see the `next` field of the response schema below), so in practice clients\nhave no way to obtain a cursor from the API itself today. This parameter is\ntherefore rarely useful unless a cursor value is already known from another\nsource."
+              }
+            ]
+          },
+          "docs": "List invitation events"
+        },
+        {
+          "info": {
+            "name": "List co-sell invitations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/invitations",
+            "params": [
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "A search query to filter the invitations."
+              },
+              {
+                "name": "cloudStatus",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by their AWS Partner Central status. Accepts multiple\nvalues; results match any of the supplied statuses. Common values include\n`PENDING`, `ACCEPTED`, `REJECTED`, and `EXPIRED` — see the `status` field\non `InvitationResponse` for the full list of values returned by the API."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of invitations to return per page (minimum 1, maximum 100, default 10)."
+              },
+              {
+                "name": "crmId",
+                "value": "",
+                "type": "query",
+                "description": "Filter by the Salesforce CRM identifier of the linked opportunity record.\nFor Salesforce, both 15- and 18-character IDs are accepted. To filter by\na HubSpot Deal ID instead, see the `hubspotCrmId` field on\n`OpportunityMetadata`."
+              },
+              {
+                "name": "opportunityId",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by the AWS Partner Central opportunity identifier\n(for example, `O1234123`) of the opportunity an invitation is linked to.\nThis is the cloud-provider identifier, not the Tackle identifier — to\nlook up an invitation by Tackle ID, use the path-level `getInvitation`\noperation instead."
+              },
+              {
+                "name": "origin",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by who initiated them. Use `aws` to return only AWS-led\ninvitations (AWS reaching out to your account about an opportunity), and\n`partner` to return only partner-led invitations (your account reaching\nout to AWS)."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The starting index of the invitations to return."
+              },
+              {
+                "name": "startExpirationDate",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter invitations by specifying the earliest expiration date. Invitations expiring on or after this date will be included in the results."
+              },
+              {
+                "name": "endExpirationDate",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter invitations by specifying the latest expiration date. Invitations expiring on or before this date will be included in the results."
+              },
+              {
+                "name": "startCloudCreated",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter invitations by specifying the earliest creation date. Invitations created on or after this date will be included in the results."
+              },
+              {
+                "name": "endCloudCreated",
+                "value": "",
+                "type": "query",
+                "description": "Used to filter invitations by specifying the latest creation date. Invitations created on or before this date will be included in the results."
+              },
+              {
+                "name": "sortField",
+                "value": "",
+                "type": "query",
+                "description": "The field to sort the invitations by. Only takes effect when `sortOrder`\nis also supplied; both query parameters must be present together for sorting\nto apply. If only `sortField` is provided, the response uses the default\nordering instead. Note that `cloudProviderID` is case-sensitive: the trailing\n`ID` is uppercase, and sending `cloudProviderId` (lowercase `d`) returns\n`400 Bad Request: Invalid sortField`."
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction. Only takes effect when `sortField` is also supplied — both\nquery parameters must be present together. If only `sortOrder` is provided\n(without `sortField`), the response uses the underlying default ordering\ninstead of any sort. There is no implicit ascending default applied when\nonly one of the two parameters is sent."
+              },
+              {
+                "name": "hasCloudErrors",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by their AWS Partner Central error state. Set to\n`true` to return only invitations whose most recent AWS Partner Central\nrequest failed; set to `false` to return only invitations with no\ncloud-side errors. Omit to disable the filter. Inspect\n`listInvitationEvents` for the matching invitation to see the error\ndetail."
+              },
+              {
+                "name": "hasCrmId",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by whether a CRM identifier is linked. Set to `true`\nto return only invitations that have a `crmId` (Salesforce) or\n`hubspotCrmId` value populated; set to `false` to return only\ninvitations with no CRM identifier linked. Omit to disable the filter."
+              },
+              {
+                "name": "hasSalesforceErrors",
+                "value": "",
+                "type": "query",
+                "description": "Filter invitations by their Salesforce sync state. Set to `true` to\nreturn only invitations whose most recent Salesforce sync attempt\nfailed; set to `false` to return only invitations with no Salesforce\nsync errors. Omit to disable the filter. The error message itself is\navailable on the matching invitation in the `salesforceSyncError` field."
+              },
+              {
+                "name": "hasAnyError",
+                "value": "",
+                "type": "query",
+                "description": "Filters invitations by their error state.\n\n- `true` returns only invitations that currently have at least one\n  cloud-side error or Salesforce-sync error.\n- `false` returns only invitations that have no cloud-side or\n  Salesforce-sync errors.\n- Omit the parameter to disable this filter entirely.\n\nSee `hasCloudErrors` and `hasSalesforceErrors` to filter on each error\nsource independently."
+              }
+            ]
+          },
+          "docs": "List co-sell invitations"
+        },
+        {
+          "info": {
+            "name": "Create a co-sell invitation (test-environment-only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/invitations",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a simulated invitation for exercising invitation workflows in a\ntest environment. This endpoint is only available to vendor accounts\nprovisioned for use in a test environment; production vendor accounts\nreceive `403 Forbidden`."
+        },
+        {
+          "info": {
+            "name": "Get a co-sell invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/invitations/:invitation_id",
+            "params": [
+              {
+                "name": "invitation_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the invitation"
+              }
+            ]
+          },
+          "docs": "Get a co-sell invitation"
+        },
+        {
+          "info": {
+            "name": "Update a co-sell invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/invitations/:invitation_id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "acceptInvitation"
+              }
+            ],
+            "params": [
+              {
+                "name": "invitation_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the invitation"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a co-sell invitation"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

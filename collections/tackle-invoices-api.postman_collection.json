@@ -1,0 +1,323 @@
+{
+  "item": [
+    {
+      "id": "a3a96e77-3943-41f6-b2fa-61e2eaab5723",
+      "name": "Invoices",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4feb3b2b-97ee-4c25-9d7a-77d91abd6f9d",
+          "name": "List Invoices",
+          "request": {
+            "name": "List Invoices",
+            "description": {
+              "content": "List invoices within a date range",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "invoices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_date",
+                  "value": "<date>",
+                  "description": "(Required) Start date for a query"
+                },
+                {
+                  "disabled": false,
+                  "key": "end_date",
+                  "value": "<date>",
+                  "description": "(Required) End date for a query"
+                },
+                {
+                  "disabled": false,
+                  "key": "cloud",
+                  "value": "<string>",
+                  "description": "(Required) Cloud Marketplace"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f816912e-6bae-40e7-9f72-b4d74468d319",
+              "name": "Example success response containing a list of Invoice objects",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "invoices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "2021-06-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-07-01"
+                    },
+                    {
+                      "key": "cloud",
+                      "value": "aws"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"invoice_id\": \"457269757\",\n      \"invoice_date\": \"2021-01-30T23:58:57\",\n      \"account_receivable_period\": \"2021-01\",\n      \"product\": {\n        \"name\": \"Tackle Cloud Marketplace Platform\",\n        \"id\": \"QfXDGCw68aSKGD6dRzmqmpXyd\",\n        \"tackle_product_ref_id\": null\n      },\n      \"transaction\": {\n        \"id\": \"FAPenGMaWPzsq4oXbLCdwBrJpJYtwyWc8q9hoMTqu4Kdi3SmkRbnG74\",\n        \"seller_revenue\": {\n          \"amount\": 28046,\n          \"currency\": \"USD\"\n        },\n        \"marketplace_fee\": {\n          \"amount\": -2243.68,\n          \"currency\": \"USD\"\n        },\n        \"net_amount\": {\n          \"amount\": 25802.32,\n          \"currency\": \"USD\"\n        }\n      },\n      \"customer\": {\n        \"account_number\": null,\n        \"address\": {\n          \"country\": null,\n          \"city\": null,\n          \"zip_code\": null,\n          \"email_domain\": null\n        }\n      },\n      \"cloud_marketplace\": \"aws\"\n    },\n    {\n      \"invoice_id\": \"942392272\",\n      \"invoice_date\": \"2021-01-30T00:01:28\",\n      \"account_receivable_period\": \"2021-01\",\n      \"product\": {\n        \"name\": \"Tackle SaaS Platform for AWS Marketplace\",\n        \"id\": \"skawQm4YLaLubMZpL22TS2tYK\",\n        \"tackle_product_ref_id\": null\n      },\n      \"transaction\": {\n        \"id\": \"XL5Uj76YzNiD5CB8eD56Qneq8baGRZ8MJ2pBzYoF9aZ9swFssHw4wxX\",\n        \"seller_revenue\": {\n          \"amount\": 3300,\n          \"currency\": \"USD\"\n        },\n        \"marketplace_fee\": {\n          \"amount\": -264,\n          \"currency\": \"USD\"\n        },\n        \"net_amount\": {\n          \"amount\": 3036,\n          \"currency\": \"USD\"\n        }\n      },\n      \"customer\": {\n        \"account_number\": \"510274708750\",\n        \"address\": {\n          \"country\": \"US\",\n          \"city\": \"ATLANTA\",\n          \"zip_code\": \"30309\",\n          \"email_domain\": \"ionicsecurity.com\"\n        }\n      },\n      \"cloud_marketplace\": \"aws\"\n    },\n    {\n      \"invoice_id\": \"463798998\",\n      \"invoice_date\": \"2021-01-27T00:01:40\",\n      \"account_receivable_period\": \"2021-01\",\n      \"product\": {\n        \"name\": \"Tackle SaaS Platform for AWS Marketplace\",\n        \"id\": \"skawQm4YLaLubMZpL22TS2tYK\",\n        \"tackle_product_ref_id\": null\n      },\n      \"transaction\": {\n        \"id\": \"xfcRtmEjhaKUCnjKF54PPfKge3NGTXUbjngNPXCPfVcDpkkSxhQoVue\",\n        \"seller_revenue\": {\n          \"amount\": 1100,\n          \"currency\": \"USD\"\n        },\n        \"marketplace_fee\": {\n          \"amount\": -88,\n          \"currency\": \"USD\"\n        },\n        \"net_amount\": {\n          \"amount\": 1012,\n          \"currency\": \"USD\"\n        }\n      },\n      \"customer\": {\n        \"account_number\": null,\n        \"address\": {\n          \"country\": \"US\",\n          \"city\": \"SEATTLE\",\n          \"zip_code\": \"98104\",\n          \"email_domain\": \"chef.io\"\n        }\n      },\n      \"cloud_marketplace\": \"aws\"\n    }\n  ],\n  \"metadata\": {\n    \"link\": \"https:api.tackle.io/v1/invoices?start_date=2021-01-01&end_date=2021-02-01&cloud=aws\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "491a2b25-1645-4b66-b206-1214062af172",
+              "name": "Example response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "invoices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "2021-06-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-07-01"
+                    },
+                    {
+                      "key": "cloud",
+                      "value": "aws"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_fields\",\n  \"error\": \"Validation Error\",\n  \"errors\": [\n    {\n      \"loc\": [\n        \"query\",\n        \"cloud\"\n      ],\n      \"msg\": \"field required\",\n      \"type\": \"value_error.missing\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fbdae747-9ff3-45d1-b77b-0445bc247e91",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "invoices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "2021-06-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-07-01"
+                    },
+                    {
+                      "key": "cloud",
+                      "value": "aws"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"error\": \"client_id and client_secret are invalid.\",\n  \"error_type\": \"service_exception\",\n  \"errors\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e0d1431e-f730-4f6b-853c-9eacd3423c43",
+              "name": "Example response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "invoices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": "2021-06-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2021-07-01"
+                    },
+                    {
+                      "key": "cloud",
+                      "value": "aws"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"invalid_fields\",\n  \"error\": \"Validation Error\",\n  \"errors\": [\n    {\n      \"ctx\": {\n        \"enum_values\": [\n          \"aws\",\n          \"gcp\"\n        ]\n      },\n      \"loc\": [\n        \"query\",\n        \"marketplace\"\n      ],\n      \"msg\": \"value is not a valid enumeration member; permitted: 'aws', 'gcp'\",\n      \"type\": \"type_error.enum\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.tackle.io",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "bf0aa25e-ae24-4470-967c-8a6de7458a10",
+    "name": "Tackle Authentication Invoices API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.\n\nContact Support:\n Name: Tackle Support\n Email: support@tackle.io",
+      "type": "text/plain"
+    }
+  }
+}

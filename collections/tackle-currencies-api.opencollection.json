@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Currencies API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Currencies",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Microsoft market currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/currencies",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ]
+          },
+          "docs": "Returns accepted currencies and the Microsoft marketplace countries\ngrouped by accepted currency.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Convert currencies",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/currencies/convert",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Converts one or more amounts from a base currency to a target currency\nusing cached Microsoft foreign exchange rates. Row-level conversion\nerrors are returned in `results[].error` without failing the entire\nrequest.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

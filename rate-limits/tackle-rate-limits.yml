@@ -1,0 +1,38 @@
+generated: '2026-08-13'
+method: searched
+source: https://developers.tackle.io/docs/scim.md
+docs: https://developers.tackle.io/docs/scim
+limit_count: 1
+summary: >-
+  Tackle publishes exactly one numeric rate limit, and only for the SCIM service: 1,000
+  transactions per second per organization. No limit is documented for the core Tackle API
+  (api.tackle.io), Co-Sell, Offers, Contracts or Prospect, and no OpenAPI in openapi/ declares a
+  429 response or any RateLimit-*/Retry-After response header. An agent calling Tackle therefore
+  has no runtime backoff signal to read on those services — it can only observe status codes.
+rate_limits:
+- scope: per-organization
+  service: SCIM
+  host: https://scim.tackle.io
+  window: 1s
+  limit: 1000
+  unit: transactions
+  burst: null
+  source: https://developers.tackle.io/docs/scim.md
+  quote: 'The API enforces a rate limit of 1,000 transactions per second (TPS) per organization.'
+response_headers:
+  documented: []
+  note: >-
+    No X-RateLimit-*, RateLimit-* (RFC 9238 draft) or Retry-After header is documented on any
+    Tackle service, and none appears in any of the 7 harvested OpenAPI documents.
+exhaustion_status: null
+exhaustion_note: >-
+  The status code returned when the SCIM 1,000 TPS ceiling is exceeded is not documented; the
+  SCIM OpenAPI (openapi/_original/tackle-scim-openapi.json) declares no 429 response.
+inbound_webhook_expectations:
+  note: >-
+    The one place Tackle documents 429 semantics is in the OTHER direction — on the consumer's
+    endpoint. Tackle treats an HTTP 429 from a vendor's registered webhook URL as a signal to
+    retry the delivery on its graduated backoff schedule (12 attempts over ~22 hours). This is
+    a rate limit Tackle RESPECTS, not one it imposes.
+  source: https://developers.tackle.io/reference/webhook-delivery-and-retry-policy
+  ref: asyncapi/tackle-webhooks.yml

@@ -1,0 +1,124 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Private Offer Actions API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Private Offer Actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Archive an offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/archive",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ]
+          },
+          "docs": "Marks an offer as archived and records an archive activity without\nchanging the offer state or status.\n\nRequired RBAC action: `offers:UpdateOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Unarchive an offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/unarchive",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ]
+          },
+          "docs": "Clears an offer's archived flag and records an unarchive activity without\nchanging the offer state or status.\n\nRequired RBAC action: `offers:UpdateOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel an offer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/cancel",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              }
+            ]
+          },
+          "docs": "Cancels an offer. Accepted offers cannot be canceled. Offers that have\nalready been created in Microsoft are moved to pending cancellation,\nwhile offers that have not reached Microsoft are marked canceled.\n\nRequired RBAC action: `offers:UpdateOffer`.\n"
+        },
+        {
+          "info": {
+            "name": "Sync an offer from Microsoft",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.tackle.io/api/private-offers/:id/sync",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "po-1234",
+                "type": "path",
+                "description": "Tackle private offer ID."
+              },
+              {
+                "name": "update_docs",
+                "value": "true",
+                "type": "query",
+                "description": "Whether the manual sync should refresh associated documents."
+              }
+            ]
+          },
+          "docs": "Synchronizes the stored Tackle offer from Microsoft. The offer must\nalready be associated to a Microsoft offer reference.\n\nRequired RBAC action: `offers:GetOffer`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

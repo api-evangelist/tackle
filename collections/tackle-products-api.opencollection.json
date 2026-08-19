@@ -1,0 +1,225 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Products API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/products",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List Products"
+        },
+        {
+          "info": {
+            "name": "Get a Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/products/:productid",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets more detailed information for a specific product"
+        },
+        {
+          "info": {
+            "name": "Get Product Registration Redirects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/products/:productid/registration-redirects",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the registration redirect configuration associated with the product"
+        },
+        {
+          "info": {
+            "name": "Update Product Registration Redirects",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.tackle.io/v1/products/:productid/registration-redirects",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Allow configuration of custom registration redirects"
+        },
+        {
+          "info": {
+            "name": "Delete Product Registration Redirects",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/v1/products/:productid/registration-redirects",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete all registration redirects associated with the product"
+        },
+        {
+          "info": {
+            "name": "Get a Product Registration Redirect",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/v1/products/:productid/registration-redirects/:redirect_type",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              },
+              {
+                "name": "redirect_type",
+                "value": "",
+                "type": "path",
+                "description": "Redirect Type: \"isv_hosted\" or \"isv_hosted_aws_free_trial\""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the named registration redirect configuration associated with the product"
+        },
+        {
+          "info": {
+            "name": "Delete a Product Registration Redirect",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.tackle.io/v1/products/:productid/registration-redirects/:redirect_type",
+            "params": [
+              {
+                "name": "productid",
+                "value": "",
+                "type": "path",
+                "description": "Product ID"
+              },
+              {
+                "name": "redirect_type",
+                "value": "",
+                "type": "path",
+                "description": "Redirect Type: \"isv_hosted\" or \"isv_hosted_aws_free_trial\""
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the named registration redirect configuration associated with the product"
+        },
+        {
+          "info": {
+            "name": "List Microsoft products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/products",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ]
+          },
+          "docs": "Returns the Microsoft Marketplace product listings owned by the\nauthenticated seller. Use this to populate a product picker before\ncreating a private offer. The seller is identified by the vendor in\nthe bearer token; no path or query parameter is required.\n\nEach product object includes the Tackle product identifier\n(`productid`), the listing type (`listing_type`), and human-readable\n`name` and `status` fields. Pass `productid` as the `id` path\nparameter to `GET /api/products/{id}` to fetch plan "
+        },
+        {
+          "info": {
+            "name": "Get Microsoft product details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/products/:id",
+            "headers": [
+              {
+                "name": "tackle-operation-id",
+                "value": "018f01ec-3f2b-7a70-b81e-4fc3d6a69f42"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "product/123",
+                "type": "path",
+                "description": "Microsoft product ID."
+              }
+            ]
+          },
+          "docs": "Preferred route for retrieving Microsoft product plan and pricing details.\nThe vendor context is derived from the authenticated principal; sandbox\nvendors use their production parent vendor's Microsoft credentials.\nDemo vendors receive static demo product details; other vendors retrieve\nproduct details from Microsoft Partner Center.\n\nRequired RBAC action: `offers:CreateDraftOffer`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

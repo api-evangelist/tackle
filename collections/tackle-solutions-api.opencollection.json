@@ -1,0 +1,55 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Tackle Authentication Solutions API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Solutions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List co-sell solutions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.tackle.io/api/solutions",
+            "params": [
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "A search query to filter the solutions."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "The starting index of the solutions to return."
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The number of solutions to return per page (minimum 1, maximum 100, default 10)."
+              },
+              {
+                "name": "all",
+                "value": "",
+                "type": "query",
+                "description": "Set to `true` to return solutions in any status, including inactive ones.\nDefaults to `false` (only active solutions are returned)."
+              }
+            ]
+          },
+          "docs": "Returns the active co-sell solutions registered with AWS Partner Central for the\nauthenticated vendor.\n\nFor vendor accounts provisioned for use in a test environment, this endpoint\nreturns a fixed three-solution fixture; the `q`, `from`, `pageSize`, and\n`all` query parameters are **ignored** for these vendors and the response\nbody is the same fixture set regardless of what the client sends. Production\nvendor accounts receive vendor-specific results that honor every query\nparameter."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
