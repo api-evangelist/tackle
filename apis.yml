@@ -11,6 +11,18 @@ description: >-
   receive marketplace lifecycle events via registered, authenticated webhooks. Tackle is backed
   by a16z and publishes a SafeBase trust center (SOC 2 Type II, GDPR).
 url: https://raw.githubusercontent.com/api-evangelist/tackle/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
