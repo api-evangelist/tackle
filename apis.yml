@@ -749,6 +749,8 @@ apis:
   - type: APIReference
     url: https://developers.tackle.io/reference/SCIM
 common:
+- type: Website
+  url: https://www.tackle.io/
 - type: Overlay
   url: overlays/tackle-api-overlay.yaml
 - type: DeveloperPortal
