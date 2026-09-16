@@ -501,34 +501,6 @@ apis:
     url: https://developers.tackle.io/reference/Prospect
   - type: APIReference
     url: https://developers.tackle.io/reference/SCIM
-- aid: tackle:tackle-public-api
-  name: Tackle public API
-  description: The public API from Tackle — 7 operation(s) for public.
-  humanURL: https://developers.tackle.io/reference
-  baseURL: https://api.tackle.io
-  tags:
-  - Public
-  tags_raw:
-  - public
-  properties:
-  - type: OpenAPI
-    url: openapi/tackle-public-api-openapi.yml
-  - type: APIReference
-    url: https://developers.tackle.io/reference
-  - type: Webhooks
-    url: asyncapi/tackle-webhooks.yml
-  - type: APIReference
-    url: https://developers.tackle.io/reference/Co-Sell
-  - type: APIReference
-    url: https://developers.tackle.io/reference/marketplace
-  - type: APIReference
-    url: https://developers.tackle.io/reference/Offers
-  - type: APIReference
-    url: https://developers.tackle.io/reference/contracts
-  - type: APIReference
-    url: https://developers.tackle.io/reference/Prospect
-  - type: APIReference
-    url: https://developers.tackle.io/reference/SCIM
 - aid: tackle:tackle-registrations-api
   name: Tackle Registrations API
   description: Operations for Order Registrations
