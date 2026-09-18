@@ -4,22 +4,10 @@ status: candidate
 source: openapi/ (one candidate tool per operation; no official hosted Tackle MCP server was found)
 deployment:
   mode: none
-  endpoint: null
-  install: null
-  package: null
-  auth: unknown
-  verified: searched
-  checked: '2026-08-13'
-  note: >-
-    Tackle ships NO MCP server of any kind — no hosted/remote endpoint and no stdio package.
-    Searched the docs (developers.tackle.io/llms.txt, which indexes every published page and
-    names none), the verified GitHub org github.com/tackle-io (2 public repos: a Terraform
-    onboarding module and an archived Zappa fork), npm (@tackle*/tackle-io: no first-party
-    package), and the MCP registries. The tools[] list below is DERIVED from the harvested
-    OpenAPI as a candidate surface for anyone who wants to build one — it is not something
-    Tackle publishes and no endpoint URL is asserted. Tackle is, separately, the marketplace
-    listing/transaction channel through which other vendors sell their MCP servers; that is a
-    different fact and does not mean Tackle operates one.
+  verified: derived
+  tools: 78
+  checked: '2026-08-12'
+  source: catalog MCP census
 server:
   name: tackle
   transport: http

@@ -559,6 +559,8 @@ apis:
   humanURL: https://developers.tackle.io/reference
   baseURL: https://api.tackle.io
   tags:
+  - Service Providers
+  tags_raw:
   - Service Provider
   properties:
   - type: OpenAPI

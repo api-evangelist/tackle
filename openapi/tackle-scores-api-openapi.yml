@@ -1,14 +1,30 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Scores API
-  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
-  version: 1.0.0
-  contact:
-    name: Tackle Support
-    email: support@tackle.io
-    url: https://tackle.io
+  title: Tackle Prospect Scores API
+  description: 'The Tackle Prospect API helps you score domains for cloud-marketplace
+
+    propensity-to-buy signals and search previously scored accounts.
+
+
+    ## Authentication
+
+
+    This API requires a Tackle machine-to-machine access token. Use your
+
+    client credentials to obtain an access token, then send it with each
+
+    request in the `Authorization` header as `Bearer `.
+
+
+    The access token supplies the account context for each request; you do
+
+    not need to include an account identifier in the URL.'
+  version: '1.0'
 servers:
-- url: https://api.tackle.io
+- url: https://prospect.tackle.io
+  description: Prospect Service
+security:
+- bearerAuth: []
 tags:
 - name: Scores
   description: Score domains and search scored accounts.
@@ -150,117 +166,6 @@ paths:
                 error: Internal server error
 components:
   schemas:
-    PaginationMetadata:
-      type: object
-      properties:
-        next_page:
-          type: string
-          description: Next page index, or an empty string when there is no next page.
-          example: '1'
-        previous_page:
-          type: string
-          description: Previous page index, or an empty string when there is no previous page.
-          example: ''
-        current_page_number:
-          type: integer
-          description: 0-based current page index.
-          example: 0
-        current_page_record_count:
-          type: integer
-          description: Number of records in the current page.
-          example: 50
-        total_record_count:
-          type: integer
-          description: Total number of records matching the filter.
-          example: 250
-        search_after:
-          type: array
-          description: Pagination anchor to pass as the next request's `search_after`.
-          items:
-            type: string
-    SearchError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-    Demographics:
-      type: object
-      description: Firmographic enrichment for a domain.
-      properties:
-        country:
-          type: string
-          nullable: true
-          example: US
-        state:
-          type: string
-          nullable: true
-          example: California
-        employeeRange:
-          type: string
-          nullable: true
-          example: 1001-5000
-        primaryIndustry:
-          type: string
-          nullable: true
-          example: Software
-        revenueRange:
-          type: string
-          nullable: true
-          example: $100M-$500M
-        region:
-          type: string
-          nullable: true
-          example: AMER
-        companyName:
-          type: string
-          nullable: true
-          example: Example Co
-    ScoreResult:
-      type: object
-      required:
-      - domain
-      - signalType
-      - displayScore
-      properties:
-        domain:
-          type: string
-          example: example.com
-        signalType:
-          $ref: '#/components/schemas/BuyerSignalType'
-        displayScore:
-          $ref: '#/components/schemas/ScoreBin'
-        demographics:
-          $ref: '#/components/schemas/Demographics'
-    CloudMarketplace:
-      type: string
-      description: A cloud marketplace filter value.
-      enum:
-      - aws
-      - gcp
-      - azure
-      - ChannelPartner-aws
-    BuyerSignalType:
-      type: string
-      description: Identifies which cloud marketplace signal to score.
-      enum:
-      - PropensityToBuy-aws
-      - PropensityToBuy-azure
-      - PropensityToBuy-gcp
-      - ChannelPartner-aws
-    PaginatedScoredDomainsResponse:
-      type: object
-      required:
-      - data
-      - metadata
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScoredDomain'
-        metadata:
-          $ref: '#/components/schemas/PaginationMetadata'
     ScoreDomainsRequest:
       type: object
       required:
@@ -276,32 +181,26 @@ components:
             example: example.com
         signalType:
           $ref: '#/components/schemas/BuyerSignalType'
-    ScoredDomain:
+    CloudMarketplace:
+      type: string
+      description: A cloud marketplace filter value.
+      enum:
+      - aws
+      - gcp
+      - azure
+      - ChannelPartner-aws
+    PaginatedScoredDomainsResponse:
       type: object
       required:
-      - domain
+      - data
+      - metadata
       properties:
-        domain:
-          type: string
-          example: example.com
-        score_aws:
-          type: string
-          description: AWS Marketplace score value, or an empty string when unavailable.
-          example: High
-        score_azure:
-          type: string
-          description: Azure Marketplace score value, or an empty string when unavailable.
-          example: Medium
-        score_gcp:
-          type: string
-          description: Google Cloud Marketplace score value, or an empty string when unavailable.
-          example: Low
-        score_channel_partner:
-          type: string
-          description: Channel partner score value, or an empty string when unavailable.
-          example: ''
-        demographics:
-          $ref: '#/components/schemas/Demographics'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoredDomain'
+        metadata:
+          $ref: '#/components/schemas/PaginationMetadata'
     SearchScoredDomainsRequest:
       type: object
       description: Filter and pagination parameters for scored-domain search.
@@ -360,6 +259,123 @@ components:
         new_high_scores:
           type: boolean
           description: When `true`, restrict results to domains that recently reached `High`.
+    PaginationMetadata:
+      type: object
+      properties:
+        next_page:
+          type: string
+          description: Next page index, or an empty string when there is no next page.
+          example: '1'
+        previous_page:
+          type: string
+          description: Previous page index, or an empty string when there is no previous page.
+          example: ''
+        current_page_number:
+          type: integer
+          description: 0-based current page index.
+          example: 0
+        current_page_record_count:
+          type: integer
+          description: Number of records in the current page.
+          example: 50
+        total_record_count:
+          type: integer
+          description: Total number of records matching the filter.
+          example: 250
+        search_after:
+          type: array
+          description: Pagination anchor to pass as the next request's `search_after`.
+          items:
+            type: string
+    Demographics:
+      type: object
+      description: Firmographic enrichment for a domain.
+      properties:
+        country:
+          type:
+          - string
+          - 'null'
+          example: US
+        state:
+          type:
+          - string
+          - 'null'
+          example: California
+        employeeRange:
+          type:
+          - string
+          - 'null'
+          example: 1001-5000
+        primaryIndustry:
+          type:
+          - string
+          - 'null'
+          example: Software
+        revenueRange:
+          type:
+          - string
+          - 'null'
+          example: $100M-$500M
+        region:
+          type:
+          - string
+          - 'null'
+          example: AMER
+        companyName:
+          type:
+          - string
+          - 'null'
+          example: Example Co
+    ScoreResult:
+      type: object
+      required:
+      - domain
+      - signalType
+      - displayScore
+      properties:
+        domain:
+          type: string
+          example: example.com
+        signalType:
+          $ref: '#/components/schemas/BuyerSignalType'
+        displayScore:
+          $ref: '#/components/schemas/ScoreBin'
+        demographics:
+          $ref: '#/components/schemas/Demographics'
+    BuyerSignalType:
+      type: string
+      description: Identifies which cloud marketplace signal to score.
+      enum:
+      - PropensityToBuy-aws
+      - PropensityToBuy-azure
+      - PropensityToBuy-gcp
+      - ChannelPartner-aws
+    ScoredDomain:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          example: example.com
+        score_aws:
+          type: string
+          description: AWS Marketplace score value, or an empty string when unavailable.
+          example: High
+        score_azure:
+          type: string
+          description: Azure Marketplace score value, or an empty string when unavailable.
+          example: Medium
+        score_gcp:
+          type: string
+          description: Google Cloud Marketplace score value, or an empty string when unavailable.
+          example: Low
+        score_channel_partner:
+          type: string
+          description: Channel partner score value, or an empty string when unavailable.
+          example: ''
+        demographics:
+          $ref: '#/components/schemas/Demographics'
     MessageError:
       type: object
       required:
@@ -374,15 +390,14 @@ components:
       - Low
       - Medium
       - High
+    SearchError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
   responses:
-    ForbiddenError:
-      description: The access token is not authorized for this operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageError'
-          example:
-            message: Forbidden
     InternalServerError:
       description: The request could not be completed.
       content:
@@ -391,6 +406,14 @@ components:
             $ref: '#/components/schemas/MessageError'
           example:
             message: Internal server error
+    ForbiddenError:
+      description: The access token is not authorized for this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+          example:
+            message: Forbidden
     UnauthorizedError:
       description: The access token is missing, malformed, or expired.
       content:
@@ -400,30 +423,8 @@ components:
           example:
             message: Unauthorized
   securitySchemes:
-    BearerAuth:
-      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    BasicAuthCallback:
-      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
-      type: http
-      scheme: basic
-    HeaderApiKeyAuthCallback:
-      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
-      type: apiKey
-      name: subscription-key
-      in: header
-    Oauth2AuthCallback:
-      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: /oauth/token
-externalDocs:
-  description: Tackle Developer Hub and API Documentation
-  url: https://developers.tackle.io
-x-readme:
-  explorer-enabled: false
-  proxy-enabled: true
-  samples-enabled: true
+      description: 'Access token sent as `Authorization: Bearer <access_token>`.'

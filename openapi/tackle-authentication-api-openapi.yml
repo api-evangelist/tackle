@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
   title: Tackle Authentication API
   description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
@@ -41,6 +41,18 @@ paths:
       summary: Retrieve an Access Token
 components:
   responses:
+    Authentication_Authentication-200-OK:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthenticationResponse'
+          examples:
+            example:
+              value:
+                access_token: eyJhbGciOiJSU0ExXzUdLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIn0.BvO5gQVqA847uxphqcUtSkDFh-3MLI1rrvVmkBWGpvqIUwA78lyUHQVPNEUHyZkq9sDsxpJa0POaW9qIset9GTUJNgegwK5RzniLOc8bRl6LUu6bLJswBO7x0ARUiH7tcLHEOWRLkhHSN4smtfilwrWkSXgAz7oAUQsMgXDwWk5jv-zh0Nk9NPVcZHArgia7e4TQvTxO4rJZsWtzuAOdgEw5yzUCqHrO-PIRExLQRgsezxbCdGjYfwN-GWpBJB_wT8gmrx8HIz031Jm4zVEhCUJnZLM1prWSlHR3EEbjyg3FpUqfMmpjwiQhateSyp4OoHG0mhQWI2SozwNXZVPlGA.JAK468G1tacxPcKK68-6kg.hLODb2lyxNvDu1WD1IoL3q0wJsiwPnVASiy-xdchQApeEGiQKvq58zfpqMTkxJE_pd00vQuRgB3yem7sfyx6Ry4aQe2TmORytYGoRb4QBf5ni-UhLy1qZTGvJPLbE9pOtLl6Ko34qMv18zpXoFWHS2Hm2arv7_nhBV2xs9ACxnyukVlsTR04Iw_mz0ZL_W6KzoWBHkVORPwlKWcL6s3hhC90EpsAC9zrj3OV09YGYM-EzEB4XiBjvQGOEzLBQHJxALJzLn2IdAEqnNLRo4_xaPKzksWnIn0B6JckktlzaD3VsI9RtNFvyB6umHU0mCNSyAXaJrZh7g-AvmB6JVs113uyZqggMqbsE3KsDOr64RIJOnQYldFAsPl65hP3YcsfIF1j9jZBwJ03V7_c_PvrK4RTi9D2la9Imw9KkjjksDOeqxhkulvm4rQqdivwkjjsOQMEAgNDMjuQvWoTCUpbl6H_82uOGOFMKo4ARgaTIRoDDn39kLQDlDQyY0tN6bjiFOi6i3VkcmmfMFfYNEycD9cXdM4avMs_xJM3nQXX_fXbfMNjELuu6bIZco_asCxWV_9OSTiG47NsLEqxnSSUdw_pUqw8SIzGnIWrMzSeUYcrudZTG2TujFpD6zt7OVxT1y20YBwPoAtUFZ3n6HyymtGIk6HXecWyYOGJPlxb25shvCefG_6aMH7ia81CGwoJRml3ZARuURyeEQ1jAn6qKHeRpsNSR1JZFn2nBTgz5VYAt1xEWSM_hj6cMgcpKixdx2D6ay4AioRTtxTzft3DPA.f4bL_fjAwupn-cGpLY2-7DVZ-0YDPsG34xbwIJhetj2
+                token_type: bearer
+                expires_in: 5400
     403-Forbidden:
       description: Forbidden
       content:
@@ -54,18 +66,6 @@ components:
                 error: Entitlements are missing from AWS. This can be caused by attempting a purchase with a rejected payment method.
                 error_type: service_exception
                 errors: []
-    Authentication_Authentication-200-OK:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthenticationResponse'
-          examples:
-            example:
-              value:
-                access_token: eyJhbGciOiJSU0ExXzUdLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIn0.BvO5gQVqA847uxphqcUtSkDFh-3MLI1rrvVmkBWGpvqIUwA78lyUHQVPNEUHyZkq9sDsxpJa0POaW9qIset9GTUJNgegwK5RzniLOc8bRl6LUu6bLJswBO7x0ARUiH7tcLHEOWRLkhHSN4smtfilwrWkSXgAz7oAUQsMgXDwWk5jv-zh0Nk9NPVcZHArgia7e4TQvTxO4rJZsWtzuAOdgEw5yzUCqHrO-PIRExLQRgsezxbCdGjYfwN-GWpBJB_wT8gmrx8HIz031Jm4zVEhCUJnZLM1prWSlHR3EEbjyg3FpUqfMmpjwiQhateSyp4OoHG0mhQWI2SozwNXZVPlGA.JAK468G1tacxPcKK68-6kg.hLODb2lyxNvDu1WD1IoL3q0wJsiwPnVASiy-xdchQApeEGiQKvq58zfpqMTkxJE_pd00vQuRgB3yem7sfyx6Ry4aQe2TmORytYGoRb4QBf5ni-UhLy1qZTGvJPLbE9pOtLl6Ko34qMv18zpXoFWHS2Hm2arv7_nhBV2xs9ACxnyukVlsTR04Iw_mz0ZL_W6KzoWBHkVORPwlKWcL6s3hhC90EpsAC9zrj3OV09YGYM-EzEB4XiBjvQGOEzLBQHJxALJzLn2IdAEqnNLRo4_xaPKzksWnIn0B6JckktlzaD3VsI9RtNFvyB6umHU0mCNSyAXaJrZh7g-AvmB6JVs113uyZqggMqbsE3KsDOr64RIJOnQYldFAsPl65hP3YcsfIF1j9jZBwJ03V7_c_PvrK4RTi9D2la9Imw9KkjjksDOeqxhkulvm4rQqdivwkjjsOQMEAgNDMjuQvWoTCUpbl6H_82uOGOFMKo4ARgaTIRoDDn39kLQDlDQyY0tN6bjiFOi6i3VkcmmfMFfYNEycD9cXdM4avMs_xJM3nQXX_fXbfMNjELuu6bIZco_asCxWV_9OSTiG47NsLEqxnSSUdw_pUqw8SIzGnIWrMzSeUYcrudZTG2TujFpD6zt7OVxT1y20YBwPoAtUFZ3n6HyymtGIk6HXecWyYOGJPlxb25shvCefG_6aMH7ia81CGwoJRml3ZARuURyeEQ1jAn6qKHeRpsNSR1JZFn2nBTgz5VYAt1xEWSM_hj6cMgcpKixdx2D6ay4AioRTtxTzft3DPA.f4bL_fjAwupn-cGpLY2-7DVZ-0YDPsG34xbwIJhetj2
-                token_type: bearer
-                expires_in: 5400
     400-Bad-Request:
       description: Bad Request
       content:
@@ -82,45 +82,6 @@ components:
                   - Missing data for required field.
       headers: {}
   schemas:
-    AuthenticationRequest:
-      title: AuthenticationRequest
-      type: object
-      properties:
-        client_id:
-          type: string
-          description: MTM Client ID
-          minLength: 0
-        client_secret:
-          type: string
-          description: MTM Client Secret
-          minLength: 0
-        grant_type:
-          type: string
-          default: client_credentials
-          description: Client credential grant type
-          enum:
-          - client_credentials
-          example: client_credentials
-      required:
-      - client_id
-      - client_secret
-    AuthenticationResponse:
-      title: AuthenticationResponse
-      type: object
-      properties:
-        access_token:
-          description: JWT
-          type: string
-        expires_in:
-          description: Number of seconds until the token expires
-          type: integer
-        token_type:
-          description: Token type
-          type: string
-      required:
-      - access_token
-      - expires_in
-      - token_type
     Error:
       title: ErrorResponse
       type: object
@@ -146,6 +107,45 @@ components:
       - code
       - error
       - errors
+    AuthenticationResponse:
+      title: AuthenticationResponse
+      type: object
+      properties:
+        access_token:
+          description: JWT
+          type: string
+        expires_in:
+          description: Number of seconds until the token expires
+          type: integer
+        token_type:
+          description: Token type
+          type: string
+      required:
+      - access_token
+      - expires_in
+      - token_type
+    AuthenticationRequest:
+      title: AuthenticationRequest
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: MTM Client ID
+          minLength: 0
+        client_secret:
+          type: string
+          description: MTM Client Secret
+          minLength: 0
+        grant_type:
+          type: string
+          default: client_credentials
+          description: Client credential grant type
+          enum:
+          - client_credentials
+          example: client_credentials
+      required:
+      - client_id
+      - client_secret
   securitySchemes:
     BearerAuth:
       description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.

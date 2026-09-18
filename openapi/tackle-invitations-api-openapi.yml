@@ -1,14 +1,17 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Invitations API
-  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
-  version: 1.0.0
-  contact:
-    name: Tackle Support
-    email: support@tackle.io
-    url: https://tackle.io
+  title: Tackle Co-Sell for AWS Partner Central Invitations API
+  description: 'This API lets you create and manage co-sell opportunities and invitations
+
+    in AWS Partner Central — formerly known as the AWS Partner Network Customer
+
+    Engagement (ACE) program.'
+  version: '1.0'
 servers:
-- url: https://api.tackle.io
+- url: https://aws.cosell.tackle.io
+  description: AWS Co-Sell Service
+security:
+- bearerAuth: []
 tags:
 - name: Invitations
   description: 'Create (test-environment-only), read, update, and list co-sell
@@ -599,108 +602,70 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  responses:
+    Unauthorized:
+      description: 'Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the
+
+        authenticated principal could not be resolved.'
+    BadRequest:
+      description: 'Bad Request. The request was malformed or failed validation (for example, an invalid
+
+        `sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that
+
+        fails to parse as JSON).'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Invalid sortField
+    Locked:
+      description: 'Locked. The request was rejected because the vendor is currently in a mid-reset state
+
+        (for example, while the vendor''s AWS Partner Central connection is being re-established).
+
+        Retry the request once the vendor''s reset has completed.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Locked
+    NotFound:
+      description: Not Found. No resource exists at the requested path for the authenticated vendor.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Opportunity not found
+    InternalServerError:
+      description: 'Internal Server Error. An unexpected error occurred while processing the request. Response
+
+        bodies for 5xx errors may be empty.'
+  parameters:
+    invitation_id:
+      name: invitation_id
+      in: path
+      required: true
+      description: 'The Tackle identifier for the invitation (for example,
+
+        `tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`
+
+        field of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement
+
+        invitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here.'
+      schema:
+        type: string
+        example: tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q
   schemas:
-    OpportunityInvitationPayload:
+    InvitationReceiver:
       type: object
       properties:
-        receiverResponsibilities:
-          type: array
-          items:
-            type: string
-            enum:
-            - Distributor
-            - Reseller
-            - HardwarePartner
-            - ManagedServiceProvider
-            - SoftwarePartner
-            - ServicesPartner
-            - TrainingPartner
-        customer:
-          $ref: '#/components/schemas/InvitationCustomer'
-        project:
-          $ref: '#/components/schemas/InvitationProject'
-        senderContacts:
-          type: array
-          description: 'The AWS-side contacts attached to the invitation, including the AWS
-
-            sales rep, account owner, and partner-development managers. Returned
-
-            as an array of contact records.'
-          items:
-            type: object
-            properties:
-              email:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
-              phone:
-                type: string
-              businessTitle:
-                type: string
-    InvitationResponse:
-      type: object
-      properties:
-        invitationId:
+        alias:
           type: string
-          description: 'The Tackle ID for the invitation. Note: `getInvitation` returns this field
-
-            as `invitationId` (lowercase `d`); `createInvitation` returns the same
-
-            logical value as `invitationID` (capital `ID`). Consumers should handle both.'
-        id:
+        awsAccountId:
           type: string
-        arn:
-          type: string
-        engagementTitle:
-          type: string
-        expirationDate:
-          type: string
-        invitationDate:
-          type: string
-        opportunityId:
-          type: string
-          description: 'The cloud-provider opportunity identifier this invitation is linked to,
-
-            when the invitation has been accepted or otherwise associated with an
-
-            opportunity. Absent on invitations that are not (yet) linked to an
-
-            opportunity.
-
-
-            Casing note: `getInvitation` returns this value as `opportunityId`
-
-            (lowercase `d`), while `listInvitations` rows return the same logical
-
-            value as `opportunityID` (capital `ID`). Clients should accept both
-
-            casings.'
-          example: O1234123
-        opportunityInvitationPayload:
-          $ref: '#/components/schemas/OpportunityInvitationPayload'
-        payloadType:
-          type: string
-          enum:
-          - OpportunityInvitation
-        receiver:
-          $ref: '#/components/schemas/InvitationReceiver'
-        rejectionReason:
-          type: string
-        senderAwsAccountId:
-          type: string
-        senderCompanyName:
-          type: string
-        status:
-          type: string
-          enum:
-          - ACCEPTED
-          - PENDING
-          - REJECTED
-          - EXPIRED
-        metadata:
-          $ref: '#/components/schemas/InvitationMetadata'
     ListInvitationEvents:
       type: object
       required:
@@ -837,26 +802,27 @@ components:
               type: string
             pictureUrl:
               type: string
-    ListInvitationsResponse:
+    InvitationMetadata:
       type: object
       properties:
-        invitations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListInvitationsResponseItem'
-        total:
-          type: integer
-          example: 100
-        currentPageCount:
-          type: integer
-          example: 10
-        isNextPage:
+        id:
+          type: string
+          example: tackle-invitation-2jhD8b41CurTOqEsG2Soinub123
+        tackleOpportunityId:
+          type: string
+          example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
+        crmId:
+          type: string
+          example: 006QL00000BahjLSKO
+        hasSalesforceErrors:
           type: boolean
-          example: true
-        nextIndex:
-          description: The starting index to use for fetching the next page of invitations. Only present when `isNextPage` is `true`.
-          type: integer
-          example: 10
+          example: false
+        salesforceSyncError:
+          type: string
+          description: 'Most recent Salesforce sync error message, when the last sync attempt
+
+            failed. Absent on invitations where the last sync attempt succeeded.'
+          example: 'INVALID_FIELD_FOR_INSERT_UPDATE: TackleCoSell__c: bad field names on insert/update call'
     InvitationProject:
       type: object
       properties:
@@ -881,74 +847,38 @@ components:
                 - Monthly
               targetCompany:
                 type: string
-    InvitationReceiver:
+    Error:
       type: object
-      properties:
-        alias:
-          type: string
-        awsAccountId:
-          type: string
-    InvitationMetadata:
-      type: object
-      properties:
-        id:
-          type: string
-          example: tackle-invitation-2jhD8b41CurTOqEsG2Soinub123
-        tackleOpportunityId:
-          type: string
-          example: tackle-cosell-2jhD8b41CurTOqEsG2Soinublv3
-        crmId:
-          type: string
-          example: 006QL00000BahjLSKO
-        hasSalesforceErrors:
-          type: boolean
-          example: false
-        salesforceSyncError:
-          type: string
-          description: 'Most recent Salesforce sync error message, when the last sync attempt
+      description: 'Error envelope returned for typed error responses. Some 4xx and 5xx responses
 
-            failed. Absent on invitations where the last sync attempt succeeded.'
-          example: 'INVALID_FIELD_FOR_INSERT_UPDATE: TackleCoSell__c: bad field names on insert/update call'
-    InvitationCustomer:
+        (such as direct `Unauthorized` and `Internal Server Error` responses) may instead
+
+        return an empty body; consumers should be tolerant of that.'
+      properties:
+        message:
+          type: string
+          description: A short, human-readable description of the error.
+          example: Opportunity not found
+    ListInvitationsResponse:
       type: object
       properties:
-        companyName:
-          type: string
-        websiteUrl:
-          type: string
-        countryCode:
-          type: string
-        industry:
-          type: string
-          enum:
-          - Aerospace
-          - Agriculture
-          - Automotive
-          - Computers and Electronics
-          - Consumer Goods
-          - Education
-          - Energy - Oil and Gas
-          - Energy - Power and Utilities
-          - Financial Services
-          - Gaming
-          - Government
-          - Healthcare
-          - Hospitality
-          - Life Sciences
-          - Manufacturing
-          - Marketing and Advertising
-          - Media and Entertainment
-          - Mining
-          - Non-Profit Organization
-          - Professional Services
-          - Real Estate and Construction
-          - Retail
-          - Software and Internet
-          - Telecommunications
-          - Transportation and Logistics
-          - Travel
-          - Wholesale and Distribution
-          - Other
+        invitations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListInvitationsResponseItem'
+        total:
+          type: integer
+          example: 100
+        currentPageCount:
+          type: integer
+          example: 10
+        isNextPage:
+          type: boolean
+          example: true
+        nextIndex:
+          description: The starting index to use for fetching the next page of invitations. Only present when `isNextPage` is `true`.
+          type: integer
+          example: 10
     CreateInvitationRequest:
       type: object
       description: 'Request body for `createInvitation` (test-environment-only). The required fields are
@@ -1064,18 +994,6 @@ components:
                         type: string
                       phone:
                         type: string
-    Error:
-      type: object
-      description: 'Error envelope returned for typed error responses. Some 4xx and 5xx responses
-
-        (such as direct `Unauthorized` and `Internal Server Error` responses) may instead
-
-        return an empty body; consumers should be tolerant of that.'
-      properties:
-        message:
-          type: string
-          description: A short, human-readable description of the error.
-          example: Opportunity not found
     ListInvitationsResponseItem:
       type: object
       properties:
@@ -1134,87 +1052,153 @@ components:
           type: string
         unifiedCreatedDate:
           type: string
-  responses:
-    Unauthorized:
-      description: 'Unauthorized. The request did not include valid Tackle MTM bearer credentials, or the
+    InvitationCustomer:
+      type: object
+      properties:
+        companyName:
+          type: string
+        websiteUrl:
+          type: string
+        countryCode:
+          type: string
+        industry:
+          type: string
+          enum:
+          - Aerospace
+          - Agriculture
+          - Automotive
+          - Computers and Electronics
+          - Consumer Goods
+          - Education
+          - Energy - Oil and Gas
+          - Energy - Power and Utilities
+          - Financial Services
+          - Gaming
+          - Government
+          - Healthcare
+          - Hospitality
+          - Life Sciences
+          - Manufacturing
+          - Marketing and Advertising
+          - Media and Entertainment
+          - Mining
+          - Non-Profit Organization
+          - Professional Services
+          - Real Estate and Construction
+          - Retail
+          - Software and Internet
+          - Telecommunications
+          - Transportation and Logistics
+          - Travel
+          - Wholesale and Distribution
+          - Other
+    InvitationResponse:
+      type: object
+      properties:
+        invitationId:
+          type: string
+          description: 'The Tackle ID for the invitation. Note: `getInvitation` returns this field
 
-        authenticated principal could not be resolved.'
-    BadRequest:
-      description: 'Bad Request. The request was malformed or failed validation (for example, an invalid
+            as `invitationId` (lowercase `d`); `createInvitation` returns the same
 
-        `sortField`/`sortOrder` value, an unsupported `tackle-operation-id`, or a request body that
+            logical value as `invitationID` (capital `ID`). Consumers should handle both.'
+        id:
+          type: string
+        arn:
+          type: string
+        engagementTitle:
+          type: string
+        expirationDate:
+          type: string
+        invitationDate:
+          type: string
+        opportunityId:
+          type: string
+          description: 'The cloud-provider opportunity identifier this invitation is linked to,
 
-        fails to parse as JSON).'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Invalid sortField
-    Locked:
-      description: 'Locked. The request was rejected because the vendor is currently in a mid-reset state
+            when the invitation has been accepted or otherwise associated with an
 
-        (for example, while the vendor''s AWS Partner Central connection is being re-established).
+            opportunity. Absent on invitations that are not (yet) linked to an
 
-        Retry the request once the vendor''s reset has completed.'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Locked
-    NotFound:
-      description: Not Found. No resource exists at the requested path for the authenticated vendor.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Opportunity not found
-    InternalServerError:
-      description: 'Internal Server Error. An unexpected error occurred while processing the request. Response
+            opportunity.
 
-        bodies for 5xx errors may be empty.'
-  parameters:
-    invitation_id:
-      name: invitation_id
-      in: path
-      required: true
-      description: 'The Tackle identifier for the invitation (for example,
 
-        `tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q`). This is the value returned in the `id`
+            Casing note: `getInvitation` returns this value as `opportunityId`
 
-        field of `listInvitations` rows and as `invitationId` on `getInvitation`. The AWS engagement
+            (lowercase `d`), while `listInvitations` rows return the same logical
 
-        invitation identifier (for example, `oi-xABCDzzuu`) is **not** accepted here.'
-      schema:
-        type: string
-        example: tackle-invitation-2sKlF3xSRGx8M724Oy3fprAX51q
+            value as `opportunityID` (capital `ID`). Clients should accept both
+
+            casings.'
+          example: O1234123
+        opportunityInvitationPayload:
+          $ref: '#/components/schemas/OpportunityInvitationPayload'
+        payloadType:
+          type: string
+          enum:
+          - OpportunityInvitation
+        receiver:
+          $ref: '#/components/schemas/InvitationReceiver'
+        rejectionReason:
+          type: string
+        senderAwsAccountId:
+          type: string
+        senderCompanyName:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACCEPTED
+          - PENDING
+          - REJECTED
+          - EXPIRED
+        metadata:
+          $ref: '#/components/schemas/InvitationMetadata'
+    OpportunityInvitationPayload:
+      type: object
+      properties:
+        receiverResponsibilities:
+          type: array
+          items:
+            type: string
+            enum:
+            - Distributor
+            - Reseller
+            - HardwarePartner
+            - ManagedServiceProvider
+            - SoftwarePartner
+            - ServicesPartner
+            - TrainingPartner
+        customer:
+          $ref: '#/components/schemas/InvitationCustomer'
+        project:
+          $ref: '#/components/schemas/InvitationProject'
+        senderContacts:
+          type: array
+          description: 'The AWS-side contacts attached to the invitation, including the AWS
+
+            sales rep, account owner, and partner-development managers. Returned
+
+            as an array of contact records.'
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+              firstName:
+                type: string
+              lastName:
+                type: string
+              phone:
+                type: string
+              businessTitle:
+                type: string
   securitySchemes:
-    BearerAuth:
-      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
+    bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
-    BasicAuthCallback:
-      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
-      type: http
-      scheme: basic
-    HeaderApiKeyAuthCallback:
-      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
-      type: apiKey
-      name: subscription-key
-      in: header
-    Oauth2AuthCallback:
-      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: /oauth/token
+      bearerFormat: MTM JWT
+      description: 'Tackle machine-to-machine access token sent as `Authorization: Bearer <access_token>`.'
 externalDocs:
-  description: Tackle Developer Hub and API Documentation
+  description: Tackle Developer Portal
   url: https://developers.tackle.io
-x-readme:
-  explorer-enabled: false
-  proxy-enabled: true
-  samples-enabled: true

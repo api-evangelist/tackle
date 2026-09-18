@@ -1,14 +1,34 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Users API
-  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
-  version: 1.0.0
+  title: SCIM Users API
+  description: 'A SCIM (System for Cross-domain Identity Management) 2.0 compliant API for managing users
+
+    through Auth0. This API provides endpoints for user management operations following RFC 7644.
+
+
+    The API supports:
+
+    - User CRUD operations (Create, Read, Update, List)
+
+    - SCIM 2.0 compliant error responses
+
+    - Bearer token authentication
+
+    - Enterprise user extensions'
+  version: 2.0.0
   contact:
-    name: Tackle Support
-    email: support@tackle.io
-    url: https://tackle.io
+    name: Tackle.io
+  license:
+    name: Proprietary
 servers:
-- url: https://api.tackle.io
+- url: https://scim.tackle.io
+  description: SCIM API Server
+  variables:
+    domain:
+      default: scim-api.tackle.io
+      description: The domain for the SCIM API
+security:
+- ApiKeyAuth: []
 tags:
 - name: Users
   description: User management operations
@@ -18,9 +38,7 @@ paths:
       tags:
       - Users
       summary: List Users
-      description: 'Retrieve a list of users. Supports pagination through startIndex and count parameters.
-
-        '
+      description: Retrieve a list of users. Supports pagination through startIndex and count parameters.
       operationId: getUsers
       parameters:
       - name: startIndex
@@ -104,9 +122,7 @@ paths:
       summary: Create User
       description: 'Create a new user. The user will be created in Auth0 SCIM and then have
 
-        their metadata updated with organization information.
-
-        '
+        their metadata updated with organization information.'
       operationId: createUser
       requestBody:
         required: true
@@ -222,9 +238,7 @@ paths:
       tags:
       - Users
       summary: Update User
-      description: 'Update an existing user. This performs a full replacement of the user resource.
-
-        '
+      description: Update an existing user. This performs a full replacement of the user resource.
       operationId: updateUser
       parameters:
       - name: id
@@ -283,9 +297,7 @@ paths:
 
         - Deactivate a user (clears vendorid and role in metadata)
 
-        - Reactivate a user (restores vendorid from organization data)
-
-        '
+        - Reactivate a user (restores vendorid from organization data)'
       operationId: patchUser
       parameters:
       - name: id
@@ -363,9 +375,7 @@ paths:
 
         their connection-test lifecycle (e.g. JumpCloud) can complete
 
-        activation without permanently destroying the test user.
-
-        '
+        activation without permanently destroying the test user.'
       operationId: deleteUser
       parameters:
       - name: id
@@ -398,257 +408,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    Photo:
-      type: object
-      required:
-      - type
-      - value
-      properties:
-        type:
-          type: string
-          description: Type of photo
-          example: photo
-        value:
-          type: string
-          format: uri
-          description: URL to the photo
-          example: https://example.com/photo.jpg
-    EnterpriseUser:
-      type: object
-      properties:
-        employeeNumber:
-          type: string
-          description: Employee number
-          example: '12345'
-        organization:
-          type: string
-          description: Organization name
-          example: Tackle
-        division:
-          type: string
-          description: Division within the organization
-          example: Engineering
-        department:
-          type: string
-          description: Department within the organization
-          example: Platform
-        manager:
-          $ref: '#/components/schemas/Manager'
-    ScimError:
-      type: object
-      required:
-      - schemas
-      - status
-      - detail
-      properties:
-        schemas:
-          type: array
-          items:
-            type: string
-          example:
-          - urn:ietf:params:scim:api:messages:2.0:Error
-        status:
-          type: string
-          description: HTTP status code as string
-          example: '400'
-        detail:
-          type: string
-          description: Human-readable error description
-          example: Invalid request
-        scimType:
-          type: string
-          description: SCIM-specific error type
-          enum:
-          - invalidFilter
-          - tooMany
-          - uniqueness
-          - mutability
-          - invalidSyntax
-          - invalidPath
-          - noTarget
-          - invalidValue
-          - invalidVers
-          - sensitive
-          example: invalidValue
-    UserListResponse:
-      type: object
-      required:
-      - schemas
-      - totalResults
-      - itemsPerPage
-      - startIndex
-      - Resources
-      properties:
-        schemas:
-          type: array
-          items:
-            type: string
-          example:
-          - urn:ietf:params:scim:api:messages:2.0:ListResponse
-        totalResults:
-          type: integer
-          description: Total number of results
-          example: 100
-        itemsPerPage:
-          type: integer
-          description: Number of results per page
-          example: 50
-        startIndex:
-          type: integer
-          description: 1-based index of the first result
-          example: 1
-        Resources:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-    UserInput:
-      type: object
-      required:
-      - schemas
-      - userName
-      - name
-      - emails
-      properties:
-        schemas:
-          type: array
-          items:
-            type: string
-          example:
-          - urn:ietf:params:scim:schemas:core:2.0:User
-          - urn:ietf:params:scim:schemas:extension:enterprise:2.0:User
-        externalId:
-          type: string
-          description: External identifier for the user
-          example: ext_user_456
-        userName:
-          type: string
-          description: Unique username for the user
-          example: john.doe@example.com
-        displayName:
-          type: string
-          description: Display name for the user
-          example: John Doe
-        nickName:
-          type: string
-          description: Nickname for the user
-          example: Johnny
-        title:
-          type: string
-          description: Job title
-          example: Senior Engineer
-        active:
-          type: boolean
-          description: Whether the user is active
-          example: true
-        locale:
-          type: string
-          description: User's preferred locale
-          example: en-US
-        name:
-          $ref: '#/components/schemas/Name'
-        emails:
-          type: array
-          items:
-            $ref: '#/components/schemas/Email'
-        photos:
-          type: array
-          items:
-            $ref: '#/components/schemas/Photo'
-        urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:
-          $ref: '#/components/schemas/EnterpriseUser'
-    PatchOperation:
-      type: object
-      required:
-      - op
-      properties:
-        op:
-          type: string
-          description: The operation to perform
-          enum:
-          - add
-          - remove
-          - replace
-          example: replace
-        path:
-          type: string
-          description: The attribute path to modify
-          example: active
-        value:
-          description: The value for the operation (type varies by operation and path)
-          oneOf:
-          - type: string
-          - type: boolean
-          - type: integer
-          - type: object
-          - type: array
-    Email:
-      type: object
-      required:
-      - value
-      - primary
-      properties:
-        value:
-          type: string
-          format: email
-          description: Email address
-          example: john.doe@example.com
-        type:
-          type: string
-          description: Type of email address
-          example: work
-        primary:
-          type: boolean
-          description: Whether this is the primary email
-          example: true
-    Meta:
-      type: object
-      readOnly: true
-      properties:
-        resourceType:
-          type: string
-          description: The resource type
-          example: User
-        created:
-          type: string
-          format: date-time
-          description: When the resource was created
-          example: '2024-01-15T10:30:00Z'
-        lastModified:
-          type: string
-          format: date-time
-          description: When the resource was last modified
-          example: '2024-01-15T10:30:00Z'
-        location:
-          type: string
-          format: uri
-          description: URL to the resource
-          example: https://scim-api.tackle.io/scim/v2/Users/user123
-    Manager:
-      type: object
-      required:
-      - value
-      properties:
-        value:
-          type: string
-          description: Manager's user ID
-          example: manager456
-    PatchOp:
-      type: object
-      required:
-      - schemas
-      - Operations
-      properties:
-        schemas:
-          type: array
-          items:
-            type: string
-          example:
-          - urn:ietf:params:scim:api:messages:2.0:PatchOp
-        Operations:
-          type: array
-          items:
-            $ref: '#/components/schemas/PatchOperation'
-          description: List of patch operations to perform
     User:
       type: object
       required:
@@ -711,6 +470,103 @@ components:
           $ref: '#/components/schemas/Meta'
         urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:
           $ref: '#/components/schemas/EnterpriseUser'
+    PatchOperation:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          description: The operation to perform
+          enum:
+          - add
+          - remove
+          - replace
+          example: replace
+        path:
+          type: string
+          description: The attribute path to modify
+          example: active
+        value:
+          description: The value for the operation (type varies by operation and path)
+          oneOf:
+          - type: string
+          - type: boolean
+          - type: integer
+          - type: object
+          - type: array
+    Manager:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          type: string
+          description: Manager's user ID
+          example: manager456
+    Photo:
+      type: object
+      required:
+      - type
+      - value
+      properties:
+        type:
+          type: string
+          description: Type of photo
+          example: photo
+        value:
+          type: string
+          format: uri
+          description: URL to the photo
+          example: https://example.com/photo.jpg
+    PatchOp:
+      type: object
+      required:
+      - schemas
+      - Operations
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:PatchOp
+        Operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatchOperation'
+          description: List of patch operations to perform
+    UserListResponse:
+      type: object
+      required:
+      - schemas
+      - totalResults
+      - itemsPerPage
+      - startIndex
+      - Resources
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:ListResponse
+        totalResults:
+          type: integer
+          description: Total number of results
+          example: 100
+        itemsPerPage:
+          type: integer
+          description: Number of results per page
+          example: 50
+        startIndex:
+          type: integer
+          description: 1-based index of the first result
+          example: 1
+        Resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
     Name:
       type: object
       required:
@@ -725,18 +581,161 @@ components:
           type: string
           description: Last name
           example: Doe
-  responses:
-    Forbidden:
-      description: Access forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ScimError'
+    UserInput:
+      type: object
+      required:
+      - schemas
+      - userName
+      - name
+      - emails
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
           example:
-            schemas:
-            - urn:ietf:params:scim:api:messages:2.0:Error
-            status: '403'
-            detail: Forbidden
+          - urn:ietf:params:scim:schemas:core:2.0:User
+          - urn:ietf:params:scim:schemas:extension:enterprise:2.0:User
+        externalId:
+          type: string
+          description: External identifier for the user
+          example: ext_user_456
+        userName:
+          type: string
+          description: Unique username for the user
+          example: john.doe@example.com
+        displayName:
+          type: string
+          description: Display name for the user
+          example: John Doe
+        nickName:
+          type: string
+          description: Nickname for the user
+          example: Johnny
+        title:
+          type: string
+          description: Job title
+          example: Senior Engineer
+        active:
+          type: boolean
+          description: Whether the user is active
+          example: true
+        locale:
+          type: string
+          description: User's preferred locale
+          example: en-US
+        name:
+          $ref: '#/components/schemas/Name'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:
+          $ref: '#/components/schemas/EnterpriseUser'
+    ScimError:
+      type: object
+      required:
+      - schemas
+      - status
+      - detail
+      properties:
+        schemas:
+          type: array
+          items:
+            type: string
+          example:
+          - urn:ietf:params:scim:api:messages:2.0:Error
+        status:
+          type: string
+          description: HTTP status code as string
+          example: '400'
+        detail:
+          type: string
+          description: Human-readable error description
+          example: Invalid request
+        scimType:
+          type: string
+          description: SCIM-specific error type
+          enum:
+          - invalidFilter
+          - tooMany
+          - uniqueness
+          - mutability
+          - invalidSyntax
+          - invalidPath
+          - noTarget
+          - invalidValue
+          - invalidVers
+          - sensitive
+          example: invalidValue
+    Meta:
+      type: object
+      readOnly: true
+      properties:
+        resourceType:
+          type: string
+          description: The resource type
+          example: User
+        created:
+          type: string
+          format: date-time
+          description: When the resource was created
+          example: '2024-01-15T10:30:00Z'
+        lastModified:
+          type: string
+          format: date-time
+          description: When the resource was last modified
+          example: '2024-01-15T10:30:00Z'
+        location:
+          type: string
+          format: uri
+          description: URL to the resource
+          example: https://scim-api.tackle.io/scim/v2/Users/user123
+    EnterpriseUser:
+      type: object
+      properties:
+        employeeNumber:
+          type: string
+          description: Employee number
+          example: '12345'
+        organization:
+          type: string
+          description: Organization name
+          example: Tackle
+        division:
+          type: string
+          description: Division within the organization
+          example: Engineering
+        department:
+          type: string
+          description: Department within the organization
+          example: Platform
+        manager:
+          $ref: '#/components/schemas/Manager'
+    Email:
+      type: object
+      required:
+      - value
+      - primary
+      properties:
+        value:
+          type: string
+          format: email
+          description: Email address
+          example: john.doe@example.com
+        type:
+          type: string
+          description: Type of email address
+          example: work
+        primary:
+          type: boolean
+          description: Whether this is the primary email
+          example: true
+  responses:
     InternalServerError:
       description: Internal server error
       content:
@@ -748,6 +747,17 @@ components:
             - urn:ietf:params:scim:api:messages:2.0:Error
             status: '500'
             detail: Internal server error
+    Forbidden:
+      description: Access forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScimError'
+          example:
+            schemas:
+            - urn:ietf:params:scim:api:messages:2.0:Error
+            status: '403'
+            detail: Forbidden
     Unauthorized:
       description: Authentication information is missing or invalid
       content:
@@ -760,30 +770,15 @@ components:
             status: '401'
             detail: Unauthorized
   securitySchemes:
-    BearerAuth:
-      description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-    BasicAuthCallback:
-      description: Use `basic` for [basic HTTP authentication](https://en.wikipedia.org/wiki/Basic_access_authentication); this is only used for `callbacks`
-      type: http
-      scheme: basic
-    HeaderApiKeyAuthCallback:
-      description: Use `header_api_key` to specify a custom HTTP request header for authentication. Requests from Tackle will use the specified HTTP header for outbound requests to your Webhook URL; this is only used for `callbacks`'
+    ApiKeyAuth:
       type: apiKey
-      name: subscription-key
       in: header
-    Oauth2AuthCallback:
-      description: This auth-type is for `oauth2` client credentials flow. We will use the client_id and client_secret to call the token_url to get an access token; this is only used for `callbacks`'
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: /oauth/token
+      name: Authorization
+      description: 'API key authentication.
+
+        Include the API key in the Authorization header.
+
+        '
 externalDocs:
-  description: Tackle Developer Hub and API Documentation
-  url: https://developers.tackle.io
-x-readme:
-  explorer-enabled: false
-  proxy-enabled: true
-  samples-enabled: true
+  description: SCIM 2.0 RFC 7644 Specification
+  url: https://datatracker.ietf.org/doc/html/rfc7644

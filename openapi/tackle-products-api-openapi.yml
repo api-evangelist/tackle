@@ -1,14 +1,12 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Products API
-  description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
+  title: Tackle Products API
   version: 1.0.0
-  contact:
-    name: Tackle Support
-    email: support@tackle.io
-    url: https://tackle.io
+  description: 'Operations tagged Products across 2 of this provider''s published API definitions: tackle-api-openapi.json, tackle-offers-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.tackle.io
+- url: https://msft.offers.tackle.io
+  description: MSFT Offers Service
 tags:
 - name: Products
   description: Operations for Products
@@ -25,9 +23,10 @@ paths:
         '401':
           $ref: '#/components/responses/401-Unauthorized-MTM'
       operationId: v1-list-products
-      description: List Products
       security:
       - BearerAuth: []
+    servers:
+    - url: https://api.tackle.io
   /v1/products/{productid}:
     parameters:
     - $ref: '#/components/parameters/productid_path'
@@ -46,6 +45,8 @@ paths:
       description: Gets more detailed information for a specific product
       security:
       - BearerAuth: []
+    servers:
+    - url: https://api.tackle.io
   /v1/products/{productid}/registration-redirects:
     parameters:
     - $ref: '#/components/parameters/productid_path'
@@ -98,6 +99,8 @@ paths:
       description: Delete all registration redirects associated with the product
       security:
       - BearerAuth: []
+    servers:
+    - url: https://api.tackle.io
   /v1/products/{productid}/registration-redirects/{redirect_type}:
     parameters:
     - $ref: '#/components/parameters/productid_path'
@@ -137,6 +140,8 @@ paths:
       description: Delete the named registration redirect configuration associated with the product
       security:
       - BearerAuth: []
+    servers:
+    - url: https://api.tackle.io
   /api/products:
     get:
       tags:
@@ -162,9 +167,7 @@ paths:
         details for a specific product.
 
 
-        Required RBAC action: `offers:ListProducts`.
-
-        '
+        Required RBAC action: `offers:ListProducts`.'
       operationId: listProducts
       security:
       - bearerAuth: []
@@ -185,6 +188,9 @@ paths:
           $ref: '#/components/responses/ForbiddenError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://msft.offers.tackle.io
+      description: MSFT Offers Service
   /api/products/{id}:
     get:
       tags:
@@ -201,9 +207,7 @@ paths:
         product details from Microsoft Partner Center.
 
 
-        Required RBAC action: `offers:CreateDraftOffer`.
-
-        '
+        Required RBAC action: `offers:CreateDraftOffer`.'
       operationId: getProductDetails
       security:
       - bearerAuth: []
@@ -225,15 +229,69 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    servers:
+    - url: https://msft.offers.tackle.io
+      description: MSFT Offers Service
 components:
   schemas:
-    TermValue:
+    ProductStatus:
+      description: 'The current listing status for the product within the Tackle platform.
+
+
+        For example, if you recently submitted a new listing to Tackle for review, it may be in a status of `waiting-for-tackle`.  If your listing is live in a given Cloud Marketplace, it may be in a status of `published`.''
+
+        '
+      type: string
+      enum:
+      - in-progress
+      - waiting-for-tackle
+      - approved
+      - waiting-for-cloud-provider
+      - ready-to-preview
+      - published
+    Error:
+      title: ErrorResponse
       type: object
       properties:
-        type:
+        code:
           type: string
-        value:
-          type: integer
+          description: Error code
+          minLength: 0
+        error:
+          type: string
+          description: Error response
+          minLength: 0
+        errors:
+          description: Error details
+          type: array
+          items: {}
+        error_type:
+          type: string
+          enum:
+          - service_exception
+          - client_exception
+      required:
+      - code
+      - error
+      - errors
+    ProductName:
+      type: string
+      description: The name of a given product in the marketplace
+    ListProductsResponse:
+      title: ListProductsResponse
+      type: object
+      description: Response describing data containing a list of products and additional response metadata
+      properties:
+        data:
+          type: array
+          description: A list of Products
+          items:
+            $ref: '#/components/schemas/ProductResponse'
+        metadata:
+          $ref: '#/components/schemas/ProductMetadata'
+      required:
+      - data
+      - metadata
     GetProductResponse:
       title: GetProductResponse
       type: object
@@ -245,60 +303,204 @@ components:
       required:
       - data
       - metadata
-    Meter:
+    ProductDetailFields:
       type: object
       properties:
-        included_quantities:
-          type: array
-          items:
-            $ref: '#/components/schemas/IncludedQuantity'
-        prices:
-          type: array
-          items:
-            $ref: '#/components/schemas/PriceDetail'
-    ProductDetailsResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        external_id:
-          type: string
-        alias:
-          type: string
-        plans:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlanResponse'
-    PlanUserLimits:
-      type: object
-      properties:
-        min:
-          type: integer
-        max:
-          type: integer
-    IncludedQuantity:
-      type: object
-      properties:
-        billing_term:
-          $ref: '#/components/schemas/TermValue'
-        is_infinite:
-          type: boolean
-        quantity:
-          type: number
-          format: double
-    CustomMeters:
-      type: object
-      properties:
-        price_input_option:
-          type: string
-        meters:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        registration:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Meter'
+          properties:
+            fields:
+              $ref: '#/components/schemas/RegistrationPageFields'
+            redirect:
+              $ref: '#/components/schemas/RegistrationRedirect'
+            redirects:
+              $ref: '#/components/schemas/RegistrationRedirects'
+    AwsCloud:
+      type: string
+      description: AWS Cloud
+      default: aws
+      enum:
+      - aws
+      example: aws
+    GcpProductId:
+      type: string
+      description: GCP Solution ID
+      example: tackle-for-gcp
+      minLength: 0
+    ProductLink:
+      type: string
+      title: ProductLink
+      description: A URL for a given product resource
+      format: uri
+    ProductFields:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/ProductLink'
+      required:
+      - link
+    ProductId:
+      description: Cloud Marketplace issued ID for a product
+      example: abcd-1234-efgh-5678
+      anyOf:
+      - $ref: '#/components/schemas/AwsProductId'
+      - $ref: '#/components/schemas/GcpProductId'
+      - $ref: '#/components/schemas/AzureProductId'
+      - $ref: '#/components/schemas/RedHatProductId'
+    RegistrationRedirect:
+      type: object
+      description: Defines a URL that purchaser will be redirected to for registration as well as custom query parameters that will be attached to the redirect
+      properties:
+        url:
+          description: URL of custom registration page where purchaser will be redirected to
+          type:
+          - string
+          - 'null'
+          minLength: 0
+        params:
+          type: object
+          description: Key/Value pairs that will be converted to query parameters and attached to the redirect
+    AzureCloud:
+      type: string
+      description: Azure Cloud
+      default: azure
+      enum:
+      - azure
+      example: azure
+    AwsProductId:
+      type: string
+      description: AWS Product Code
+      example: 1test1a2b3c4d5e6f7g8h9ijk
+      minLength: 0
+    Clouds:
+      anyOf:
+      - $ref: '#/components/schemas/AwsCloud'
+      - $ref: '#/components/schemas/GcpCloud'
+      - $ref: '#/components/schemas/AzureCloud'
+      - $ref: '#/components/schemas/RedHatCloud'
+      description: A string identifying a cloud marketplace
+    Product:
+      type: object
+      properties:
+        productid:
+          $ref: '#/components/schemas/ProductId'
+        product_name:
+          $ref: '#/components/schemas/ProductName'
+        cloud:
+          $ref: '#/components/schemas/Clouds'
+      required:
+      - productid
+      - product_name
+      - cloud
+    ProductMetadata:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/ProductLink'
+    ProductDetail:
+      allOf:
+      - $ref: '#/components/schemas/Product'
+      - $ref: '#/components/schemas/ProductDetailFields'
+    RegistrationRedirects:
+      title: RegistrationRedirectsRequest
+      type: object
+      properties:
+        isv_hosted:
+          $ref: '#/components/schemas/RegistrationRedirect'
+        isv_hosted_aws_free_trial:
+          $ref: '#/components/schemas/RegistrationRedirect'
+      description: 'Defines the registration redirects for a product. These are required if you wish to host your own registration page. If none are defined, registration will occur with a Tackle registration form.
+
+
+        Use `isv_hosted` settings for a standard registration. Use `isv_hosted_aws_free_trial` to set up the redirect for an AWS free trial'
+    RedHatProductId:
+      type: string
+      description: Red Hat Product Id
+      example: d7a149a199100ad8a9931f14ea95cd00
+      minLength: 0
+    RegistrationPageFields:
+      type: array
+      description: Fields used for the registration page
+      items:
+        type: object
+        properties:
+          validation_type:
+            type:
+            - string
+            - 'null'
+          default:
+            type: boolean
+          display_title:
+            type: string
+            description: The field display title
+          data_type:
+            type: string
+          options:
+            type: object
+          title:
+            type: string
+            description: The field title
+          tackle_required:
+            type: boolean
+          integrations:
+            type: object
+          enabled:
+            type: boolean
+          required:
+            type: boolean
+            description: Specifies if a given registration field is required
+            default: false
+        required:
+        - validation_type
+        - default
+        - display_title
+        - data_type
+        - options
+        - title
+        - tackle_required
+        - integrations
+        - enabled
+        - required
+    RedHatCloud:
+      type: string
+      description: Red Hat Cloud
+      default: redhat
+      enum:
+      - redhat
+      example: redhat
+    GcpCloud:
+      type: string
+      description: GCP Cloud
+      default: gcp
+      enum:
+      - gcp
+      example: gcp
+    ProductRegistrationRedirectsResponse:
+      title: ProductRegistrationRedirectsResponse
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/RegistrationRedirects'
     ProductResponse:
       allOf:
       - $ref: '#/components/schemas/Product'
       - $ref: '#/components/schemas/ProductFields'
+    AzureProductId:
+      type: string
+      description: Azure Offer ID
+      example: tackle-azure-platform
+      minLength: 0
+    ErrorResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Human-readable error message.
+          example: missing id
     RecurrentPrice:
       type: object
       properties:
@@ -312,25 +514,101 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlanPrice'
-    RedHatCloud:
-      type: string
-      description: Red Hat Cloud
-      default: redhat
-      enum:
-      - redhat
-      example: redhat
-    AwsCloud:
-      type: string
-      description: AWS Cloud
-      default: aws
-      enum:
-      - aws
-      example: aws
-    ProductLink:
-      type: string
-      title: ProductLink
-      description: A URL for a given product resource
-      format: uri
+    CustomMeters:
+      type: object
+      properties:
+        price_input_option:
+          type: string
+        meters:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Meter'
+    ProductDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        external_id:
+          type: string
+        alias:
+          type: string
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanResponse'
+    PlanResponse:
+      type: object
+      properties:
+        description:
+          type: string
+        product:
+          type: string
+        plan:
+          type: string
+        pricing:
+          $ref: '#/components/schemas/PlanPricing'
+        offer_pricing_type:
+          type: string
+        markets:
+          type: array
+          items:
+            type: string
+        audience:
+          type: string
+        alias:
+          type: string
+        external_id:
+          type: string
+    PriceDetail:
+      type: object
+      properties:
+        markets:
+          type: array
+          items:
+            type: string
+        currency:
+          type: string
+        price:
+          type: number
+          format: double
+    PlanPrice:
+      type: object
+      properties:
+        billing_term:
+          $ref: '#/components/schemas/TermValue'
+        payment_option:
+          $ref: '#/components/schemas/TermValue'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceDetail'
+        price_per_payment_in_usd:
+          type: number
+          format: double
+    IncludedQuantity:
+      type: object
+      properties:
+        billing_term:
+          $ref: '#/components/schemas/TermValue'
+        is_infinite:
+          type: boolean
+        quantity:
+          type: number
+          format: double
+    PlanPricing:
+      type: object
+      properties:
+        recurrent_price:
+          $ref: '#/components/schemas/RecurrentPrice'
+        custom_meters:
+          $ref: '#/components/schemas/CustomMeters'
+    TermValue:
+      type: object
+      properties:
+        type:
+          type: string
+        value:
+          type: integer
     Product_2:
       type: object
       description: 'A Microsoft Marketplace product owned by the calling seller. The
@@ -386,322 +664,69 @@ components:
       - vendorid
       - name
       - status
-    GcpCloud:
-      type: string
-      description: GCP Cloud
-      default: gcp
-      enum:
-      - gcp
-      example: gcp
-    PlanPricing:
+    Meter:
       type: object
       properties:
-        recurrent_price:
-          $ref: '#/components/schemas/RecurrentPrice'
-        custom_meters:
-          $ref: '#/components/schemas/CustomMeters'
-    ListProductsResponse:
-      title: ListProductsResponse
-      type: object
-      description: Response describing data containing a list of products and additional response metadata
-      properties:
-        data:
+        included_quantities:
           type: array
-          description: A list of Products
           items:
-            $ref: '#/components/schemas/ProductResponse'
-        metadata:
-          $ref: '#/components/schemas/ProductMetadata'
-      required:
-      - data
-      - metadata
-    Error:
-      title: ErrorResponse
-      type: object
-      properties:
-        code:
-          type: string
-          description: Error code
-          minLength: 0
-        error:
-          type: string
-          description: Error response
-          minLength: 0
-        errors:
-          description: Error details
-          type: array
-          items: {}
-        error_type:
-          type: string
-          enum:
-          - service_exception
-          - client_exception
-      required:
-      - code
-      - error
-      - errors
-    Product:
-      type: object
-      properties:
-        productid:
-          $ref: '#/components/schemas/ProductId'
-        product_name:
-          $ref: '#/components/schemas/ProductName'
-        cloud:
-          $ref: '#/components/schemas/Clouds'
-      required:
-      - productid
-      - product_name
-      - cloud
-    ProductStatus:
-      description: 'The current listing status for the product within the Tackle platform.
-
-
-        For example, if you recently submitted a new listing to Tackle for review, it may be in a status of `waiting-for-tackle`.  If your listing is live in a given Cloud Marketplace, it may be in a status of `published`.''
-
-        '
-      type: string
-      enum:
-      - in-progress
-      - waiting-for-tackle
-      - approved
-      - waiting-for-cloud-provider
-      - ready-to-preview
-      - published
-    AwsProductId:
-      type: string
-      description: AWS Product Code
-      example: 1test1a2b3c4d5e6f7g8h9ijk
-      minLength: 0
-    PlanPrice:
-      type: object
-      properties:
-        billing_term:
-          $ref: '#/components/schemas/TermValue'
-        payment_option:
-          $ref: '#/components/schemas/TermValue'
+            $ref: '#/components/schemas/IncludedQuantity'
         prices:
           type: array
           items:
             $ref: '#/components/schemas/PriceDetail'
-        price_per_payment_in_usd:
-          type: number
-          format: double
-    RegistrationRedirects:
-      title: RegistrationRedirectsRequest
+    PlanUserLimits:
       type: object
       properties:
-        isv_hosted:
-          $ref: '#/components/schemas/RegistrationRedirect'
-        isv_hosted_aws_free_trial:
-          $ref: '#/components/schemas/RegistrationRedirect'
-      description: 'Defines the registration redirects for a product. These are required if you wish to host your own registration page. If none are defined, registration will occur with a Tackle registration form.
-
-
-        Use `isv_hosted` settings for a standard registration. Use `isv_hosted_aws_free_trial` to set up the redirect for an AWS free trial'
-    ProductFields:
-      type: object
-      properties:
-        link:
-          $ref: '#/components/schemas/ProductLink'
-      required:
-      - link
-    ErrorResponse:
-      type: object
-      required:
-      - message
-      properties:
-        message:
-          type: string
-          description: Human-readable error message.
-          example: missing id
-    AzureCloud:
-      type: string
-      description: Azure Cloud
-      default: azure
-      enum:
-      - azure
-      example: azure
-    ProductDetail:
-      allOf:
-      - $ref: '#/components/schemas/Product'
-      - $ref: '#/components/schemas/ProductDetailFields'
-    ProductId:
-      description: Cloud Marketplace issued ID for a product
-      example: abcd-1234-efgh-5678
-      anyOf:
-      - $ref: '#/components/schemas/AwsProductId'
-      - $ref: '#/components/schemas/GcpProductId'
-      - $ref: '#/components/schemas/AzureProductId'
-      - $ref: '#/components/schemas/RedHatProductId'
-    AzureProductId:
-      type: string
-      description: Azure Offer ID
-      example: tackle-azure-platform
-      minLength: 0
-    GcpProductId:
-      type: string
-      description: GCP Solution ID
-      example: tackle-for-gcp
-      minLength: 0
-    ProductDetailFields:
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/ProductStatus'
-        registration:
-          type: object
-          properties:
-            fields:
-              $ref: '#/components/schemas/RegistrationPageFields'
-            redirect:
-              $ref: '#/components/schemas/RegistrationRedirect'
-            redirects:
-              $ref: '#/components/schemas/RegistrationRedirects'
-    RegistrationPageFields:
-      type: array
-      description: Fields used for the registration page
-      items:
-        type: object
-        properties:
-          validation_type:
-            type: string
-            nullable: true
-          default:
-            type: boolean
-          display_title:
-            type: string
-            description: The field display title
-          data_type:
-            type: string
-          options:
-            type: object
-          title:
-            type: string
-            description: The field title
-          tackle_required:
-            type: boolean
-          integrations:
-            type: object
-          enabled:
-            type: boolean
-          required:
-            type: boolean
-            description: Specifies if a given registration field is required
-            default: false
-        required:
-        - validation_type
-        - default
-        - display_title
-        - data_type
-        - options
-        - title
-        - tackle_required
-        - integrations
-        - enabled
-        - required
-    ProductMetadata:
-      type: object
-      properties:
-        link:
-          $ref: '#/components/schemas/ProductLink'
-    ProductName:
-      type: string
-      description: The name of a given product in the marketplace
-    RegistrationRedirect:
-      type: object
-      description: Defines a URL that purchaser will be redirected to for registration as well as custom query parameters that will be attached to the redirect
-      properties:
-        url:
-          description: URL of custom registration page where purchaser will be redirected to
-          type: string
-          minLength: 0
-          nullable: true
-        params:
-          type: object
-          description: Key/Value pairs that will be converted to query parameters and attached to the redirect
-    PlanResponse:
-      type: object
-      properties:
-        description:
-          type: string
-        product:
-          type: string
-        plan:
-          type: string
-        pricing:
-          $ref: '#/components/schemas/PlanPricing'
-        offer_pricing_type:
-          type: string
-        markets:
-          type: array
-          items:
-            type: string
-        audience:
-          type: string
-        alias:
-          type: string
-        external_id:
-          type: string
-    PriceDetail:
-      type: object
-      properties:
-        markets:
-          type: array
-          items:
-            type: string
-        currency:
-          type: string
-        price:
-          type: number
-          format: double
-    ProductRegistrationRedirectsResponse:
-      title: ProductRegistrationRedirectsResponse
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/RegistrationRedirects'
-    Clouds:
-      anyOf:
-      - $ref: '#/components/schemas/AwsCloud'
-      - $ref: '#/components/schemas/GcpCloud'
-      - $ref: '#/components/schemas/AzureCloud'
-      - $ref: '#/components/schemas/RedHatCloud'
-      description: A string identifying a cloud marketplace
-    RedHatProductId:
-      type: string
-      description: Red Hat Product Id
-      example: d7a149a199100ad8a9931f14ea95cd00
-      minLength: 0
+        min:
+          type: integer
+        max:
+          type: integer
   responses:
-    Products_200-OK-Products:
-      description: Example response for a list of products
+    401-Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ListProductsResponse'
+            $ref: '#/components/schemas/Error'
           examples:
-            list-products-response:
+            unauthorized:
+              value:
+                code: unauthorized
+                error: client_id and client_secret are invalid.
+                error_type: service_exception
+                errors: []
+    Products_404-Not-Found-Product:
+      description: Response if product was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            product-not-found:
+              value:
+                code: invalid_product
+                error: The product 'DEMOVENDOR1-4451235' does not exist
+                error_type: service_exception
+                errors: []
+    Products_200-OK-Product-Registration-Redirect-Deleted:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductRegistrationRedirectsResponse'
+          examples:
+            product-registration-redirects-response:
               value:
                 data:
-                - productid: abcd-1234-efgh-5678
-                  product_name: example-product
-                  cloud: aws
-                  link: https://api.tackle.io/v1/products/abcd-1234-efgh-5678
-                - productid: ijkl-9012-mnop-3456
-                  product_name: another-example-product
-                  cloud: gcp
-                  link: https://api.tackle.io/v1/products/ijkl-9012-mnop-3456
-                - productid: azure-product-name-example
-                  product_name: example-azure-product
-                  cloud: azure
-                  link: https://api.tackle.io/v1/products/azure-product-name-example
-                - productid: d53299f027fc1f63f562cca11a97aaaa
-                  product_name: example-redhat-product
-                  cloud: redhat
-                  link: https://api.tackle.io/v1/products/d53299f027fc1f63f562cca11a97aaaa
+                  isv_hosted:
+                    url: ''
+                    params: {}
+                  isv_hosted_aws_free_trial:
+                    params: {}
+                    url: ''
                 metadata:
-                  link: https://api.tackle.io/v1/products
+                  link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect
     401-Unauthorized-MTM:
       description: Unauthorized
       content:
@@ -738,6 +763,34 @@ components:
                 code: mtm_token_expired
                 error: Token expired
                 errors: []
+    Products_200-OK-Products:
+      description: Example response for a list of products
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ListProductsResponse'
+          examples:
+            list-products-response:
+              value:
+                data:
+                - productid: abcd-1234-efgh-5678
+                  product_name: example-product
+                  cloud: aws
+                  link: https://api.tackle.io/v1/products/abcd-1234-efgh-5678
+                - productid: ijkl-9012-mnop-3456
+                  product_name: another-example-product
+                  cloud: gcp
+                  link: https://api.tackle.io/v1/products/ijkl-9012-mnop-3456
+                - productid: azure-product-name-example
+                  product_name: example-azure-product
+                  cloud: azure
+                  link: https://api.tackle.io/v1/products/azure-product-name-example
+                - productid: d53299f027fc1f63f562cca11a97aaaa
+                  product_name: example-redhat-product
+                  cloud: redhat
+                  link: https://api.tackle.io/v1/products/d53299f027fc1f63f562cca11a97aaaa
+                metadata:
+                  link: https://api.tackle.io/v1/products
     Products_200-OK-Product-Registration-Redirect:
       description: Example response
       content:
@@ -758,6 +811,21 @@ components:
                     url: https://www.example.com/welcome_free_trial
                 metadata:
                   link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect
+    Products_200-OK-Product-Registration-Redirect-Singular-Deleted:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductRegistrationRedirectsResponse'
+          examples:
+            product-registration-redirects-response:
+              value:
+                data:
+                  isv_hosted:
+                    params: {}
+                    url: ''
+                metadata:
+                  link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect/isv_hosted
     Products_200-OK-Product:
       description: Example response for a single product
       content:
@@ -819,95 +887,6 @@ components:
                           type: example-type
                 metadata:
                   link: https://api.tackle.io/v1/products/abcd-1234-efgh-5678
-    NotFoundError:
-      description: Requested offer or resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: not found
-    Products_200-OK-Product-Registration-Redirect-Singular-Deleted:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ProductRegistrationRedirectsResponse'
-          examples:
-            product-registration-redirects-response:
-              value:
-                data:
-                  isv_hosted:
-                    params: {}
-                    url: ''
-                metadata:
-                  link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect/isv_hosted
-    401-Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            unauthorized:
-              value:
-                code: unauthorized
-                error: client_id and client_secret are invalid.
-                error_type: service_exception
-                errors: []
-    Products_404-Not-Found-Product:
-      description: Response if product was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            product-not-found:
-              value:
-                code: invalid_product
-                error: The product 'DEMOVENDOR1-4451235' does not exist
-                error_type: service_exception
-                errors: []
-    ForbiddenError:
-      description: Caller is not allowed to perform this action.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: forbidden
-    Products_200-OK-Product-Registration-Redirect-Deleted:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ProductRegistrationRedirectsResponse'
-          examples:
-            product-registration-redirects-response:
-              value:
-                data:
-                  isv_hosted:
-                    url: ''
-                    params: {}
-                  isv_hosted_aws_free_trial:
-                    params: {}
-                    url: ''
-                metadata:
-                  link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect
-    InternalServerError:
-      description: Internal server error or upstream dependency failure.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    UnauthorizedError:
-      description: Authentication failed.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            message: unauthorized
     Products_200-OK-Product-Registration-Redirect-Singular:
       description: Example response
       content:
@@ -924,6 +903,36 @@ components:
                     url: https://www.example.com/welcome
                 metadata:
                   link: http://api.tackle.io/v1/products/P3A0BCD23E/registration-redirect/isv_hosted
+    NotFoundError:
+      description: Requested offer or resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: not found
+    InternalServerError:
+      description: Internal server error or upstream dependency failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ForbiddenError:
+      description: Caller is not allowed to perform this action.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: forbidden
+    UnauthorizedError:
+      description: Authentication failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            message: unauthorized
   parameters:
     productid_path:
       name: productid
@@ -932,14 +941,6 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/ProductId'
-    TackleOperationId:
-      name: tackle-operation-id
-      in: header
-      required: false
-      description: Optional caller-provided operation ID for request tracing.
-      schema:
-        type: string
-      example: 018f01ec-3f2b-7a70-b81e-4fc3d6a69f42
     ProductId:
       name: id
       in: path
@@ -948,6 +949,14 @@ components:
       schema:
         type: string
       example: product/123
+    TackleOperationId:
+      name: tackle-operation-id
+      in: header
+      required: false
+      description: Optional caller-provided operation ID for request tracing.
+      schema:
+        type: string
+      example: 018f01ec-3f2b-7a70-b81e-4fc3d6a69f42
   securitySchemes:
     BearerAuth:
       description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
@@ -969,9 +978,17 @@ components:
       flows:
         clientCredentials:
           tokenUrl: /oauth/token
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Tackle bearer token checked by RBAC for the operation action.
 externalDocs:
   description: Tackle Developer Hub and API Documentation
   url: https://developers.tackle.io
+x-refined-from:
+- tackle-api-openapi.json
+- tackle-offers-openapi.json
 x-readme:
   explorer-enabled: false
   proxy-enabled: true

@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Subscriptions API
+  title: Tackle Subscriptions API
   description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
   version: 1.0.0
   contact:
@@ -52,496 +52,32 @@ paths:
       security:
       - BearerAuth: []
 components:
-  schemas:
-    TimestampZeroUtcOffsetOptional:
-      type: string
-      description: Optional ISO format timestamp with zero UTC offset
-      example: '2021-10-25T21:38:20.865Z'
-      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d*)?Z$
-      format: date-time
-      nullable: true
-    AwsCustomerId:
-      type: string
-      description: AWS Account Reference ID
-      example: ij3sXMkN3or
-      minLength: 0
-    SubscriptionLink:
-      type: string
-      title: SubscriptionLink
-      description: A URL for a given subscription resource
-      format: uri
-    CustomerId:
-      anyOf:
-      - $ref: '#/components/schemas/AwsCustomerId'
-      - $ref: '#/components/schemas/GcpCustomerId'
-      - $ref: '#/components/schemas/AzureCustomerId'
-      - $ref: '#/components/schemas/RedHatCustomerId'
-    TimestampZeroUtcOffset:
-      type: string
-      description: ISO format timestamp with zero UTC offset
-      example: '2021-10-25T21:38:20.865Z'
-      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d*)?Z$
-      format: date-time
-    RedHatCustomerId:
-      type: string
-      description: Red Hat Customer Id
-      example: 615334398743ac63d55cc4db
-      minLength: 0
-    SubscriptionId:
-      type: string
-      description: Subscription Id
-      example: 5fd2a7e8908e88888c7f0e71
-      minLength: 0
-      nullable: true
-    RedHatCloud:
-      type: string
-      description: Red Hat Cloud
-      default: redhat
-      enum:
-      - redhat
-      example: redhat
-    AwsMarketplaceData:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            CustomerAWSAccountId:
-              title: CustomerAWSAccountId
-              type: string
-              description: AWS account ID associated to the customerid for the individual customer
-              example: example-account-id
-      description: Marketplace data specific to AWS
-      title: AWS
-    RedHatSubscriptionRenewType:
-      type: string
-      description: Renew Type
-      enum:
-      - ORIGINAL_TERM
-      - TERMINATE
-      example: ORIGINAL_TERM
-    RedHatTermUnit:
-      type: string
-      description: The unit for the term
-      enum:
-      - DAYS
-      - WEEKS
-      - MONTHS
-      - YEARS
-      example: MONTHS
-    AwsCloud:
-      type: string
-      description: AWS Cloud
-      default: aws
-      enum:
-      - aws
-      example: aws
-    GcpEntitlement:
-      type: object
-      description: A purchase entitlement from GCP Marketplace
-      properties:
-        account:
-          type: string
-          description: The resource name of the account that this entitlement is based on, if any
-        consumers:
-          type: array
-          description: The resources using this entitlement, if applicable
-          items:
-            type: string
-        createTime:
-          type: string
-          format: date-time
-          example: '2020-10-02T15:01:23.045123456Z'
-        messageToUser:
-          type: string
-          description: Provider-supplied message that is displayed to the end user
-        name:
-          type: string
-          description: The resource name of the entitlement
-        newPendingPlan:
-          type: string
-          description: The identifier of the pending new plan, required if the product has plans and the entitlement has a pending plan change
-        offer:
-          type: string
-        offerEndTime:
-          type: string
-          format: date-time
-        plan:
-          type: string
-          description: The identifier of the plan that was procured, required if the product has plans
-        product:
-          type: string
-          description: The identifier of the product that was procured
-        provider:
-          type: string
-          description: The identifier of the service provider that this entitlement was created against
-        productExternalName:
-          type: string
-        quoteExternalName:
-          type: string
-        state:
-          type: string
-          description: The state of the entitlement
-        subscriptionEndTime:
-          type: string
-        updateTime:
-          type: string
-          format: date-time
-          example: '2019-10-25T21:38:20.865Z'
-        usageReportingId:
-          type: string
-          description: The consumerId to use when reporting usage through the Service Control API. See the consumerId field at Reporting Metrics for more details. This field is present only if the product has usage-based billing configured.
-      required:
-      - account
-      - createTime
-      - name
-      - plan
-      - product
-      title: GcpEntitlement
-    IsFreeTrial:
-      type: boolean
-      description: Designation for Free Trial
-      example: false
-      default: false
-      readOnly: true
-    ProductLink:
-      type: string
-      title: ProductLink
-      description: A URL for a given product resource
-      format: uri
-    SubscriptionDetails:
-      type: object
-      properties:
-        entitlements:
-          $ref: '#/components/schemas/Entitlements'
-        registration_details:
-          $ref: '#/components/schemas/RegistrationDetails'
-        marketplace_data:
-          $ref: '#/components/schemas/MarketplaceData'
-    OtherMarketplaceData:
-      description: GCP, Azure, and Red Hat do not currently have marketplace specific data
-      type: object
-      title: GCP, Azure, or Red Hat
-    AzureCustomerId:
-      type: string
-      description: Azure Subscription ID
-      example: 1b3gs3f4-2794-abcd-3fa3-063ga0s3t3re
-      minLength: 0
-    Error:
-      title: ErrorResponse
-      type: object
-      properties:
-        code:
-          type: string
-          description: Error code
-          minLength: 0
-        error:
-          type: string
-          description: Error response
-          minLength: 0
-        errors:
-          description: Error details
-          type: array
-          items: {}
-        error_type:
-          type: string
-          enum:
-          - service_exception
-          - client_exception
-      required:
-      - code
-      - error
-      - errors
-    AzureEntitlement:
-      type: object
-      description: A purchase entitlement from Azure Marketplace
-      properties:
-        plan:
-          type: string
-        quantity:
-          type: integer
-        subscription_id:
-          type: string
-        subscription_name:
-          type: string
-        offer_id:
-          type: string
-      required:
-      - plan
-      - quantity
-      - subscription_id
-      - subscription_name
-      - offer_id
-    Metadata:
-      title: Metadata
-      type: object
-      description: Metadata for a given request
-      properties:
-        link:
-          type: string
-          format: uri
-          example: https://api.tackle.io
-      required:
-      - link
-    AwsEntitlement:
-      properties:
-        dimension:
-          type: string
-        skuid:
-          type: string
-        expiration:
-          type: string
-          format: date-time
-          example: '2019-04-24T12:23:03.048000+00:00'
-        value:
-          type: integer
-      required:
-      - dimension
-      - skuid
-      - expiration
-      - value
-      example:
-        dimension: example_dimension_name
-        expiration: '2019-04-24T12:23:03.048000+00:00'
-        skuid: example_awsdimension_apiname_1
-        value: 1
-      description: 'A purchase entitlement from AWS Marketplace '
-    SubscriptionItem:
-      type: object
-      properties:
-        link:
-          $ref: '#/components/schemas/SubscriptionLink'
-    AwsProductId:
-      type: string
-      description: AWS Product Code
-      example: 1test1a2b3c4d5e6f7g8h9ijk
-      minLength: 0
-    ListSubscriptionsResponse:
-      title: ListSubscriptionsResponse
-      type: object
-      description: Response describing data containing a list of subscriptions and additional response metadata
-      properties:
-        data:
-          type: array
-          description: A list of Subscriptions
-          items:
-            $ref: '#/components/schemas/SubscriptionContracted'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-      required:
-      - data
-      - metadata
-    Subscription:
-      type: object
-      properties:
-        tackle_subscription_id:
-          $ref: '#/components/schemas/SubscriptionId'
-        productid:
-          $ref: '#/components/schemas/ProductId'
-        product_link:
-          $ref: '#/components/schemas/ProductLink'
-        cloud:
-          $ref: '#/components/schemas/Clouds'
-        customerid:
-          $ref: '#/components/schemas/CustomerId'
-        offerid:
-          $ref: '#/components/schemas/OfferId'
-        created_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffset'
-        registered_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffsetOptional'
-        cancelled_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffsetOptional'
-        updated_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffset'
-        started_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffset'
-        ended_at:
-          $ref: '#/components/schemas/TimestampZeroUtcOffset'
-        is_free_trial:
-          $ref: '#/components/schemas/IsFreeTrial'
-      required:
-      - tackle_subscription_id
-      - productid
-      - customerid
-      - created_at
-    GcpCustomerId:
-      type: string
-      description: GCP External Account ID
-      example: E-ABC2-D330-E2FG-H2Q2
-      minLength: 0
-    Entitlement:
-      description: A purchase entitlement for a given cloud marketplace
-      oneOf:
-      - $ref: '#/components/schemas/AwsEntitlement'
-      - $ref: '#/components/schemas/GcpEntitlement'
-      - $ref: '#/components/schemas/AzureEntitlement'
-      - $ref: '#/components/schemas/RedHatEntitlement'
-      type: object
-    AzureCloud:
-      type: string
-      description: Azure Cloud
-      default: azure
-      enum:
-      - azure
-      example: azure
-    SubscriptionContracted:
-      allOf:
-      - $ref: '#/components/schemas/Subscription'
-      - $ref: '#/components/schemas/SubscriptionItem'
-    ProductId:
-      description: Cloud Marketplace issued ID for a product
-      example: abcd-1234-efgh-5678
-      anyOf:
-      - $ref: '#/components/schemas/AwsProductId'
-      - $ref: '#/components/schemas/GcpProductId'
-      - $ref: '#/components/schemas/AzureProductId'
-      - $ref: '#/components/schemas/RedHatProductId'
-    AzureProductId:
-      type: string
-      description: Azure Offer ID
-      example: tackle-azure-platform
-      minLength: 0
-    GcpProductId:
-      type: string
-      description: GCP Solution ID
-      example: tackle-for-gcp
-      minLength: 0
-    RedHatSubscriptionType:
-      type: string
-      description: Type of the subscription
-      enum:
-      - TRIAL
-      - FREE
-      - PURCHASE
-      example: TRIAL
-    OfferId:
-      type: string
-      description: The AWS issued offer ID, Seller created Azure Plan ID, or the GCP issued Quote ID
-    MarketplaceData:
-      description: The marketplace data object contains fields specific to the marketplaces
-      oneOf:
-      - $ref: '#/components/schemas/AwsMarketplaceData'
-      - $ref: '#/components/schemas/OtherMarketplaceData'
-    RegistrationDetails:
-      type: object
-      minProperties: 3
-      example:
-        Company: Tackle
-        Email Address: support@tackle.io
-        Full Name: Jane Doe
-        Company Website: https://tackle.io
-        Phone Number: '1234567890'
-      description: "Registration details of a purchaser that map to defined registration page fields for a given listing.\nThe following fields are required at a minimum:\n  - Company\n  - Email Address\n  - Full Name\nAdditional fields may be supplied, where the key matches the name of the custom registration field defined for a given listing.\nCustom registration fields may be defined on a per listing basis on the Settings page for a given listing via Tackle Platform UI:\n  https://downstream.tackle.io/listings/productid-goes-here/settings\n"
-      properties:
-        Company:
-          type: string
-          description: Company name of purchaser
-          minLength: 0
-        Email Address:
-          type: string
-          format: email
-          description: Valid email address of purchaser
-        Full Name:
-          type: string
-          description: Full name of purchaser
-          minLength: 0
-      required:
-      - Company
-      - Email Address
-      - Full Name
-    Entitlements:
-      type: array
-      description: A list of Entitlement objects
-      uniqueItems: true
-      minItems: 0
-      example:
-      - dimension: example_dimension_name
-        expiration: '2019-04-24T12:23:03.048000+00:00'
-        skuid: example_awsdimension_apiname_1
-        value: 1
-      - dimension: example_dimension_name2
-        expiration: '2019-04-24T12:23:03.048000+00:00'
-        value: 5
-        skuid: example_awsdimension_apiname_1
-      items:
-        $ref: '#/components/schemas/Entitlement'
-      readOnly: true
-    GetSubscriptionResponse:
-      title: GetSubscriptionResponse
-      type: object
-      description: Response describing data containing a single subscription and other metadata
-      properties:
-        data:
-          $ref: '#/components/schemas/SubscriptionExpanded'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-      required:
-      - data
-      - metadata
-    RedHatEntitlement:
-      type: object
-      description: A purchase entitlement from Red Hat Marketplace
-      properties:
-        subscription_id:
-          type: string
-        edition_id:
-          type: string
-          description: Unique ID of the product's edition being subscribed to
-        edition_name:
-          type: string
-          description: Readable name for the edition
-        attributes:
-          type: object
-          description: Optional customer properties
-        term:
-          type: integer
-          description: The duration of a single subscription term
-        term_unit:
-          $ref: '#/components/schemas/RedHatTermUnit'
-        term_end_date:
-          type: string
-          description: The new term end date in format YYYY-MM-DD
-          format: date
-          example: '2021-11-02'
-        type:
-          $ref: '#/components/schemas/RedHatSubscriptionType'
-        renew_type:
-          $ref: '#/components/schemas/RedHatSubscriptionRenewType'
-      required:
-      - subscription_id
-      - edition_id
-      - edition_name
-      - attributes
-      - term
-      - term_unit
-      - term_end_date
-      - type
-      - renew_type
-    GcpCloud:
-      type: string
-      description: GCP Cloud
-      default: gcp
-      enum:
-      - gcp
-      example: gcp
-    SubscriptionExpanded:
-      allOf:
-      - $ref: '#/components/schemas/Subscription'
-      - $ref: '#/components/schemas/SubscriptionDetails'
-    Clouds:
-      anyOf:
-      - $ref: '#/components/schemas/AwsCloud'
-      - $ref: '#/components/schemas/GcpCloud'
-      - $ref: '#/components/schemas/AzureCloud'
-      - $ref: '#/components/schemas/RedHatCloud'
-      description: A string identifying a cloud marketplace
-    RedHatProductId:
-      type: string
-      description: Red Hat Product Id
-      example: d7a149a199100ad8a9931f14ea95cd00
-      minLength: 0
   responses:
+    401-Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                code: unauthorized
+                error: client_id and client_secret are invalid.
+                error_type: service_exception
+                errors: []
+    Subscriptions_404-Not-Found-Subscription:
+      description: Response if subscription was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            subscription-not-found:
+              value:
+                code: subscription_not_found
+                error: Subscription was not found
+                errors: []
     401-Unauthorized-MTM:
       description: Unauthorized
       content:
@@ -577,19 +113,6 @@ components:
               value:
                 code: mtm_token_expired
                 error: Token expired
-                errors: []
-    401-Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            unauthorized:
-              value:
-                code: unauthorized
-                error: client_id and client_secret are invalid.
-                error_type: service_exception
                 errors: []
     Subscriptions_200-OK-Subscriptions:
       description: Example response for a list of subscriptions
@@ -669,26 +192,510 @@ components:
                     skuid: exampleproductid_awsdimension_2
                 metadata:
                   link: https://api.tackle.io/v1/subscriptions/52fZSV7JbMI
-    Subscriptions_404-Not-Found-Subscription:
-      description: Response if subscription was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            subscription-not-found:
-              value:
-                code: subscription_not_found
-                error: Subscription was not found
-                errors: []
+  schemas:
+    RedHatCustomerId:
+      type: string
+      description: Red Hat Customer Id
+      example: 615334398743ac63d55cc4db
+      minLength: 0
+    Error:
+      title: ErrorResponse
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          minLength: 0
+        error:
+          type: string
+          description: Error response
+          minLength: 0
+        errors:
+          description: Error details
+          type: array
+          items: {}
+        error_type:
+          type: string
+          enum:
+          - service_exception
+          - client_exception
+      required:
+      - code
+      - error
+      - errors
+    OtherMarketplaceData:
+      description: GCP, Azure, and Red Hat do not currently have marketplace specific data
+      type: object
+      title: GCP, Azure, or Red Hat
+    SubscriptionExpanded:
+      allOf:
+      - $ref: '#/components/schemas/Subscription'
+      - $ref: '#/components/schemas/SubscriptionDetails'
+    SubscriptionItem:
+      type: object
+      properties:
+        link:
+          $ref: '#/components/schemas/SubscriptionLink'
+    RegistrationDetails:
+      type: object
+      minProperties: 3
+      example:
+        Company: Tackle
+        Email Address: support@tackle.io
+        Full Name: Jane Doe
+        Company Website: https://tackle.io
+        Phone Number: '1234567890'
+      description: "Registration details of a purchaser that map to defined registration page fields for a given listing.\nThe following fields are required at a minimum:\n  - Company\n  - Email Address\n  - Full Name\nAdditional fields may be supplied, where the key matches the name of the custom registration field defined for a given listing.\nCustom registration fields may be defined on a per listing basis on the Settings page for a given listing via Tackle Platform UI:\n  https://downstream.tackle.io/listings/productid-goes-here/settings\n"
+      properties:
+        Company:
+          type: string
+          description: Company name of purchaser
+          minLength: 0
+        Email Address:
+          type: string
+          format: email
+          description: Valid email address of purchaser
+        Full Name:
+          type: string
+          description: Full name of purchaser
+          minLength: 0
+      required:
+      - Company
+      - Email Address
+      - Full Name
+    AwsMarketplaceData:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            CustomerAWSAccountId:
+              title: CustomerAWSAccountId
+              type: string
+              description: AWS account ID associated to the customerid for the individual customer
+              example: example-account-id
+      description: Marketplace data specific to AWS
+      title: AWS
+    TimestampZeroUtcOffset:
+      type: string
+      description: ISO format timestamp with zero UTC offset
+      example: '2021-10-25T21:38:20.865Z'
+      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d*)?Z$
+      format: date-time
+    AwsCloud:
+      type: string
+      description: AWS Cloud
+      default: aws
+      enum:
+      - aws
+      example: aws
+    GetSubscriptionResponse:
+      title: GetSubscriptionResponse
+      type: object
+      description: Response describing data containing a single subscription and other metadata
+      properties:
+        data:
+          $ref: '#/components/schemas/SubscriptionExpanded'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    AzureEntitlement:
+      type: object
+      description: A purchase entitlement from Azure Marketplace
+      properties:
+        plan:
+          type: string
+        quantity:
+          type: integer
+        subscription_id:
+          type: string
+        subscription_name:
+          type: string
+        offer_id:
+          type: string
+      required:
+      - plan
+      - quantity
+      - subscription_id
+      - subscription_name
+      - offer_id
+    IsFreeTrial:
+      type: boolean
+      description: Designation for Free Trial
+      example: false
+      default: false
+      readOnly: true
+    SubscriptionDetails:
+      type: object
+      properties:
+        entitlements:
+          $ref: '#/components/schemas/Entitlements'
+        registration_details:
+          $ref: '#/components/schemas/RegistrationDetails'
+        marketplace_data:
+          $ref: '#/components/schemas/MarketplaceData'
+    RedHatSubscriptionType:
+      type: string
+      description: Type of the subscription
+      enum:
+      - TRIAL
+      - FREE
+      - PURCHASE
+      example: TRIAL
+    Subscription:
+      type: object
+      properties:
+        tackle_subscription_id:
+          $ref: '#/components/schemas/SubscriptionId'
+        productid:
+          $ref: '#/components/schemas/ProductId'
+        product_link:
+          $ref: '#/components/schemas/ProductLink'
+        cloud:
+          $ref: '#/components/schemas/Clouds'
+        customerid:
+          $ref: '#/components/schemas/CustomerId'
+        offerid:
+          $ref: '#/components/schemas/OfferId'
+        created_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffset'
+        registered_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffsetOptional'
+        cancelled_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffsetOptional'
+        updated_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffset'
+        started_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffset'
+        ended_at:
+          $ref: '#/components/schemas/TimestampZeroUtcOffset'
+        is_free_trial:
+          $ref: '#/components/schemas/IsFreeTrial'
+      required:
+      - tackle_subscription_id
+      - productid
+      - customerid
+      - created_at
+    GcpProductId:
+      type: string
+      description: GCP Solution ID
+      example: tackle-for-gcp
+      minLength: 0
+    ProductLink:
+      type: string
+      title: ProductLink
+      description: A URL for a given product resource
+      format: uri
+    RedHatEntitlement:
+      type: object
+      description: A purchase entitlement from Red Hat Marketplace
+      properties:
+        subscription_id:
+          type: string
+        edition_id:
+          type: string
+          description: Unique ID of the product's edition being subscribed to
+        edition_name:
+          type: string
+          description: Readable name for the edition
+        attributes:
+          type: object
+          description: Optional customer properties
+        term:
+          type: integer
+          description: The duration of a single subscription term
+        term_unit:
+          $ref: '#/components/schemas/RedHatTermUnit'
+        term_end_date:
+          type: string
+          description: The new term end date in format YYYY-MM-DD
+          format: date
+          example: '2021-11-02'
+        type:
+          $ref: '#/components/schemas/RedHatSubscriptionType'
+        renew_type:
+          $ref: '#/components/schemas/RedHatSubscriptionRenewType'
+      required:
+      - subscription_id
+      - edition_id
+      - edition_name
+      - attributes
+      - term
+      - term_unit
+      - term_end_date
+      - type
+      - renew_type
+    ProductId:
+      description: Cloud Marketplace issued ID for a product
+      example: abcd-1234-efgh-5678
+      anyOf:
+      - $ref: '#/components/schemas/AwsProductId'
+      - $ref: '#/components/schemas/GcpProductId'
+      - $ref: '#/components/schemas/AzureProductId'
+      - $ref: '#/components/schemas/RedHatProductId'
+    SubscriptionLink:
+      type: string
+      title: SubscriptionLink
+      description: A URL for a given subscription resource
+      format: uri
+    AwsProductId:
+      type: string
+      description: AWS Product Code
+      example: 1test1a2b3c4d5e6f7g8h9ijk
+      minLength: 0
+    AzureCloud:
+      type: string
+      description: Azure Cloud
+      default: azure
+      enum:
+      - azure
+      example: azure
+    AwsEntitlement:
+      properties:
+        dimension:
+          type: string
+        skuid:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+          example: '2019-04-24T12:23:03.048000+00:00'
+        value:
+          type: integer
+      required:
+      - dimension
+      - skuid
+      - expiration
+      - value
+      example:
+        dimension: example_dimension_name
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        skuid: example_awsdimension_apiname_1
+        value: 1
+      description: 'A purchase entitlement from AWS Marketplace '
+    Clouds:
+      anyOf:
+      - $ref: '#/components/schemas/AwsCloud'
+      - $ref: '#/components/schemas/GcpCloud'
+      - $ref: '#/components/schemas/AzureCloud'
+      - $ref: '#/components/schemas/RedHatCloud'
+      description: A string identifying a cloud marketplace
+    CustomerId:
+      anyOf:
+      - $ref: '#/components/schemas/AwsCustomerId'
+      - $ref: '#/components/schemas/GcpCustomerId'
+      - $ref: '#/components/schemas/AzureCustomerId'
+      - $ref: '#/components/schemas/RedHatCustomerId'
+    SubscriptionId:
+      type:
+      - string
+      - 'null'
+      description: Subscription Id
+      example: 5fd2a7e8908e88888c7f0e71
+      minLength: 0
+    Metadata:
+      title: Metadata
+      type: object
+      description: Metadata for a given request
+      properties:
+        link:
+          type: string
+          format: uri
+          example: https://api.tackle.io
+      required:
+      - link
+    Entitlement:
+      description: A purchase entitlement for a given cloud marketplace
+      oneOf:
+      - $ref: '#/components/schemas/AwsEntitlement'
+      - $ref: '#/components/schemas/GcpEntitlement'
+      - $ref: '#/components/schemas/AzureEntitlement'
+      - $ref: '#/components/schemas/RedHatEntitlement'
+      type: object
+    AzureCustomerId:
+      type: string
+      description: Azure Subscription ID
+      example: 1b3gs3f4-2794-abcd-3fa3-063ga0s3t3re
+      minLength: 0
+    AzureProductId:
+      type: string
+      description: Azure Offer ID
+      example: tackle-azure-platform
+      minLength: 0
+    SubscriptionContracted:
+      allOf:
+      - $ref: '#/components/schemas/Subscription'
+      - $ref: '#/components/schemas/SubscriptionItem'
+    RedHatTermUnit:
+      type: string
+      description: The unit for the term
+      enum:
+      - DAYS
+      - WEEKS
+      - MONTHS
+      - YEARS
+      example: MONTHS
+    GcpCustomerId:
+      type: string
+      description: GCP External Account ID
+      example: E-ABC2-D330-E2FG-H2Q2
+      minLength: 0
+    RedHatProductId:
+      type: string
+      description: Red Hat Product Id
+      example: d7a149a199100ad8a9931f14ea95cd00
+      minLength: 0
+    AwsCustomerId:
+      type: string
+      description: AWS Account Reference ID
+      example: ij3sXMkN3or
+      minLength: 0
+    RedHatCloud:
+      type: string
+      description: Red Hat Cloud
+      default: redhat
+      enum:
+      - redhat
+      example: redhat
+    GcpCloud:
+      type: string
+      description: GCP Cloud
+      default: gcp
+      enum:
+      - gcp
+      example: gcp
+    GcpEntitlement:
+      type: object
+      description: A purchase entitlement from GCP Marketplace
+      properties:
+        account:
+          type: string
+          description: The resource name of the account that this entitlement is based on, if any
+        consumers:
+          type: array
+          description: The resources using this entitlement, if applicable
+          items:
+            type: string
+        createTime:
+          type: string
+          format: date-time
+          example: '2020-10-02T15:01:23.045123456Z'
+        messageToUser:
+          type: string
+          description: Provider-supplied message that is displayed to the end user
+        name:
+          type: string
+          description: The resource name of the entitlement
+        newPendingPlan:
+          type: string
+          description: The identifier of the pending new plan, required if the product has plans and the entitlement has a pending plan change
+        offer:
+          type: string
+        offerEndTime:
+          type: string
+          format: date-time
+        plan:
+          type: string
+          description: The identifier of the plan that was procured, required if the product has plans
+        product:
+          type: string
+          description: The identifier of the product that was procured
+        provider:
+          type: string
+          description: The identifier of the service provider that this entitlement was created against
+        productExternalName:
+          type: string
+        quoteExternalName:
+          type: string
+        state:
+          type: string
+          description: The state of the entitlement
+        subscriptionEndTime:
+          type: string
+        updateTime:
+          type: string
+          format: date-time
+          example: '2019-10-25T21:38:20.865Z'
+        usageReportingId:
+          type: string
+          description: The consumerId to use when reporting usage through the Service Control API. See the consumerId field at Reporting Metrics for more details. This field is present only if the product has usage-based billing configured.
+      required:
+      - account
+      - createTime
+      - name
+      - plan
+      - product
+      title: GcpEntitlement
+    MarketplaceData:
+      description: The marketplace data object contains fields specific to the marketplaces
+      oneOf:
+      - $ref: '#/components/schemas/AwsMarketplaceData'
+      - $ref: '#/components/schemas/OtherMarketplaceData'
+    Entitlements:
+      type: array
+      description: A list of Entitlement objects
+      uniqueItems: true
+      minItems: 0
+      example:
+      - dimension: example_dimension_name
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        skuid: example_awsdimension_apiname_1
+        value: 1
+      - dimension: example_dimension_name2
+        expiration: '2019-04-24T12:23:03.048000+00:00'
+        value: 5
+        skuid: example_awsdimension_apiname_1
+      items:
+        $ref: '#/components/schemas/Entitlement'
+      readOnly: true
+    RedHatSubscriptionRenewType:
+      type: string
+      description: Renew Type
+      enum:
+      - ORIGINAL_TERM
+      - TERMINATE
+      example: ORIGINAL_TERM
+    TimestampZeroUtcOffsetOptional:
+      type:
+      - string
+      - 'null'
+      description: Optional ISO format timestamp with zero UTC offset
+      example: '2021-10-25T21:38:20.865Z'
+      pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d*)?Z$
+      format: date-time
+    OfferId:
+      type: string
+      description: The AWS issued offer ID, Seller created Azure Plan ID, or the GCP issued Quote ID
+    ListSubscriptionsResponse:
+      title: ListSubscriptionsResponse
+      type: object
+      description: Response describing data containing a list of subscriptions and additional response metadata
+      properties:
+        data:
+          type: array
+          description: A list of Subscriptions
+          items:
+            $ref: '#/components/schemas/SubscriptionContracted'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
   parameters:
-    tackle_subscription_id:
-      name: tackle_subscription_id
-      description: Subscription ID generated by Tackle
-      in: path
-      required: true
+    clouds:
+      name: clouds
+      description: Cloud for a query
+      in: query
       schema:
-        $ref: '#/components/schemas/SubscriptionId'
+        $ref: '#/components/schemas/Clouds'
+    customerid:
+      name: customerid
+      description: Customer ID for a query
+      in: query
+      schema:
+        $ref: '#/components/schemas/CustomerId'
     Start_date:
       name: start_date
       description: Start date for subscription query
@@ -705,18 +712,13 @@ components:
       in: query
       schema:
         $ref: '#/components/schemas/ProductId'
-    customerid:
-      name: customerid
-      description: Customer ID for a query
-      in: query
+    tackle_subscription_id:
+      name: tackle_subscription_id
+      description: Subscription ID generated by Tackle
+      in: path
+      required: true
       schema:
-        $ref: '#/components/schemas/CustomerId'
-    clouds:
-      name: clouds
-      description: Cloud for a query
-      in: query
-      schema:
-        $ref: '#/components/schemas/Clouds'
+        $ref: '#/components/schemas/SubscriptionId'
     End_date:
       name: end_date
       description: End date for subscription query

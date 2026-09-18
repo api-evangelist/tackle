@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Tackle Authentication Disbursements API
+  title: Tackle Disbursements API
   description: Authenticated programmatic access to Tackle's webhooks, metering, private offers, and more.
   version: 1.0.0
   contact:
@@ -36,101 +36,21 @@ paths:
       - BearerAuth: []
 components:
   schemas:
-    Address:
+    422Reports:
+      title: Reports-422-Response
       type: object
       properties:
-        country:
+        code:
           type: string
-          nullable: true
-        city:
+        error:
           type: string
-          nullable: true
-        zip_code:
-          type: string
-          nullable: true
-        email_domain:
-          type: string
-          nullable: true
-    Transaction:
-      title: Transaction
-      type: object
-      properties:
-        id:
-          type: string
-        seller_revenue:
-          $ref: '#/components/schemas/Money'
-        marketplace_fee:
-          $ref: '#/components/schemas/Money'
-        net_amount:
-          $ref: '#/components/schemas/NetAmount'
+        errors:
+          type: array
+          items: {}
       required:
-      - id
-      - seller_revenue
-      - marketplace_fee
-      - net_amount
-    NetAmount:
-      allOf:
-      - $ref: '#/components/schemas/Money'
-      description: Amount to be disbursed by cloud provider after any marketplace fees have been assessed
-    Customer:
-      type: object
-      properties:
-        account_number:
-          type: string
-          nullable: true
-          description: Marketplace Account Number
-        address:
-          $ref: '#/components/schemas/Address'
-    Money:
-      type: object
-      properties:
-        amount:
-          type: number
-        currency:
-          type: string
-          enum:
-          - EUR
-          - CAD
-          - USD
-          - GBP
-      required:
-      - amount
-      - currency
-    InvoiceId:
-      type: string
-      example: 12345-abcde
-    SubscriptionChangeId:
-      type: string
-      example: a1bc2De_-F3
-    SubscriptionChangeIds:
-      type: array
-      items:
-        $ref: '#/components/schemas/SubscriptionChangeId'
-    AwsCloud:
-      type: string
-      description: AWS Cloud
-      default: aws
-      enum:
-      - aws
-      example: aws
-    ReportingProduct:
-      title: Product
-      type: object
-      properties:
-        name:
-          type: string
-          default: Example Product
-        id:
-          default: example-product-code-12345
-          anyOf:
-          - $ref: '#/components/schemas/AwsProductId'
-          - $ref: '#/components/schemas/GcpProductId'
-        tackle_product_ref_id:
-          type: string
-          nullable: true
-      required:
-      - name
-      - id
+      - code
+      - error
+      - errors
     Error:
       title: ErrorResponse
       type: object
@@ -156,35 +76,51 @@ components:
       - code
       - error
       - errors
-    Metadata:
-      title: Metadata
+    Money:
       type: object
-      description: Metadata for a given request
       properties:
-        link:
+        amount:
+          type: number
+        currency:
           type: string
-          format: uri
-          example: https://api.tackle.io
+          enum:
+          - EUR
+          - CAD
+          - USD
+          - GBP
       required:
-      - link
-    AwsProductId:
-      type: string
-      description: AWS Product Code
-      example: 1test1a2b3c4d5e6f7g8h9ijk
-      minLength: 0
-    DisbursementsResponse:
-      title: DisbursementsResponse
+      - amount
+      - currency
+    SubscriptionChangeIds:
+      type: array
+      items:
+        $ref: '#/components/schemas/SubscriptionChangeId'
+    ReportingProduct:
+      title: Product
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Disbursement'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
+        name:
+          type: string
+          default: Example Product
+        id:
+          default: example-product-code-12345
+          anyOf:
+          - $ref: '#/components/schemas/AwsProductId'
+          - $ref: '#/components/schemas/GcpProductId'
+        tackle_product_ref_id:
+          type:
+          - string
+          - 'null'
       required:
-      - data
-      - metadata
+      - name
+      - id
+    AwsCloud:
+      type: string
+      description: AWS Cloud
+      default: aws
+      enum:
+      - aws
+      example: aws
     GcpProductId:
       type: string
       description: GCP Solution ID
@@ -218,6 +154,74 @@ components:
       - transaction
       - customer
       - cloud_marketplace
+    Address:
+      type: object
+      properties:
+        country:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        zip_code:
+          type:
+          - string
+          - 'null'
+        email_domain:
+          type:
+          - string
+          - 'null'
+    InvoiceId:
+      type: string
+      example: 12345-abcde
+    DisbursementsResponse:
+      title: DisbursementsResponse
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Disbursement'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - data
+      - metadata
+    AwsProductId:
+      type: string
+      description: AWS Product Code
+      example: 1test1a2b3c4d5e6f7g8h9ijk
+      minLength: 0
+    Metadata:
+      title: Metadata
+      type: object
+      description: Metadata for a given request
+      properties:
+        link:
+          type: string
+          format: uri
+          example: https://api.tackle.io
+      required:
+      - link
+    Customer:
+      type: object
+      properties:
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: Marketplace Account Number
+        address:
+          $ref: '#/components/schemas/Address'
+    NetAmount:
+      allOf:
+      - $ref: '#/components/schemas/Money'
+      description: Amount to be disbursed by cloud provider after any marketplace fees have been assessed
+    SubscriptionChangeId:
+      type: string
+      example: a1bc2De_-F3
     GcpCloud:
       type: string
       description: GCP Cloud
@@ -225,22 +229,37 @@ components:
       enum:
       - gcp
       example: gcp
-    422Reports:
-      title: Reports-422-Response
+    Transaction:
+      title: Transaction
       type: object
       properties:
-        code:
+        id:
           type: string
-        error:
-          type: string
-        errors:
-          type: array
-          items: {}
+        seller_revenue:
+          $ref: '#/components/schemas/Money'
+        marketplace_fee:
+          $ref: '#/components/schemas/Money'
+        net_amount:
+          $ref: '#/components/schemas/NetAmount'
       required:
-      - code
-      - error
-      - errors
+      - id
+      - seller_revenue
+      - marketplace_fee
+      - net_amount
   responses:
+    401-Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            unauthorized:
+              value:
+                code: unauthorized
+                error: client_id and client_secret are invalid.
+                error_type: service_exception
+                errors: []
     Reports_200-OK-Disbursements:
       description: Example success response containing a list of Disbursement objects
       content:
@@ -351,19 +370,6 @@ components:
                   - cloud
                   msg: field required
                   type: value_error.missing
-    401-Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            unauthorized:
-              value:
-                code: unauthorized
-                error: client_id and client_secret are invalid.
-                error_type: service_exception
-                errors: []
     Reports_422-Reports:
       description: Example response
       content:
@@ -395,15 +401,6 @@ components:
         type: string
         format: date
         example: '2021-07-01'
-    start_date:
-      name: start_date
-      description: Start date for a query
-      in: query
-      required: true
-      schema:
-        type: string
-        format: date
-        example: '2021-06-01'
     Marketplace:
       name: cloud
       in: query
@@ -415,6 +412,15 @@ components:
         example: aws
       description: Cloud Marketplace
       required: true
+    start_date:
+      name: start_date
+      description: Start date for a query
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2021-06-01'
   securitySchemes:
     BearerAuth:
       description: The Tackle API requires a JWT for authentication. You can get this by [getting your API credentials](https://developers.tackle.io/docs/how-to-get-an-m2m-client-id-and-secret) from the Tackle Platform then [retrieving your Access Token](https://developers.tackle.io/docs/getting-an-access-token) using our Authentication endpoint.
